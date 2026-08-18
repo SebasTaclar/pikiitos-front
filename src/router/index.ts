@@ -16,7 +16,6 @@ const router = createRouter({
   scrollBehavior(to) {
     if (to.hash) {
       return new Promise(resolve => {
-        // Espera un tick para asegurar que el DOM de la ruta ya renderizó.
         requestAnimationFrame(() => {
           const el = document.querySelector(to.hash)
           if (el) {
@@ -40,67 +39,44 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/Login.vue'),
-      meta: {
-        requiresGuest: true, // Solo accesible cuando no está autenticado
-      },
+      meta: { requiresGuest: true },
     },
-
     {
-      path: '/anillos',
-      name: 'anillos',
+      path: '/productos',
+      name: 'productos',
       component: () => import('../views/CategoryProducts.vue'),
-      props: { slug: 'anillos', title: 'Anillos' },
+      props: { slug: 'todos', title: 'Tienda' },
     },
-
     {
-      path: '/collares',
-      name: 'collares',
+      path: '/categorias/:slug',
+      name: 'categoria',
       component: () => import('../views/CategoryProducts.vue'),
-      props: { slug: 'collares', title: 'Collares' },
+      props: true,
     },
-
     {
-      path: '/aretes',
-      name: 'aretes',
+      path: '/colecciones',
+      name: 'colecciones',
       component: () => import('../views/CategoryProducts.vue'),
-      props: { slug: 'aretes', title: 'Aretes' },
+      props: { slug: 'colecciones', title: 'Colecciones' },
     },
-
     {
-      path: '/pulseras',
-      name: 'pulseras',
-      component: () => import('../views/CategoryProducts.vue'),
-      props: { slug: 'pulseras', title: 'Pulseras' },
-    },
-
-    {
-      path: '/esmeraldas',
-      name: 'esmeraldas',
-      component: () => import('../views/CategoryProducts.vue'),
-      props: { slug: 'esmeraldas', title: 'Esmeraldas' },
+      path: '/nosotros',
+      name: 'nosotros',
+      component: () => import('../components/StorySection.vue'),
     },
 
     {
       path: '/ofertas',
       name: 'ofertas',
-      component: () => import('../views/AirPodsPage.vue'),
+      component: () => import('../views/CategoryProducts.vue'),
+      props: { slug: 'ofertas', title: 'Ofertas' },
     },
-
-    {
-      path: '/perfumes',
-      redirect: '/ofertas',
-    },
-
     {
       path: '/admin/products',
       name: 'admin-products',
       component: () => import('../views/AdminDashboardNew.vue'),
-      meta: {
-        requiresAuth: true,
-        requiredRole: 'admin', // Solo accesible para administradores
-      },
+      meta: { requiresAuth: true, requiredRole: 'admin' },
     },
-
     {
       path: '/payment/success',
       name: 'payment-success',
@@ -110,6 +86,11 @@ const router = createRouter({
       path: '/payment/failure',
       name: 'payment-failure',
       component: () => import('../views/PaymentFailure.vue'),
+    },
+    {
+      path: '/payment/pending',
+      name: 'payment-pending',
+      component: () => import('../views/PaymentPending.vue'),
     },
     {
       path: '/checkout',
@@ -131,12 +112,6 @@ const router = createRouter({
       component: () => import('../views/TestPurchases.vue'),
     },
     {
-      path: '/payment/pending',
-      name: 'payment-pending',
-      component: () => import('../views/PaymentPending.vue'),
-    },
-    // Catch-all route - debe ir al final
-    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       redirect: '/',
@@ -149,38 +124,27 @@ router.beforeEach((to, from, next) => {
   const isAuthenticated = authService.isAuthenticated()
   const userRole = authService.getUserRole()
 
-  // Redirigir admins autenticados que intenten ir al login
   if (to.path === '/login' && isAuthenticated && userRole === 'admin') {
     next('/admin/products')
     return
   }
 
-  // Si la ruta requiere estar autenticado
   if (to.meta.requiresAuth) {
     if (!isAuthenticated) {
-      // Redirigir al login si no está autenticado
       next('/login')
       return
     }
-
-    // Verificar rol específico si se requiere
     if (to.meta.requiredRole && userRole !== to.meta.requiredRole) {
-      // Redirigir a home si no tiene el rol requerido
       next('/')
       return
     }
-
-    // Verificar múltiples roles si se requiere
     if (to.meta.requiredRoles && (!userRole || !to.meta.requiredRoles.includes(userRole))) {
-      // Redirigir a home si no tiene ninguno de los roles requeridos
       next('/')
       return
     }
   }
 
-  // Si la ruta requiere ser invitado (no autenticado)
   if (to.meta.requiresGuest && isAuthenticated) {
-    // Si es invitado y autenticado: si es admin va a panel, si no a home
     if (userRole === 'admin') {
       next('/admin/products')
     } else {
