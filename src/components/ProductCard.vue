@@ -74,7 +74,7 @@
 import { ref } from 'vue'
 
 interface Product {
-  id: number | string
+  id: string
   name: string
   category: string
   price: number

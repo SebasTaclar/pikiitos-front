@@ -1,17 +1,15 @@
 import { ref } from 'vue'
-import { productService } from '@/services/api'
-import type {
-  Product,
-  CreateProductRequest,
-  UpdateProductRequest
-} from '@/types/ProductType'
+import type { Product } from '@/types/ProductType'
+import defaultProducts from '@/data/products.json'
 
-// Estado global de productos del backend (inicializado vacío)
+const STORAGE_KEY = 'pikiitos_products'
+
+// Estado global de productos (inicializado vacío, se cargará desde localStorage)
 const products = ref<Product[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-// Normaliza la respuesta del backend al tipo Product del frontend
+// Normaliza cualquier forma entrante al tipo Product del frontend
 function normalizeProduct(input: unknown): Product {
   if (typeof input === 'object' && input !== null) {
     const anyProduct = input as Record<string, unknown>
@@ -24,7 +22,6 @@ function normalizeProduct(input: unknown): Product {
       ? Number(anyProduct.originalPrice)
       : undefined
 
-    // Parsear images (puede venir como JSON string del backend)
     let images: string[] = []
     if (typeof anyProduct.images === 'string') {
       try {
@@ -36,16 +33,14 @@ function normalizeProduct(input: unknown): Product {
       images = anyProduct.images.map(String)
     }
 
-    // categoryId del backend → category string en frontend
-    const category = String(anyProduct.categoryId || '')
+    const category = String(anyProduct.category || anyProduct.categoryId || '')
 
     const status = (anyProduct.status === 'available' ||
                    anyProduct.status === 'out-of-stock' ||
                    anyProduct.status === 'coming-soon')
-      ? anyProduct.status
+      ? anyProduct.status as 'available' | 'out-of-stock' | 'coming-soon'
       : 'available'
 
-    // Parsear colors (puede venir como JSON string del backend)
     let colors: string[] | undefined
     if (anyProduct.colors) {
       if (typeof anyProduct.colors === 'string') {
@@ -63,6 +58,14 @@ function normalizeProduct(input: unknown): Product {
     const showcaseImage = anyProduct.showcaseImage !== null && anyProduct.showcaseImage !== undefined
       ? String(anyProduct.showcaseImage)
       : undefined
+    const sku = anyProduct.sku ? String(anyProduct.sku) : undefined
+    const brand = anyProduct.brand ? String(anyProduct.brand) : undefined
+    const isAvailable = anyProduct.isAvailable !== undefined ? Boolean(anyProduct.isAvailable) : undefined
+    const showPrice = anyProduct.showPrice !== undefined ? Boolean(anyProduct.showPrice) : undefined
+    const allowQuote = anyProduct.allowQuote !== undefined ? Boolean(anyProduct.allowQuote) : undefined
+    const isFeatured = anyProduct.isFeatured !== undefined ? Boolean(anyProduct.isFeatured) : undefined
+    const isNew = anyProduct.isNew !== undefined ? Boolean(anyProduct.isNew) : undefined
+    const isOffer = anyProduct.isOffer !== undefined ? Boolean(anyProduct.isOffer) : undefined
 
     const createdAtRaw = anyProduct.createdAt
     const updatedAtRaw = anyProduct.updatedAt
@@ -79,12 +82,19 @@ function normalizeProduct(input: unknown): Product {
       colors,
       isShowcase,
       showcaseImage,
+      sku,
+      brand,
+      isAvailable,
+      showPrice,
+      allowQuote,
+      isFeatured,
+      isNew,
+      isOffer,
       createdAt: createdAtRaw ? new Date(String(createdAtRaw)) : new Date(),
       updatedAt: updatedAtRaw ? new Date(String(updatedAtRaw)) : undefined
     }
   }
 
-  // Fallback vacío controlado
   return {
     id: crypto.randomUUID(),
     name: '',
@@ -97,9 +107,48 @@ function normalizeProduct(input: unknown): Product {
   }
 }
 
+// Leer productos desde localStorage
+function loadFromStorage(): Product[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw) {
+      const parsed = JSON.parse(raw) as unknown[]
+      return parsed.map(normalizeProduct)
+    }
+  } catch {
+    console.warn('Error al leer productos desde localStorage')
+  }
+  return []
+}
+
+// Guardar productos en localStorage
+function saveToStorage(items: Product[]) {
+  try {
+    const serializable = items.map(p => ({
+      ...p,
+      createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : String(p.createdAt),
+      updatedAt: p.updatedAt instanceof Date ? p.updatedAt.toISOString() : p.updatedAt
+    }))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable))
+  } catch (e) {
+    console.error('Error al guardar productos en localStorage:', e)
+  }
+}
+
+// Cargar datos iniciales desde JSON si localStorage está vacío
+function bootstrapIfNeeded() {
+  const existing = loadFromStorage()
+  if (existing.length === 0 && defaultProducts.products.length > 0) {
+    const normalized = defaultProducts.products.map(normalizeProduct)
+    saveToStorage(normalized)
+    return normalized
+  }
+  return existing
+}
+
 export function useBackendProducts() {
-  // Función para cargar todos los productos con filtros opcionales
-  const loadProducts = async (filters?: {
+  // Cargar productos desde localStorage (o bootstrap)
+  const loadProducts = async (_filters?: {
     name?: string
     categoryId?: number
     showcase?: boolean
@@ -108,171 +157,105 @@ export function useBackendProducts() {
     error.value = null
 
     try {
-      console.log('🔄 [loadProducts] Iniciando carga de productos...', filters)
-      const response = await productService.getProducts(filters)
-      console.log('📥 [loadProducts] Respuesta del backend:', response)
-
-      if (response.success) {
-        // La respuesta puede venir en dos formatos:
-        // 1. { data: [...] } - Array directo
-        // 2. { data: { products: [...], count: N } } - Objeto con products
-        const raw = response.data as unknown
-        console.log('📦 [loadProducts] Datos raw:', raw)
-
-        let productsToNormalize: unknown[] = []
-
-        if (Array.isArray(raw)) {
-          // Formato 1: Array directo
-          productsToNormalize = raw
-        } else if (raw && typeof raw === 'object' && 'products' in raw) {
-          // Formato 2: Objeto con propiedad products
-          const dataObj = raw as { products?: unknown[] }
-          if (Array.isArray(dataObj.products)) {
-            productsToNormalize = dataObj.products
-          }
-        }
-
-        const normalized = productsToNormalize.map(normalizeProduct)
-        console.log('✅ [loadProducts] Productos normalizados:', normalized)
-        products.value = normalized
-        console.log('📋 [loadProducts] Products.value actualizado:', products.value.length, products.value)
-
-        return { success: true, data: response.data }
-      } else {
-        error.value = response.message
-        console.error('❌ [loadProducts] Error del backend:', response.message)
-        return { success: false, message: response.message }
-      }
+      const stored = bootstrapIfNeeded()
+      products.value = stored
+      return { success: true, data: products.value }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al cargar productos'
       error.value = errorMessage
-      console.error('❌ [loadProducts] Excepción:', err)
       return { success: false, message: errorMessage }
     } finally {
       loading.value = false
     }
   }
 
-  // Función para crear un nuevo producto
-  const createProduct = async (productData: CreateProductRequest) => {
+  // Crear un nuevo producto
+  const createProduct = async (productData: Omit<Product, 'id' | 'createdAt'> & { categoryId?: number }) => {
     loading.value = true
     error.value = null
 
     try {
-      console.log('📝 [useBackendProducts] Creando producto:', productData)
-      console.log('📋 [useBackendProducts] Productos antes de crear:', products.value.length)
-
-      const response = await productService.createProduct(productData)
-      console.log('📥 [useBackendProducts] Respuesta del backend:', response)
-
-      if (response.success) {
-        const normalized = normalizeProduct(response.data)
-        console.log('✅ [useBackendProducts] Producto normalizado:', normalized)
-
-        products.value.push(normalized)
-        console.log('📋 [useBackendProducts] Productos después de crear:', products.value.length)
-        console.log('📋 [useBackendProducts] Array completo:', products.value)
-
-        return { success: true, data: normalized, message: response.message }
-      } else {
-        error.value = response.message
-        console.error('❌ [useBackendProducts] Error del backend:', response.message)
-        return { success: false, message: response.message }
+      const newProduct: Product = {
+        ...productData,
+        id: crypto.randomUUID(),
+        createdAt: new Date()
       }
+
+      const normalized = normalizeProduct(newProduct)
+      products.value.push(normalized)
+      saveToStorage(products.value)
+
+      return { success: true, data: normalized, message: 'Producto creado exitosamente' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al crear producto'
       error.value = errorMessage
-      console.error('❌ [useBackendProducts] Excepción:', err)
       return { success: false, message: errorMessage }
     } finally {
       loading.value = false
     }
   }
 
-  // Función para actualizar un producto
-  const updateProduct = async (id: number, productData: UpdateProductRequest) => {
+  // Actualizar un producto
+  const updateProduct = async (id: number | string, productData: Partial<Product>) => {
     loading.value = true
     error.value = null
 
     try {
-      console.log('📝 [useBackendProducts] Actualizando producto:', id, productData)
-      const response = await productService.updateProduct(id, productData)
-      console.log('📥 [useBackendProducts] Respuesta del backend:', response)
-
-      if (response.success) {
-        const normalized = normalizeProduct(response.data)
-        const index = products.value.findIndex((prod) => prod.id === String(id))
-        if (index !== -1) {
-          products.value[index] = normalized
-          console.log('✅ [useBackendProducts] Producto actualizado en índice:', index)
-        }
-        return { success: true, data: normalized, message: response.message }
-      } else {
-        error.value = response.message
-        console.error('❌ [useBackendProducts] Error del backend:', response.message)
-        return { success: false, message: response.message }
+      const index = products.value.findIndex((prod) => prod.id === String(id))
+      if (index === -1) {
+        throw new Error('Producto no encontrado')
       }
+
+      const updated = { ...products.value[index], ...productData, updatedAt: new Date() }
+      const normalized = normalizeProduct(updated)
+      products.value[index] = normalized
+      saveToStorage(products.value)
+
+      return { success: true, data: normalized, message: 'Producto actualizado exitosamente' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al actualizar producto'
       error.value = errorMessage
-      console.error('❌ [useBackendProducts] Excepción:', err)
       return { success: false, message: errorMessage }
     } finally {
       loading.value = false
     }
   }
 
-  // Función para eliminar un producto
-  const deleteProduct = async (id: number) => {
+  // Eliminar un producto
+  const deleteProduct = async (id: number | string) => {
     loading.value = true
     error.value = null
 
     try {
-      console.log('🗑️ [useBackendProducts] Eliminando producto:', id)
-      const response = await productService.deleteProduct(id)
-      console.log('📥 [useBackendProducts] Respuesta del backend:', response)
-
-      if (response.success) {
-        products.value = products.value.filter((prod) => prod.id !== String(id))
-        console.log('✅ [useBackendProducts] Producto eliminado. Total:', products.value.length)
-        return { success: true, message: response.message }
-      } else {
-        error.value = response.message
-        console.error('❌ [useBackendProducts] Error del backend:', response.message)
-        return { success: false, message: response.message }
-      }
+      products.value = products.value.filter((prod) => prod.id !== String(id))
+      saveToStorage(products.value)
+      return { success: true, message: 'Producto eliminado exitosamente' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al eliminar producto'
       error.value = errorMessage
-      console.error('❌ [useBackendProducts] Excepción:', err)
       return { success: false, message: errorMessage }
     } finally {
       loading.value = false
     }
   }
 
-  // Función para obtener un producto por ID
+  // Obtener un producto por ID
   const getProductById = (id: number | string): Product | undefined => {
     return products.value.find((prod) => prod.id === String(id))
   }
 
-  // Función para limpiar errores
   const clearError = () => {
     error.value = null
   }
 
-  // Función para refrescar productos
   const refreshProducts = async () => {
     return await loadProducts()
   }
 
   return {
-    // Estado - refs directos para mantener reactividad
     products,
     loading,
     error,
-
-    // Funciones
     loadProducts,
     createProduct,
     updateProduct,

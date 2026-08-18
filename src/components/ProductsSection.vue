@@ -33,9 +33,21 @@
 <script setup lang="ts">
 import ProductCard from '@/components/ProductCard.vue'
 
-const featuredProducts = [
+interface FeaturedProduct {
+  id: string
+  name: string
+  category: string
+  price: number
+  originalPrice?: number
+  image: string
+  rating: number
+  reviews: number
+  badge?: string
+}
+
+const featuredProducts: FeaturedProduct[] = [
   {
-    id: 1,
+    id: '1',
     name: 'Vestido Floral de Verano',
     category: 'Niñas',
     price: 45900,
@@ -45,7 +57,7 @@ const featuredProducts = [
     badge: 'Nuevo',
   },
   {
-    id: 2,
+    id: '2',
     name: 'Camiseta Dinosaurio Explorer',
     category: 'Niños',
     price: 32900,
@@ -56,7 +68,7 @@ const featuredProducts = [
     badge: 'Oferta',
   },
   {
-    id: 3,
+    id: '3',
     name: 'Body Bebé Estrellitas',
     category: 'Bebés',
     price: 28900,
@@ -66,7 +78,7 @@ const featuredProducts = [
     badge: 'Popular',
   },
   {
-    id: 4,
+    id: '4',
     name: 'Conjunto Panda Suave',
     category: 'Bebés',
     price: 52900,
@@ -76,7 +88,7 @@ const featuredProducts = [
     badge: 'Nuevo',
   },
   {
-    id: 5,
+    id: '5',
     name: 'Falda Tutú Rosa',
     category: 'Niñas',
     price: 38900,
@@ -85,7 +97,7 @@ const featuredProducts = [
     reviews: 67,
   },
   {
-    id: 6,
+    id: '6',
     name: 'Jeans Comfort Stretch',
     category: 'Niños',
     price: 42900,
@@ -96,7 +108,7 @@ const featuredProducts = [
     badge: 'Oferta',
   },
   {
-    id: 7,
+    id: '7',
     name: 'Chaqueta Mini Explorer',
     category: 'Niños',
     price: 68900,
@@ -106,7 +118,7 @@ const featuredProducts = [
     badge: 'Nuevo',
   },
   {
-    id: 8,
+    id: '8',
     name: 'Enterizo Corazón Bebé',
     category: 'Bebés',
     price: 35900,
@@ -117,7 +129,7 @@ const featuredProducts = [
 ]
 
 defineEmits<{
-  quickView: [product: typeof featuredProducts[0]]
+  quickView: [product: FeaturedProduct]
 }>()
 
 defineOptions({ name: 'ProductsSection' })
