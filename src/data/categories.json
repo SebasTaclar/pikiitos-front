@@ -1,0 +1,29 @@
+{
+  "categories": [
+    {
+      "id": "1",
+      "name": "Herramientas Eléctricas",
+      "description": "Herramientas eléctricas para obra, planta y mantenimiento industrial"
+    },
+    {
+      "id": "2",
+      "name": "Equipos de Protección",
+      "description": "Elementos de protección personal (EPP) para trabajo seguro"
+    },
+    {
+      "id": "3",
+      "name": "Material Eléctrico",
+      "description": "Cables, conectores, breakers y accesorios eléctricos"
+    },
+    {
+      "id": "4",
+      "name": "Soldadura",
+      "description": "Equipos y consumibles de soldadura industrial"
+    },
+    {
+      "id": "5",
+      "name": "Jardín y Exteriores",
+      "description": "Herramientas y equipos para jardín y áreas exteriores"
+    }
+  ]
+}

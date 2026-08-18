@@ -1,359 +1,139 @@
 <template>
-  <footer class="modern-footer">
-    <div class="footer-content">
-      <div class="footer-grid">
-        <!-- Brand -->
-        <div class="brand-section">
-          <div class="creative-logo-footer">
-            <div class="logo-circle-footer">
-              <img src="/images/logof.png" alt="DISEF Comercializadora Industrial" />
+  <footer class="bg-pikiitos-brown text-white pt-16 lg:pt-20 pb-8">
+    <div class="section-padding">
+      <div class="section-container">
+        <!-- Main Footer Content -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
+          <!-- Brand Column -->
+          <div class="col-span-2 lg:col-span-1">
+            <div class="flex items-center gap-2 mb-5">
+              <Logo :size="32" />
+              <span class="font-fredoka font-semibold text-xl text-white">Pikiitos</span>
             </div>
-            <h2 class="footer-brand-title">DISEF Comercializadora Industrial</h2>
+            <p class="font-poppins text-white/60 text-sm leading-relaxed mb-6">
+              Ropa infantil diseñada con amor para que cada momento sea un recuerdo inolvidable.
+            </p>
+
+            <!-- Social Media -->
+            <div class="flex gap-3">
+              <a
+                v-for="social in socials"
+                :key="social.name"
+                :href="social.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white/70 hover:bg-pikiitos-yellow hover:text-pikiitos-brown transition-all duration-300 hover:-translate-y-0.5"
+                :aria-label="social.name"
+              >
+                <span class="text-lg">{{ social.icon }}</span>
+              </a>
+            </div>
           </div>
-          <p class="footer-description">{{ $t('footer.description') }}</p>
 
-          <p class="social-title">{{ $t('footer.followUs') }}</p>
-          <div class="brand-socials">
-            <a class="social-link-footer" href="https://www.facebook.com/disefcolombia/" target="_blank" aria-label="Facebook" title="Facebook">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-            <a class="social-link-footer" href="https://www.instagram.com/disefcolombia/" target="_blank" aria-label="Instagram" title="Instagram">
-              <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="2" width="20" height="20" rx="4" ry="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/></svg>
-            </a>
-            <a class="social-link-footer" href="https://www.tiktok.com/@disefcolombia" target="_blank" aria-label="TikTok" title="TikTok">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-.88-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43V7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.43z"/></svg>
-            </a>
+          <!-- Links Columns -->
+          <div v-for="section in footerLinks" :key="section.title">
+            <h3 class="font-nunito font-bold text-sm uppercase tracking-wider text-white/90 mb-4">
+              {{ section.title }}
+            </h3>
+            <ul class="space-y-2.5">
+              <li v-for="link in section.links" :key="link.label">
+                <RouterLink
+                  :to="link.to"
+                  class="font-poppins text-sm text-white/50 hover:text-pikiitos-yellow transition-colors duration-200"
+                >
+                  {{ link.label }}
+                </RouterLink>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <!-- Enlaces rápidos -->
-        <div class="footer-column">
-          <h3 class="column-title">{{ $t('footer.quickLinks') }}</h3>
-          <ul class="footer-links">
-            <li><RouterLink :to="{ path: '/', hash: '#products' }">{{ $t('footer.links.products') }}</RouterLink></li>
-            <li><RouterLink :to="{ path: '/', hash: '#categories' }">{{ $t('footer.links.categories') }}</RouterLink></li>
-
-            <li><RouterLink :to="{ path: '/', hash: '#contact' }">{{ $t('footer.links.contact') }}</RouterLink></li>
-          </ul>
+        <!-- Payment Methods -->
+        <div class="border-t border-white/10 pt-8 mb-8">
+          <h3 class="font-nunito font-bold text-sm uppercase tracking-wider text-white/90 mb-4 text-center">Medios de pago</h3>
+          <div class="flex items-center justify-center gap-4 flex-wrap">
+            <div
+              v-for="method in paymentMethods"
+              :key="method"
+              class="px-4 py-2 bg-white/10 rounded-xl font-poppins text-xs text-white/60"
+            >
+              {{ method }}
+            </div>
+          </div>
         </div>
 
-        <!-- Atención al cliente -->
-        <div class="footer-column">
-          <h3 class="column-title">{{ $t('footer.customerSupport') }}</h3>
-          <ul class="footer-links">
-            <li><RouterLink to="/terms-and-conditions">{{ $t('footer.links.shippingPolicy') }}</RouterLink></li>
-            <li><RouterLink to="/terms-and-conditions">{{ $t('footer.links.returns') }}</RouterLink></li>
-            <li><RouterLink to="/terms-and-conditions">{{ $t('footer.links.faq') }}</RouterLink></li>
-            <li><RouterLink to="/terms-and-conditions">{{ $t('footer.links.terms') }}</RouterLink></li>
-          </ul>
+        <!-- Bottom Bar -->
+        <div class="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="font-poppins text-xs text-white/40 text-center sm:text-left">
+            &copy; {{ currentYear }} Pikiitos. Todos los derechos reservados. Hecho con 💛 para los más pequeños.
+          </p>
+          <div class="flex items-center gap-4">
+            <RouterLink to="/terms-and-conditions" class="font-poppins text-xs text-white/40 hover:text-white/70 transition-colors">
+              Términos
+            </RouterLink>
+            <RouterLink to="/privacidad" class="font-poppins text-xs text-white/40 hover:text-white/70 transition-colors">
+              Privacidad
+            </RouterLink>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <div class="footer-container">
-        <p class="copyright">{{ $t('footer.copyright', { year: 2025 }) }}</p>
-        <p class="made-with">{{ $t('footer.madeWith') }}</p>
       </div>
     </div>
   </footer>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+import Logo from '@/components/Logo.vue'
 
-<style scoped>
-/* Footer - Black + Yellow */
-.modern-footer {
-  background: #0B0B0B;
-  color: #f6f5f1;
-  padding: 3.5rem 0 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
+const currentYear = new Date().getFullYear()
 
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
+const socials = [
+  { name: 'Instagram', icon: '📷', url: 'https://instagram.com/pikiitos' },
+  { name: 'Facebook', icon: '📘', url: 'https://facebook.com/pikiitos' },
+  { name: 'TikTok', icon: '🎵', url: 'https://tiktok.com/@pikiitos' },
+  { name: 'WhatsApp', icon: '💬', url: 'https://wa.me/573001234567' },
+]
 
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr;
-  gap: 3.2rem;
-  align-items: start;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(255, 193, 7, 0.1);
-}
+const footerLinks = [
+  {
+    title: 'Tienda',
+    links: [
+      { label: 'Niñas', to: '/categorias/ninas' },
+      { label: 'Niños', to: '/categorias/ninos' },
+      { label: 'Bebés', to: '/categorias/bebes' },
+      { label: 'Novedades', to: '/productos?sort=newest' },
+      { label: 'Ofertas', to: '/ofertas' },
+    ],
+  },
+  {
+    title: 'Empresa',
+    links: [
+      { label: 'Nuestra Historia', to: '/nosotros' },
+      { label: 'Contacto', to: '/contacto' },
+      { label: 'Blog', to: '/blog' },
+      { label: 'Trabaja con nosotros', to: '/careers' },
+    ],
+  },
+  {
+    title: 'Ayuda',
+    links: [
+      { label: '¿Cómo comprar?', to: '/help/how-to-buy' },
+      { label: 'Envíos', to: '/help/shipping' },
+      { label: 'Devoluciones', to: '/help/returns' },
+      { label: 'Preguntas frecuentes', to: '/help/faq' },
+      { label: 'Términos y condiciones', to: '/terms-and-conditions' },
+    ],
+  },
+]
 
-/* Brand Section */
-.brand-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
-}
+const paymentMethods = [
+  'PSE',
+  'Visa',
+  'Mastercard',
+  'Nequi',
+  'Daviplata',
+  'Efecty',
+]
 
-.creative-logo-footer {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.logo-circle-footer {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #0B0B0B;
-  border: 3px solid #FFC107;
-  box-shadow: 0 0 16px rgba(255, 193, 7, 0.25), inset 0 0 12px rgba(255, 193, 7, 0.1);
-  flex-shrink: 0;
-}
-
-.logo-circle-footer img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-}
-
-.footer-brand-title {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  font-size: 1.35rem;
-  margin: 0;
-  font-weight: 800;
-  color: #FFFFFF;
-  letter-spacing: 0.5px;
-}
-
-.footer-description {
-  color: rgba(246, 245, 241, 0.85);
-  max-width: 360px;
-  line-height: 1.7;
-  margin: 0;
-  font-size: 0.95rem;
-}
-
-.social-title {
-  color: #FFC107;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  font-weight: 800;
-  font-size: 1rem;
-  letter-spacing: 0.3px;
-}
-
-/* Social Links */
-.brand-socials {
-  display: flex;
-  gap: 0.8rem;
-  margin-top: 0.8rem;
-  flex-wrap: wrap;
-}
-
-.brand-socials a.social-link-footer {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(255, 193, 7, 0.1);
-  border: 2px solid rgba(255, 193, 7, 0.3);
-  transition: all 0.3s ease;
-  text-decoration: none;
-}
-
-.brand-socials a.social-link-footer:hover {
-  background: rgba(255, 193, 7, 0.2);
-  border-color: #FFC107;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(255, 193, 7, 0.2);
-}
-
-.brand-socials a.social-link-footer svg {
-  width: 24px;
-  height: 24px;
-  color: #FFC107;
-  transition: color 0.3s ease;
-  fill: currentColor;
-}
-
-/* Columns */
-.footer-column {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.column-title {
-  color: #FFC107;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  font-weight: 800;
-  margin: 0 0 1rem 0;
-  font-size: 1.1rem;
-  letter-spacing: 0.3px;
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footer-links li {
-  margin: 0;
-  padding: 0;
-}
-
-.footer-links a {
-  color: rgba(246, 245, 241, 0.9);
-  text-decoration: none;
-  display: block;
-  padding: 0.5rem 0;
-  transition: color 0.2s ease;
-  font-size: 0.95rem;
-}
-
-.footer-links a:hover {
-  color: #FFC107;
-}
-
-/* Contact List */
-.contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.contact-list li {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  color: rgba(246, 245, 241, 0.9);
-  margin-bottom: 1.2rem;
-  font-size: 0.95rem;
-  padding: 0;
-}
-
-.contact-list svg {
-  width: 24px;
-  height: 24px;
-  color: #FFC107;
-  flex-shrink: 0;
-  fill: currentColor;
-}
-
-.contact-list span {
-  line-height: 1.4;
-}
-
-/* Footer Bottom */
-.footer-bottom {
-  padding: 1.5rem 0;
-  background: #000000;
-}
-
-.footer-bottom .footer-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.copyright, .made-with {
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.made-with {
-  color: #FFC107;
-}
-
-/* Responsive Design */
-@media (max-width: 900px) {
-  .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .brand-section {
-    align-items: center;
-    text-align: center;
-  }
-
-  .creative-logo-footer {
-    justify-content: center;
-  }
-
-  .footer-description {
-    margin: 0 auto;
-  }
-
-  .brand-socials {
-    justify-content: center;
-  }
-
-  .footer-column {
-    align-items: center;
-    text-align: center;
-  }
-
-  .footer-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .footer-links a {
-    text-align: center;
-  }
-
-  .footer-bottom .footer-container {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-}
-
-@media (max-width: 600px) {
-  .footer-content {
-    padding: 0 1.5rem;
-  }
-
-  .footer-grid {
-    gap: 1.5rem;
-  }
-
-  .logo-circle-footer {
-    width: 56px;
-    height: 56px;
-    border-width: 2px;
-  }
-
-  .logo-circle-footer img {
-    width: 40px;
-    height: 40px;
-  }
-
-  .footer-brand-title {
-    font-size: 1.15rem;
-  }
-
-  .column-title {
-    font-size: 1rem;
-  }
-
-  .footer-links a,
-  .contact-list li {
-    font-size: 0.9rem;
-  }
-}
-</style>
-
+defineOptions({ name: 'FooterSection' })
+</script>
