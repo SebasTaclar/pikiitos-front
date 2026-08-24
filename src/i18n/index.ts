@@ -56,7 +56,7 @@ const messages = {
 		},
 		whatsapp: {
 			defaultMessage:
-				'Hola! Me interesa conocer más sobre los productos y soluciones de Pikiitos. ¿Me pueden brindar más información?'
+				'🐥 ¡Hola! Soy Piki y te doy la bienvenida a Pikiitos. ¡Qué alegría tenerte aquí! ☀️\n\nEstamos felices de ayudarte a encontrar prendas diseñadas para acompañar los momentos más bonitos de la infancia.\n\nCuéntanos en qué podemos ayudarte y muy pronto responderemos tu mensaje.'
 		},
 		store: {
 			pickup: {
@@ -290,7 +290,7 @@ const messages = {
 			}
 		},
 		whatsapp: {
-			defaultMessage: 'Hi! I would like to know more about Pikiitos products and solutions. Can you share more information?'
+			defaultMessage: '🐥 ¡Hola! Soy Piki y te doy la bienvenida a Pikiitos. ¡Qué alegría tenerte aquí! ☀️\n\nEstamos felices de ayudarte a encontrar prendas diseñadas para acompañar los momentos más bonitos de la infancia.\n\nCuéntanos en qué podemos ayudarte y muy pronto responderemos tu mensaje.'
 		},
 		store: {
 			pickup: {

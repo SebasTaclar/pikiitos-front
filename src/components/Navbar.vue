@@ -20,7 +20,7 @@
           </span>
         </div>
         <div class="flex items-center gap-4 text-xs font-poppins text-pikiitos-text-light">
-          <a href="https://wa.me/573206770595" target="_blank" class="flex items-center gap-1.5 hover:text-pikiitos-yellow transition-colors">
+          <a href="https://wa.me/573206770595?text=%F0%9F%90%A5%20%C2%A1Hola!%20Soy%20Piki%20y%20te%20doy%20la%20bienvenida%20a%20Pikiitos.%20%C2%A1Qu%C3%A9%20alegr%C3%ADa%20tenerte%20aqu%C3%AD!%20%E2%98%80%EF%B8%8F%0A%0AEstamos%20felices%20de%20ayudarte%20a%20encontrar%20prendas%20dise%C3%B1adas%20para%20acompa%C3%B1ar%20los%20momentos%20m%C3%A1s%20bonitos%20de%20la%20infancia.%0A%0ACu%C3%A9ntanos%20en%20qu%C3%A9%20podemos%20ayudarte%20y%20muy%20pronto%20responderemos%20tu%20mensaje." target="_blank" class="flex items-center gap-1.5 hover:text-pikiitos-yellow transition-colors">
             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 0C4.477 0 0 4.477 0 10c0 1.89.525 3.66 1.438 5.168L0 20l4.928-1.394A9.955 9.955 0 0010 20c5.523 0 10-4.477 10-10S15.523 0 10 0zm0 18c-1.67 0-3.22-.46-4.552-1.256l-.324-.192-2.924.822.78-2.852-.21-.33A7.954 7.954 0 012 10c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>
             WhatsApp
           </a>

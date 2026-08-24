@@ -53,7 +53,7 @@
                 <svg class="w-5 h-5 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.48V13.2a8.19 8.19 0 005.58 2.16v-3.45a4.85 4.85 0 01-3.77-1.62V6.69h3.77z"/></svg>
               </a>
               <a
-                href="https://wa.me/573206770595"
+                href="https://wa.me/573206770595?text=%F0%9F%90%A5%20%C2%A1Hola!%20Soy%20Piki%20y%20te%20doy%20la%20bienvenida%20a%20Pikiitos.%20%C2%A1Qu%C3%A9%20alegr%C3%ADa%20tenerte%20aqu%C3%AD!%20%E2%98%80%EF%B8%8F%0A%0AEstamos%20felices%20de%20ayudarte%20a%20encontrar%20prendas%20dise%C3%B1adas%20para%20acompa%C3%B1ar%20los%20momentos%20m%C3%A1s%20bonitos%20de%20la%20infancia.%0A%0ACu%C3%A9ntanos%20en%20qu%C3%A9%20podemos%20ayudarte%20y%20muy%20pronto%20responderemos%20tu%20mensaje."
                 target="_blank"
                 rel="noopener noreferrer"
                 class="social-icon-whatsapp"

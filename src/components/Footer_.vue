@@ -5,18 +5,18 @@
         <!-- Main Footer Content -->
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-12 mb-8 lg:mb-12">
           <!-- Brand Column -->
-          <div class="text-center">
-            <div class="flex items-center justify-center gap-2 mb-4 lg:mb-5">
+          <div class="text-center lg:text-left">
+            <div class="flex items-center justify-center lg:justify-start gap-2 mb-4 lg:mb-5">
               <img src="@/assets/logo-pollito.png" alt="Pikiitos Logo" class="w-14 h-14 lg:w-20 lg:h-20 rounded-full object-cover" />
               <span class="font-fredoka font-semibold text-white text-2xl lg:text-[2.3rem]">Pikiitos</span>
             </div>
-            <p class="font-poppins text-white/60 text-xs lg:text-sm leading-relaxed mb-4 lg:mb-6 max-w-xs mx-auto">
+            <p class="font-poppins text-white/60 text-xs lg:text-sm leading-relaxed mb-4 lg:mb-6 max-w-xs mx-auto lg:mx-0">
               Ropa infantil diseñada con amor para que cada momento sea un recuerdo inolvidable!.
             </p>
 
             <!-- Social Media -->
             <p class="font-poppins text-white/50 text-[10px] lg:text-xs mb-2 lg:mb-3">Síguenos en nuestras redes</p>
-            <div class="flex gap-2 lg:gap-3 justify-center">
+            <div class="flex gap-2 lg:gap-3 justify-center lg:justify-start">
               <a
                 v-for="social in socials"
                 :key="social.name"
@@ -141,7 +141,7 @@
               </div>
             </div>
             <div class="modal-help">
-              <p>¿Tienes dudas? Escríbenos por <a href="https://wa.me/573206770595" target="_blank" rel="noopener noreferrer">WhatsApp</a></p>
+              <p>¿Tienes dudas? Escríbenos por <a href="https://wa.me/573206770595?text=%F0%9F%90%A5%20%C2%A1Hola!%20Soy%20Piki%20y%20te%20doy%20la%20bienvenida%20a%20Pikiitos.%20%C2%A1Qu%C3%A9%20alegr%C3%ADa%20tenerte%20aqu%C3%AD!%20%E2%98%80%EF%B8%8F%0A%0AEstamos%20felices%20de%20ayudarte%20a%20encontrar%20prendas%20dise%C3%B1adas%20para%20acompa%C3%B1ar%20los%20momentos%20m%C3%A1s%20bonitos%20de%20la%20infancia.%0A%0ACu%C3%A9ntanos%20en%20qu%C3%A9%20podemos%20ayudarte%20y%20muy%20pronto%20responderemos%20tu%20mensaje." target="_blank" rel="noopener noreferrer">WhatsApp</a></p>
             </div>
           </div>
         </div>
@@ -160,7 +160,7 @@ const showHowToBuy = ref(false)
 const socials = [
   { name: 'Instagram', icon: '📷', url: 'https://www.instagram.com/pikiitos.co?igsi=MWljd2NsY3p6NTJvcQ%3D%3D&utm_source=qr' },
   { name: 'TikTok', icon: '🎵', url: 'https://www.tiktok.com/@pikiitos?_r=1&_t=ZS-994hJPhcsEu' },
-  { name: 'WhatsApp', icon: '💬', url: 'https://wa.me/573206770595' },
+  { name: 'WhatsApp', icon: '💬', url: 'https://wa.me/573206770595?text=%F0%9F%90%A5%20%C2%A1Hola!%20Soy%20Piki%20y%20te%20doy%20la%20bienvenida%20a%20Pikiitos.%20%C2%A1Qu%C3%A9%20alegr%C3%ADa%20tenerte%20aqu%C3%AD!%20%E2%98%80%EF%B8%8F%0A%0AEstamos%20felices%20de%20ayudarte%20a%20encontrar%20prendas%20dise%C3%B1adas%20para%20acompa%C3%B1ar%20los%20momentos%20m%C3%A1s%20bonitos%20de%20la%20infancia.%0A%0ACu%C3%A9ntanos%20en%20qu%C3%A9%20podemos%20ayudarte%20y%20muy%20pronto%20responderemos%20tu%20mensaje.' },
 ]
 
 const footerLinks = [
