@@ -11,7 +11,7 @@
               <span class="font-fredoka font-semibold text-white text-2xl lg:text-[2.3rem]">Pikiitos</span>
             </div>
             <p class="font-poppins text-white/60 text-xs lg:text-sm leading-relaxed mb-4 lg:mb-6 max-w-xs mx-auto">
-              Ropa infantil diseñada con amor para que cada momento sea un recuerdo inolvidable.
+              Ropa infantil diseñada con amor para que cada momento sea un recuerdo inolvidable!.
             </p>
 
             <!-- Social Media -->
