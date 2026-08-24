@@ -1,154 +1,14 @@
 import { ref } from 'vue'
+import { productService } from '@/services/api/productService'
 import type { Product } from '@/types/ProductType'
-import defaultProducts from '@/data/products.json'
 
-const STORAGE_KEY = 'pikiitos_products'
-
-// Estado global de productos (inicializado vacío, se cargará desde localStorage)
+// Estado global de productos
 const products = ref<Product[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-// Normaliza cualquier forma entrante al tipo Product del frontend
-function normalizeProduct(input: unknown): Product {
-  if (typeof input === 'object' && input !== null) {
-    const anyProduct = input as Record<string, unknown>
-
-    const id = anyProduct.id !== undefined ? String(anyProduct.id) : crypto.randomUUID()
-    const name = String(anyProduct.name || '')
-    const description = String(anyProduct.description || '')
-    const price = Number(anyProduct.price || 0)
-    const originalPrice = anyProduct.originalPrice !== null && anyProduct.originalPrice !== undefined
-      ? Number(anyProduct.originalPrice)
-      : undefined
-
-    let images: string[] = []
-    if (typeof anyProduct.images === 'string') {
-      try {
-        images = JSON.parse(anyProduct.images)
-      } catch {
-        images = [anyProduct.images]
-      }
-    } else if (Array.isArray(anyProduct.images)) {
-      images = anyProduct.images.map(String)
-    }
-
-    const category = String(anyProduct.category || anyProduct.categoryId || '')
-
-    const status = (anyProduct.status === 'available' ||
-                   anyProduct.status === 'out-of-stock' ||
-                   anyProduct.status === 'coming-soon')
-      ? anyProduct.status as 'available' | 'out-of-stock' | 'coming-soon'
-      : 'available'
-
-    let colors: string[] | undefined
-    if (anyProduct.colors) {
-      if (typeof anyProduct.colors === 'string') {
-        try {
-          colors = JSON.parse(anyProduct.colors)
-        } catch {
-          colors = [anyProduct.colors]
-        }
-      } else if (Array.isArray(anyProduct.colors)) {
-        colors = anyProduct.colors.map(String)
-      }
-    }
-
-    const isShowcase = Boolean(anyProduct.isShowcase)
-    const showcaseImage = anyProduct.showcaseImage !== null && anyProduct.showcaseImage !== undefined
-      ? String(anyProduct.showcaseImage)
-      : undefined
-    const sku = anyProduct.sku ? String(anyProduct.sku) : undefined
-    const brand = anyProduct.brand ? String(anyProduct.brand) : undefined
-    const isAvailable = anyProduct.isAvailable !== undefined ? Boolean(anyProduct.isAvailable) : undefined
-    const showPrice = anyProduct.showPrice !== undefined ? Boolean(anyProduct.showPrice) : undefined
-    const allowQuote = anyProduct.allowQuote !== undefined ? Boolean(anyProduct.allowQuote) : undefined
-    const isFeatured = anyProduct.isFeatured !== undefined ? Boolean(anyProduct.isFeatured) : undefined
-    const isNew = anyProduct.isNew !== undefined ? Boolean(anyProduct.isNew) : undefined
-    const isOffer = anyProduct.isOffer !== undefined ? Boolean(anyProduct.isOffer) : undefined
-
-    const createdAtRaw = anyProduct.createdAt
-    const updatedAtRaw = anyProduct.updatedAt
-
-    return {
-      id,
-      name,
-      description,
-      price,
-      originalPrice,
-      images,
-      category,
-      status,
-      colors,
-      isShowcase,
-      showcaseImage,
-      sku,
-      brand,
-      isAvailable,
-      showPrice,
-      allowQuote,
-      isFeatured,
-      isNew,
-      isOffer,
-      createdAt: createdAtRaw ? new Date(String(createdAtRaw)) : new Date(),
-      updatedAt: updatedAtRaw ? new Date(String(updatedAtRaw)) : undefined
-    }
-  }
-
-  return {
-    id: crypto.randomUUID(),
-    name: '',
-    description: '',
-    price: 0,
-    images: [],
-    category: '',
-    status: 'available',
-    createdAt: new Date()
-  }
-}
-
-// Leer productos desde localStorage
-function loadFromStorage(): Product[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw) as unknown[]
-      return parsed.map(normalizeProduct)
-    }
-  } catch {
-    console.warn('Error al leer productos desde localStorage')
-  }
-  return []
-}
-
-// Guardar productos en localStorage
-function saveToStorage(items: Product[]) {
-  try {
-    const serializable = items.map(p => ({
-      ...p,
-      createdAt: p.createdAt instanceof Date ? p.createdAt.toISOString() : String(p.createdAt),
-      updatedAt: p.updatedAt instanceof Date ? p.updatedAt.toISOString() : p.updatedAt
-    }))
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable))
-  } catch (e) {
-    console.error('Error al guardar productos en localStorage:', e)
-  }
-}
-
-// Cargar datos iniciales desde JSON si localStorage está vacío
-function bootstrapIfNeeded() {
-  const existing = loadFromStorage()
-  if (existing.length === 0 && defaultProducts.products.length > 0) {
-    const normalized = defaultProducts.products.map(normalizeProduct)
-    saveToStorage(normalized)
-    return normalized
-  }
-  return existing
-}
-
 export function useBackendProducts() {
-  // Cargar productos desde localStorage (o bootstrap)
-  const loadProducts = async (_filters?: {
+  const loadProducts = async (params?: {
     name?: string
     categoryId?: number
     showcase?: boolean
@@ -157,8 +17,37 @@ export function useBackendProducts() {
     error.value = null
 
     try {
-      const stored = bootstrapIfNeeded()
-      products.value = stored
+      const result = await productService.getProducts(params)
+
+      if (result.success && result.data) {
+        const rawData = result.data
+        const items = Array.isArray(rawData) ? rawData : rawData.products || []
+
+        products.value = items.map((item: any) => ({
+          id: String(item.id),
+          name: item.name || '',
+          description: item.description || '',
+          price: Number(item.price || 0),
+          originalPrice: item.originalPrice ? Number(item.originalPrice) : undefined,
+          images: parseImages(item.images),
+          category: String(item.categoryId || item.category || ''),
+          status: item.status || 'available',
+          colors: parseColors(item.colors),
+          isShowcase: Boolean(item.isShowcase),
+          showcaseImage: item.showcaseImage || undefined,
+          sku: item.sku || undefined,
+          brand: item.brand || undefined,
+          isAvailable: item.isAvailable !== undefined ? Boolean(item.isAvailable) : undefined,
+          showPrice: item.showPrice !== undefined ? Boolean(item.showPrice) : undefined,
+          allowQuote: item.allowQuote !== undefined ? Boolean(item.allowQuote) : undefined,
+          isFeatured: item.isFeatured !== undefined ? Boolean(item.isFeatured) : undefined,
+          isNew: item.isNew !== undefined ? Boolean(item.isNew) : undefined,
+          isOffer: item.isOffer !== undefined ? Boolean(item.isOffer) : undefined,
+          createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
+          updatedAt: item.updatedAt ? new Date(item.updatedAt) : undefined,
+        }))
+      }
+
       return { success: true, data: products.value }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al cargar productos'
@@ -169,23 +58,55 @@ export function useBackendProducts() {
     }
   }
 
-  // Crear un nuevo producto
   const createProduct = async (productData: Omit<Product, 'id' | 'createdAt'> & { categoryId?: number }) => {
     loading.value = true
     error.value = null
 
     try {
-      const newProduct: Product = {
-        ...productData,
-        id: crypto.randomUUID(),
-        createdAt: new Date()
+      const result = await productService.createProduct({
+        name: productData.name,
+        description: productData.description,
+        price: productData.price,
+        originalPrice: productData.originalPrice,
+        images: productData.images,
+        categoryId: Number(productData.category || productData.categoryId || 0),
+        status: productData.status,
+        colors: productData.colors,
+        isShowcase: productData.isShowcase,
+        showcaseImage: productData.showcaseImage,
+        sku: productData.sku,
+        brand: productData.brand,
+        isAvailable: productData.isAvailable,
+        showPrice: productData.showPrice,
+        allowQuote: productData.allowQuote,
+        isFeatured: productData.isFeatured,
+        isNew: productData.isNew,
+        isOffer: productData.isOffer,
+      })
+
+      if (result.success && result.data) {
+        const item = result.data as any
+        const newProduct: Product = {
+          id: String(item.id),
+          name: item.name,
+          description: item.description,
+          price: Number(item.price),
+          originalPrice: item.originalPrice ? Number(item.originalPrice) : undefined,
+          images: parseImages(item.images),
+          category: String(item.categoryId || ''),
+          status: item.status || 'available',
+          colors: parseColors(item.colors),
+          isShowcase: Boolean(item.isShowcase),
+          showcaseImage: item.showcaseImage || undefined,
+          sku: item.sku || undefined,
+          brand: item.brand || undefined,
+          createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
+        }
+        products.value.push(newProduct)
+        return { success: true, data: newProduct, message: 'Producto creado exitosamente' }
       }
 
-      const normalized = normalizeProduct(newProduct)
-      products.value.push(normalized)
-      saveToStorage(products.value)
-
-      return { success: true, data: normalized, message: 'Producto creado exitosamente' }
+      return { success: false, message: 'Error al crear producto' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al crear producto'
       error.value = errorMessage
@@ -195,23 +116,45 @@ export function useBackendProducts() {
     }
   }
 
-  // Actualizar un producto
   const updateProduct = async (id: number | string, productData: Partial<Product>) => {
     loading.value = true
     error.value = null
 
     try {
-      const index = products.value.findIndex((prod) => prod.id === String(id))
-      if (index === -1) {
-        throw new Error('Producto no encontrado')
+      const rawPayload: Record<string, unknown> = {
+        name: productData.name,
+        description: productData.description,
+        price: productData.price,
+        originalPrice: productData.originalPrice && productData.originalPrice > 0 ? productData.originalPrice : undefined,
+        images: productData.images,
+        categoryId: productData.category ? Number(productData.category) : undefined,
+        status: productData.status,
+        colors: productData.colors,
+        isShowcase: productData.isShowcase,
+        showcaseImage: productData.showcaseImage,
+        sku: productData.sku,
+        brand: productData.brand,
+        isAvailable: productData.isAvailable,
+        showPrice: productData.showPrice,
+        allowQuote: productData.allowQuote,
+        isFeatured: productData.isFeatured,
+        isNew: productData.isNew,
+        isOffer: productData.isOffer,
+      }
+      const payload = Object.fromEntries(
+        Object.entries(rawPayload).filter(([, v]) => v !== undefined)
+      )
+      const result = await productService.updateProduct(Number(id), payload as any)
+
+      if (result.success) {
+        const index = products.value.findIndex(p => p.id === String(id))
+        if (index !== -1) {
+          products.value[index] = { ...products.value[index], ...productData, updatedAt: new Date() }
+        }
+        return { success: true, data: products.value[index], message: 'Producto actualizado exitosamente' }
       }
 
-      const updated = { ...products.value[index], ...productData, updatedAt: new Date() }
-      const normalized = normalizeProduct(updated)
-      products.value[index] = normalized
-      saveToStorage(products.value)
-
-      return { success: true, data: normalized, message: 'Producto actualizado exitosamente' }
+      return { success: false, message: 'Error al actualizar producto' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al actualizar producto'
       error.value = errorMessage
@@ -221,15 +164,19 @@ export function useBackendProducts() {
     }
   }
 
-  // Eliminar un producto
   const deleteProduct = async (id: number | string) => {
     loading.value = true
     error.value = null
 
     try {
-      products.value = products.value.filter((prod) => prod.id !== String(id))
-      saveToStorage(products.value)
-      return { success: true, message: 'Producto eliminado exitosamente' }
+      const result = await productService.deleteProduct(Number(id))
+
+      if (result.success) {
+        products.value = products.value.filter(p => p.id !== String(id))
+        return { success: true, message: 'Producto eliminado exitosamente' }
+      }
+
+      return { success: false, message: 'Error al eliminar producto' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al eliminar producto'
       error.value = errorMessage
@@ -239,9 +186,8 @@ export function useBackendProducts() {
     }
   }
 
-  // Obtener un producto por ID
   const getProductById = (id: number | string): Product | undefined => {
-    return products.value.find((prod) => prod.id === String(id))
+    return products.value.find(p => p.id === String(id))
   }
 
   const clearError = () => {
@@ -264,4 +210,30 @@ export function useBackendProducts() {
     clearError,
     refreshProducts,
   }
+}
+
+function parseImages(images: any): string[] {
+  if (!images) return []
+  if (typeof images === 'string') {
+    try {
+      return JSON.parse(images)
+    } catch {
+      return [images]
+    }
+  }
+  if (Array.isArray(images)) return images.map(String)
+  return []
+}
+
+function parseColors(colors: any): string[] | undefined {
+  if (!colors) return undefined
+  if (typeof colors === 'string') {
+    try {
+      return JSON.parse(colors)
+    } catch {
+      return [colors]
+    }
+  }
+  if (Array.isArray(colors)) return colors.map(String)
+  return undefined
 }

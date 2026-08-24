@@ -4,9 +4,10 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <router-link to="/" class="sidebar-logo">
-          <img src="/images/logof.png" alt="DISEF" class="logo-img" />
+          <img src="https://res.cloudinary.com/dlwzazojt/image/upload/v1787367349/logo-pollito-removebg-preview_fhsilm.png" alt="Pollito" class="logo-pollito" />
+          <img src="https://res.cloudinary.com/dlwzazojt/image/upload/v1787349262/logo-pikiitos-texto-removebg-preview_bn2t7l.png" alt="Pikiitos" class="logo-img" />
         </router-link>
-        <p class="sidebar-subtitle">Comercializadora Industrial</p>
+        <p class="sidebar-subtitle">Panel de Administración</p>
       </div>
 
       <nav class="sidebar-nav">
@@ -19,7 +20,6 @@
         >
           <span class="nav-icon" v-html="item.icon"></span>
           <span class="nav-label">{{ item.label }}</span>
-          <span v-if="item.badge" class="nav-badge">{{ item.badge }}</span>
         </button>
       </nav>
 
@@ -34,7 +34,7 @@
           </span>
           <span class="nav-label">Cerrar sesión</span>
         </button>
-        <p class="copyright">DISEF Comercializadora Industrial<br/>© 2025 Todos los derechos reservados.</p>
+        <p class="copyright">Pikiitos<br/>© 2026 Todos los derechos reservados.</p>
       </div>
     </aside>
 
@@ -68,14 +68,6 @@
         </div>
 
         <div class="topbar-actions">
-          <button class="action-btn" title="Notificaciones">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-            <span class="badge">3</span>
-          </button>
-          <div class="topbar-divider"></div>
           <div class="topbar-user">
             <div class="user-avatar">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -84,7 +76,7 @@
               </svg>
             </div>
             <div class="user-info">
-              <span class="user-name">Administrador</span>
+              <span class="user-name">{{ userName }}</span>
               <span class="user-role">Administrador</span>
             </div>
           </div>
@@ -104,25 +96,13 @@
         <div v-if="currentSection === 'dashboard'">
           <div class="content-header">
             <div>
-              <h1 class="page-title">Bienvenido, Administrador</h1>
+              <h1 class="page-title">Bienvenido, {{ userName }}</h1>
               <p class="page-subtitle">Aqui tienes un resumen general de tu tienda.</p>
-            </div>
-            <div class="date-filter">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-              <span>7 de mayo, 2025 - 7 de junio, 2025</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"/>
-              </svg>
             </div>
           </div>
 
           <!-- Stats Cards -->
-          <div class="stats-row">
+          <div class="stats-row stats-row-4">
             <div class="stat-card" v-for="stat in dashboardStats" :key="stat.label">
               <div class="stat-icon" :style="{ background: stat.iconBg }">
                 <span v-html="stat.icon"></span>
@@ -130,178 +110,95 @@
               <div class="stat-content">
                 <span class="stat-label">{{ stat.label }}</span>
                 <span class="stat-value">{{ stat.value }}</span>
-                <span class="stat-change" :class="stat.changeType">
-                  <svg v-if="stat.changeType === 'up'" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="18 15 12 9 6 15"/>
-                  </svg>
-                  <svg v-else width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <polyline points="6 9 12 15 18 9"/>
-                  </svg>
-                  {{ stat.change }} vs mes anterior
-                </span>
               </div>
             </div>
           </div>
 
-          <!-- Charts & Recent Orders -->
-          <div class="dashboard-grid">
-            <!-- Sales Chart -->
+          <!-- Charts Row -->
+          <div class="dashboard-charts-grid">
+            <!-- Productos por Categoría -->
             <div class="card chart-card">
               <div class="card-header">
-                <h3>Ventas</h3>
-                <select class="chart-filter">
-                  <option>Mensual</option>
-                  <option>Semanal</option>
-                </select>
+                <h3>Productos por categoría</h3>
               </div>
-              <div class="chart-placeholder">
-                <div class="chart-y-axis">
-                  <span>$60M</span>
-                  <span>$45M</span>
-                  <span>$30M</span>
-                  <span>$15M</span>
-                  <span>$0</span>
-                </div>
-                <div class="chart-area">
-                  <svg viewBox="0 0 600 200" class="chart-svg">
-                    <!-- Grid lines -->
-                    <line x1="0" y1="0" x2="600" y2="0" stroke="#E5E7EB" stroke-width="1"/>
-                    <line x1="0" y1="50" x2="600" y2="50" stroke="#E5E7EB" stroke-width="1"/>
-                    <line x1="0" y1="100" x2="600" y2="100" stroke="#E5E7EB" stroke-width="1"/>
-                    <line x1="0" y1="150" x2="600" y2="150" stroke="#E5E7EB" stroke-width="1"/>
-                    <!-- Area fill -->
-                    <path d="M0,180 Q50,170 100,160 T200,120 T300,140 T400,80 T500,60 T600,40 L600,200 L0,200 Z" fill="url(#chartGradient)" opacity="0.3"/>
-                    <!-- Line -->
-                    <path d="M0,180 Q50,170 100,160 T200,120 T300,140 T400,80 T500,60 T600,40" fill="none" stroke="#F4B400" stroke-width="3"/>
-                    <!-- Previous month line -->
-                    <path d="M0,170 Q50,175 100,165 T200,150 T300,130 T400,110 T500,90 T600,80" fill="none" stroke="#E5E7EB" stroke-width="2" stroke-dasharray="6,4"/>
-                    <!-- Dots -->
-                    <circle cx="0" cy="180" r="4" fill="#F4B400"/>
-                    <circle cx="100" cy="160" r="4" fill="#F4B400"/>
-                    <circle cx="200" cy="120" r="4" fill="#F4B400"/>
-                    <circle cx="300" cy="140" r="4" fill="#F4B400"/>
-                    <circle cx="400" cy="80" r="4" fill="#F4B400"/>
-                    <circle cx="500" cy="60" r="4" fill="#F4B400"/>
-                    <circle cx="600" cy="40" r="4" fill="#F4B400"/>
-                    <defs>
-                      <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stop-color="#F4B400" stop-opacity="0.4"/>
-                        <stop offset="100%" stop-color="#F4B400" stop-opacity="0"/>
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  <div class="chart-x-axis">
-                    <span>7 May</span>
-                    <span>14 May</span>
-                    <span>21 May</span>
-                    <span>28 May</span>
-                    <span>4 Jun</span>
+              <div class="bar-chart">
+                <div v-for="cat in productsByCategory" :key="cat.name" class="bar-row">
+                  <span class="bar-label">{{ cat.name }}</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" :style="{ width: cat.percent + '%', background: cat.color }"></div>
                   </div>
+                  <span class="bar-value">{{ cat.count }}</span>
                 </div>
-              </div>
-              <div class="chart-legend">
-                <span class="legend-item"><span class="legend-dot" style="background:#F4B400"></span> Ventas</span>
-                <span class="legend-item"><span class="legend-dot" style="background:#E5E7EB"></span> Mes anterior</span>
               </div>
             </div>
 
-            <!-- Recent Orders -->
-            <div class="card">
+            <!-- Productos por Estado -->
+            <div class="card chart-card">
               <div class="card-header">
-                <h3>Pedidos recientes</h3>
-                <button class="link-btn">Ver todos</button>
+                <h3>Productos por estado</h3>
               </div>
-              <div class="orders-list">
-                <div v-for="order in recentOrders" :key="order.id" class="order-item">
-                  <div class="order-info">
-                    <span class="order-id">#{{ order.id }}</span>
-                    <span class="order-date">{{ order.date }}</span>
-                  </div>
-                  <span :class="['order-status', order.statusClass]">{{ order.status }}</span>
-                  <span class="order-amount">{{ order.amount }}</span>
-                  <button class="order-view" title="Ver detalle">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                      <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <button class="card-footer-btn">
-                Ver todos los pedidos
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                  <polyline points="12 5 19 12 12 19"/>
+              <div class="donut-chart-wrapper">
+                <svg viewBox="0 0 120 120" class="donut-svg">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#E5E7EB" stroke-width="14"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#FFD84D" stroke-width="14"
+                    :stroke-dasharray="productStatusData.availableArc + ' ' + productStatusData.totalArc"
+                    stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#FF8E8E" stroke-width="14"
+                    :stroke-dasharray="productStatusData.unavailableArc + ' ' + productStatusData.totalArc"
+                    :stroke-dashoffset="'-' + productStatusData.availableArc" transform="rotate(-90 60 60)"/>
+                  <text x="60" y="56" text-anchor="middle" class="donut-total">{{ products.length }}</text>
+                  <text x="60" y="70" text-anchor="middle" class="donut-subtitle">total</text>
                 </svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Bottom Row -->
-          <div class="dashboard-grid-3">
-            <!-- Top Selling Products -->
-            <div class="card">
-              <div class="card-header">
-                <h3>Productos más vendidos</h3>
-                <button class="link-btn">Ver todos</button>
-              </div>
-              <div class="products-top-list">
-                <div v-for="item in topProducts" :key="item.name" class="top-product-item">
-                  <div class="top-product-img">
-                    <span>{{ item.emoji }}</span>
-                  </div>
-                  <div class="top-product-info">
-                    <span class="top-product-name">{{ item.name }}</span>
-                    <span class="top-product-sales">Ventas: {{ item.sales }}</span>
-                  </div>
-                  <span class="top-product-price">{{ item.price }}</span>
+                <div class="donut-legend">
+                  <span class="legend-item"><span class="legend-dot" style="background:#FFD84D"></span> Disponibles ({{ productStatusData.availableCount }})</span>
+                  <span class="legend-item"><span class="legend-dot" style="background:#FF8E8E"></span> Agotados ({{ productStatusData.unavailableCount }})</span>
                 </div>
               </div>
             </div>
 
-            <!-- Inventory Alerts -->
-            <div class="card">
+            <!-- Productos por Precio -->
+            <div class="card chart-card">
               <div class="card-header">
-                <h3>Alertas de inventario</h3>
-                <button class="link-btn">Ver todas</button>
+                <h3>Productos por precio</h3>
               </div>
-              <div class="alerts-list">
-                <div v-for="alert in inventoryAlerts" :key="alert.name" class="alert-item">
-                  <div class="alert-img">
-                    <span>{{ alert.emoji }}</span>
+              <div class="bar-chart">
+                <div v-for="range in productsByPrice" :key="range.label" class="bar-row">
+                  <span class="bar-label">{{ range.label }}</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" :style="{ width: range.percent + '%', background: range.color }"></div>
                   </div>
-                  <div class="alert-info">
-                    <span class="alert-name">{{ alert.name }}</span>
-                    <span class="alert-stock">Stock actual: {{ alert.stock }}</span>
-                  </div>
-                  <span class="alert-badge">Stock bajo</span>
+                  <span class="bar-value">{{ range.count }}</span>
                 </div>
               </div>
             </div>
 
-            <!-- Recent Quotations -->
-            <div class="card">
+            <!-- Productos Destacados -->
+            <div class="card chart-card">
               <div class="card-header">
-                <h3>Cotizaciones recientes</h3>
-                <button class="link-btn">Ver todas</button>
+                <h3>Productos destacados</h3>
               </div>
-              <div class="quotations-list">
-                <div v-for="qt in recentQuotations" :key="qt.id" class="quotation-item">
-                  <div class="quotation-info">
-                    <span class="quotation-id">{{ qt.id }}</span>
-                    <span class="quotation-date">{{ qt.date }}</span>
+              <div class="featured-summary">
+                <div class="featured-big-number">
+                  <span class="featured-count">{{ featuredCount }}</span>
+                  <span class="featured-label">productos destacados</span>
+                </div>
+                <div class="featured-bar-track">
+                  <div class="featured-bar-fill" :style="{ width: featuredPercent + '%' }"></div>
+                </div>
+                <span class="featured-percent">{{ featuredPercent }}% del total</span>
+              </div>
+              <div class="featured-list">
+                <div v-for="p in featuredProducts" :key="p.id" class="featured-item">
+                  <div class="featured-item-img">
+                    <img v-if="p.images && p.images[0]" :src="p.images[0]" :alt="p.name" />
+                    <span v-else class="featured-item-emoji">👗</span>
                   </div>
-                  <span :class="['quotation-status', qt.statusClass]">{{ qt.status }}</span>
-                  <span class="quotation-amount">{{ qt.amount }}</span>
+                  <div class="featured-item-info">
+                    <span class="featured-item-name">{{ p.name }}</span>
+                    <span class="featured-item-price">${{ p.price.toLocaleString() }}</span>
+                  </div>
                 </div>
               </div>
-              <button class="card-footer-btn">
-                Ver todas las cotizaciones
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                  <polyline points="12 5 19 12 12 19"/>
-                </svg>
-              </button>
             </div>
           </div>
         </div>
@@ -324,7 +221,7 @@
           </div>
 
           <!-- Stats Cards -->
-          <div class="cat-stats-row">
+          <div class="cat-stats-row cat-stats-row-5">
             <div class="cat-stat-card">
               <div class="cat-stat-icon yellow">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -334,7 +231,6 @@
               <div class="cat-stat-info">
                 <span class="cat-stat-value">{{ products.length }}</span>
                 <span class="cat-stat-label">Total productos</span>
-                <span class="cat-stat-sub">Todos los registros</span>
               </div>
             </div>
             <div class="cat-stat-card">
@@ -346,8 +242,7 @@
               </div>
               <div class="cat-stat-info">
                 <span class="cat-stat-value">{{ products.filter(p => p.status === 'available').length }}</span>
-                <span class="cat-stat-label">Productos activos</span>
-                <span class="cat-stat-sub">{{ Math.round((products.filter(p => p.status === 'available').length / (products.length || 1)) * 100) }}% del total</span>
+                <span class="cat-stat-label">Productos Disponibles</span>
               </div>
             </div>
             <div class="cat-stat-card">
@@ -361,7 +256,6 @@
               <div class="cat-stat-info">
                 <span class="cat-stat-value">{{ products.filter(p => p.status === 'out-of-stock').length }}</span>
                 <span class="cat-stat-label">Productos sin stock</span>
-                <span class="cat-stat-sub">Requieren atención</span>
               </div>
             </div>
             <div class="cat-stat-card">
@@ -374,9 +268,21 @@
                 </svg>
               </div>
               <div class="cat-stat-info">
-                <span class="cat-stat-value">{{ products.filter(p => p.isShowcase).length }}</span>
-                <span class="cat-stat-label">Productos en oferta</span>
-                <span class="cat-stat-sub">Activos actualmente</span>
+                <span class="cat-stat-value">{{ products.filter(p => p.originalPrice && p.originalPrice > p.price).length }}</span>
+                <span class="cat-stat-label">Productos con descuento</span>
+              </div>
+            </div>
+            <div class="cat-stat-card">
+              <div class="cat-stat-icon orange">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div class="cat-stat-info">
+                <span class="cat-stat-value">{{ products.filter(p => p.status === 'coming-soon').length }}</span>
+                <span class="cat-stat-label">Próximamente</span>
+                <span class="cat-stat-sub">Por lanzar</span>
               </div>
             </div>
           </div>
@@ -384,12 +290,6 @@
           <!-- Toolbar -->
           <div class="prod-toolbar">
             <div class="prod-toolbar-left">
-              <div class="prod-bulk-actions">
-                <select class="prod-bulk-select">
-                  <option>Acciones en lote</option>
-                </select>
-                <button class="btn btn-primary btn-sm">Aplicar</button>
-              </div>
               <select v-model="selectedCategoryFilter" class="prod-filter-select">
                 <option value="">Todas las categorías</option>
                 <option v-for="category in categories" :key="category.id" :value="category.id">
@@ -398,9 +298,21 @@
               </select>
               <select v-model="productStatusFilter" class="prod-filter-select">
                 <option value="">Estado: Todos</option>
-                <option value="available">Activo</option>
-                <option value="out-of-stock">Inactivo</option>
+                <option value="available">Disponible</option>
+                <option value="out-of-stock">Sin stock</option>
                 <option value="coming-soon">Próximamente</option>
+              </select>
+              <select v-model="productFeaturedFilter" class="prod-filter-select">
+                <option value="">Destacado: Todos</option>
+                <option value="yes">Destacados</option>
+                <option value="no">No destacados</option>
+              </select>
+              <select v-model="productPriceFilter" class="prod-filter-select">
+                <option value="">Precio: Todos</option>
+                <option value="lt100">Menos de $100.000</option>
+                <option value="100-300">$100.000 - $300.000</option>
+                <option value="300-500">$300.000 - $500.000</option>
+                <option value="gt500">Más de $500.000</option>
               </select>
             </div>
             <div class="prod-toolbar-right">
@@ -454,7 +366,7 @@
                   </td>
                   <td class="col-featured">
                     <button class="prod-star-btn" :class="{ active: product.isShowcase }" @click="toggleProductFeatured(product)">
-                      <svg width="18" height="18" viewBox="0 0 24 24" :fill="product.isShowcase ? '#F4B400' : 'none'" :stroke="product.isShowcase ? '#F4B400' : '#9CA3AF'" stroke-width="2">
+                      <svg width="18" height="18" viewBox="0 0 24 24" :fill="product.isShowcase ? '#FFD84D' : 'none'" :stroke="product.isShowcase ? '#FFD84D' : '#9CA3AF'" stroke-width="2">
                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                       </svg>
                     </button>
@@ -481,12 +393,16 @@
           </div>
 
           <!-- Pagination -->
-          <div class="cat-pagination" v-if="filteredProducts.length > 0">
+          <div class="cat-pagination" v-if="filteredProducts.length > 0 && totalProductPages > 1">
             <span class="cat-pagination-info">Mostrando {{ (productPage - 1) * productsPerPage + 1 }} a {{ Math.min(productPage * productsPerPage, filteredProducts.length) }} de {{ filteredProducts.length }} productos</span>
             <div class="cat-pagination-btns">
-              <button class="page-btn" :disabled="productPage <= 1" @click="productPage--">&lt; Anterior</button>
+              <button class="page-btn" :disabled="productPage <= 1" @click="productPage--">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
               <button v-for="p in totalProductPages" :key="p" class="page-btn" :class="{ active: p === productPage }" @click="productPage = p">{{ p }}</button>
-              <button class="page-btn" :disabled="productPage >= totalProductPages" @click="productPage++">Siguiente &gt;</button>
+              <button class="page-btn" :disabled="productPage >= totalProductPages" @click="productPage++">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
             </div>
           </div>
 
@@ -523,7 +439,7 @@
           </div>
 
           <!-- Stats Cards -->
-          <div class="cat-stats-row">
+          <div class="cat-stats-row cat-stats-cards">
             <div class="cat-stat-card">
               <div class="cat-stat-icon yellow">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -536,46 +452,16 @@
                 <span class="cat-stat-sub">Categorías registradas</span>
               </div>
             </div>
-            <div class="cat-stat-card">
-              <div class="cat-stat-icon green">
+            <div class="cat-stat-card" v-for="category in categories" :key="category.id">
+              <div class="cat-stat-icon yellow">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                  <polyline points="22 4 12 14.01 9 11.01"/>
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
                 </svg>
               </div>
               <div class="cat-stat-info">
-                <span class="cat-stat-value">{{ categories.length }}</span>
-                <span class="cat-stat-label">Categorías activas</span>
-                <span class="cat-stat-sub">Activadas</span>
-              </div>
-            </div>
-            <div class="cat-stat-card">
-              <div class="cat-stat-icon red">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="15" y1="9" x2="9" y2="15"/>
-                  <line x1="9" y1="9" x2="15" y2="15"/>
-                </svg>
-              </div>
-              <div class="cat-stat-info">
-                <span class="cat-stat-value">0</span>
-                <span class="cat-stat-label">Categorías inactivas</span>
-                <span class="cat-stat-sub">Desactivadas</span>
-              </div>
-            </div>
-            <div class="cat-stat-card">
-              <div class="cat-stat-icon blue">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="7" height="7"/>
-                  <rect x="14" y="3" width="7" height="7"/>
-                  <rect x="14" y="14" width="7" height="7"/>
-                  <rect x="3" y="14" width="7" height="7"/>
-                </svg>
-              </div>
-              <div class="cat-stat-info">
-                <span class="cat-stat-value">{{ categories.length }}</span>
-                <span class="cat-stat-label">Categorías principales</span>
-                <span class="cat-stat-sub">Con subcategorías</span>
+                <span class="cat-stat-value">{{ getProductsInCategory(category.id) }}</span>
+                <span class="cat-stat-label">{{ category.name }}</span>
+                <span class="cat-stat-sub">{{ getProductsInCategory(category.id) === 1 ? 'Producto asociado' : 'Productos asociados' }}</span>
               </div>
             </div>
           </div>
@@ -583,15 +469,12 @@
           <!-- Toolbar -->
           <div class="cat-toolbar">
             <div class="cat-toolbar-left">
-              <select class="cat-bulk-select">
-                <option>Acciones en lote</option>
+              <select class="cat-filter-select" v-model="selectedCategoryFilter">
+                <option value="">Todas las categorías</option>
+                <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
               </select>
-              <button class="btn btn-primary btn-sm">Aplicar</button>
             </div>
             <div class="cat-toolbar-right">
-              <select class="cat-filter-select">
-                <option>Todas las categorías</option>
-              </select>
               <div class="cat-search">
                 <svg class="cat-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="8"/>
@@ -599,12 +482,6 @@
                 </svg>
                 <input type="search" v-model="searchCategories" placeholder="Buscar categoría..." class="cat-search-input" />
               </div>
-              <button class="btn btn-outline btn-sm">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-                </svg>
-                Filtros
-              </button>
             </div>
           </div>
 
@@ -864,115 +741,160 @@
         <!-- ========== SALES ========== -->
         <div v-if="currentSection === 'sales'">
           <div class="section-top">
-            <h2>Resumen de Compras</h2>
-            <button class="btn btn-secondary" @click="loadPurchases" :disabled="isLoadingSales">
-              {{ isLoadingSales ? 'Cargando...' : 'Actualizar' }}
+            <div>
+              <h2 class="page-title">Pedidos</h2>
+              <p class="page-subtitle">Gestiona los pedidos realizados por tus clientes.</p>
+            </div>
+            <button class="btn btn-primary" @click="loadPurchases" :disabled="isLoadingSales">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/>
+                <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+              </svg>
+              Actualizar
             </button>
           </div>
 
-          <div v-if="!isLoadingSales && !salesError && sales.length > 0" class="search-bar">
-            <div class="search-input-wrapper">
-              <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/>
-                <path d="m21 21-4.35-4.35"/>
-              </svg>
-              <input type="search" v-model="searchSales" placeholder="Buscar por cliente o producto..." class="search-field" />
-              <button v-if="searchSales" class="search-clear" @click="searchSales = ''">✕</button>
-            </div>
-          </div>
-
+          <!-- Loading -->
           <div v-if="isLoadingSales" class="loading-state">
             <div class="spinner"></div>
-            <p>Cargando compras...</p>
+            <p>Cargando pedidos...</p>
           </div>
 
+          <!-- Error -->
           <div v-else-if="salesError" class="error-state">
             <div class="error-icon">⚠️</div>
             <p>{{ salesError }}</p>
             <button @click="loadPurchases" class="btn btn-primary">Reintentar</button>
           </div>
 
-          <div v-else>
-            <div class="sales-stats-row">
-              <div class="mini-stat">
-                <span class="mini-stat-label">Ingresos Totales</span>
-                <span class="mini-stat-value">${{ totalRevenue.toLocaleString() }}</span>
+          <template v-else>
+            <!-- Stats -->
+            <div class="stats-row stats-row-4">
+              <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FFD84D, #FF8E8E)">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D2B1F" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Total Pedidos</span>
+                  <span class="stat-value">{{ totalSalesCount }}</span>
+                </div>
               </div>
-              <div class="mini-stat">
-                <span class="mini-stat-label">Ventas Pendientes</span>
-                <span class="mini-stat-value">{{ pendingSales }}</span>
+              <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FFD84D, #FF8E8E)">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D2B1F" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Pendientes</span>
+                  <span class="stat-value">{{ pendingSales }}</span>
+                </div>
               </div>
-              <div class="mini-stat">
-                <span class="mini-stat-label">Total Ventas</span>
-                <span class="mini-stat-value">{{ totalSalesCount }}</span>
+              <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FFD84D, #FF8E8E)">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D2B1F" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Completados</span>
+                  <span class="stat-value">{{ completedSalesCount }}</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #FFD84D, #FF8E8E)">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D2B1F" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div class="stat-content">
+                  <span class="stat-label">Ingresos</span>
+                  <span class="stat-value">${{ totalRevenue.toLocaleString() }}</span>
+                </div>
               </div>
             </div>
 
-            <div class="table-container" v-if="sales.length > 0">
-              <table class="data-table">
+            <!-- Search + Filters -->
+            <div class="orders-toolbar">
+              <div class="orders-search">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input type="search" v-model="searchSales" placeholder="Buscar por cliente, email o producto..." class="orders-search-input" />
+                <button v-if="searchSales" class="search-clear" @click="searchSales = ''">✕</button>
+              </div>
+              <select v-model="orderStatusFilter" class="orders-filter-select">
+                <option value="">Todos los estados</option>
+                <option value="completed">Completados</option>
+                <option value="pending">Pendientes</option>
+                <option value="cancelled">Cancelados</option>
+              </select>
+            </div>
+
+            <!-- Orders Table -->
+            <div v-if="filteredOrders.length > 0" class="orders-table-container">
+              <table class="orders-table">
                 <thead>
                   <tr>
+                    <th>Pedido</th>
                     <th>Cliente</th>
                     <th>Productos</th>
-                    <th>Cantidad</th>
                     <th>Total</th>
                     <th>Estado</th>
                     <th>Fecha</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="sale in filteredSales" :key="sale.id">
+                  <tr v-for="order in filteredOrders" :key="order.id">
+                    <td>
+                      <span class="order-id-cell">#{{ order.id }}</span>
+                    </td>
                     <td>
                       <div class="cell-stack">
-                        <span class="cell-primary">{{ sale.customerName }}</span>
-                        <span class="cell-secondary">{{ sale.customerEmail }}</span>
+                        <span class="cell-primary">{{ order.customerName }}</span>
+                        <span class="cell-secondary">{{ order.customerEmail }}</span>
                       </div>
                     </td>
                     <td>
-                      <div v-if="sale.items && sale.items.length === 1" class="cell-stack">
-                        <span class="cell-primary">{{ sale.items[0].productName }}</span>
-                        <span v-if="sale.items[0].selectedColor" class="cell-secondary">
-                          <span class="color-dot" :style="{ backgroundColor: getColorHex(sale.items[0].selectedColor) }"></span>
-                          {{ sale.items[0].selectedColor }}
-                        </span>
-                      </div>
-                      <div v-else-if="sale.items && sale.items.length > 1">
-                        <span class="products-badge">{{ sale.items.length }} productos</span>
+                      <div v-if="order.items && order.items.length > 1">
+                        <span class="products-badge">{{ order.items.length }} productos</span>
                         <details class="products-details">
                           <summary class="products-toggle">Ver detalles</summary>
                           <ul class="products-list">
-                            <li v-for="(item, idx) in sale.items" :key="idx">
+                            <li v-for="(item, idx) in order.items" :key="idx">
                               <span>{{ item.productName }}</span>
                               <span class="item-qty">x{{ item.quantity }}</span>
                             </li>
                           </ul>
                         </details>
                       </div>
-                      <span v-else class="cell-primary">{{ sale.productName }}</span>
+                      <div v-else class="cell-stack">
+                        <span class="cell-primary">{{ order.productName }}</span>
+                        <span v-if="order.selectedColor" class="cell-secondary">
+                          <span class="color-dot" :style="{ backgroundColor: getColorHex(order.selectedColor) }"></span>
+                          {{ order.selectedColor }}
+                        </span>
+                      </div>
                     </td>
                     <td>
-                      <span class="qty-badge">{{ sale.quantity }}</span>
+                      <span class="amount">${{ order.totalAmount.toLocaleString() }}</span>
                     </td>
                     <td>
-                      <span class="amount">${{ sale.totalAmount.toLocaleString() }}</span>
+                      <select :value="order.status" @change="updateOrderStatus(order.id, ($event.target as HTMLSelectElement).value)" :class="['status-select', order.status]">
+                        <option value="pending">Pendiente</option>
+                        <option value="completed">Completado</option>
+                        <option value="cancelled">Cancelado</option>
+                      </select>
                     </td>
                     <td>
-                      <span :class="['status-pill', sale.status]">{{ getSaleStatusText(sale.status) }}</span>
-                    </td>
-                    <td>
-                      <span class="cell-secondary">{{ formatDate(sale.date) }}</span>
+                      <span class="cell-secondary">{{ formatDate(order.date) }}</span>
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
+            <!-- Empty state -->
             <div v-else class="empty-state">
-              <div class="empty-icon">📊</div>
-              <h3>No hay ventas registradas</h3>
-              <p>Las ventas aparecerán aquí cuando los clientes realicen compras</p>
+              <div class="empty-icon">📦</div>
+              <h3>No hay pedidos</h3>
+              <p>Los pedidos aparecerán aquí cuando los clientes realicen compras</p>
             </div>
-          </div>
+          </template>
         </div>
 
         <!-- ========== WHATSAPP QUOTES ========== -->
@@ -1046,7 +968,7 @@
           <form @submit.prevent="saveProduct">
             <div class="form-group">
               <label>Nombre del Producto *</label>
-              <input v-model="productForm.name" type="text" class="form-input" required placeholder="Ej: iPhone 15 Pro" />
+              <input v-model="productForm.name" type="text" class="form-input" required placeholder="Ej: Vestido de Flores" />
             </div>
             <div class="form-group">
               <label>Descripción</label>
@@ -1093,29 +1015,51 @@
               <p class="form-help">Marcar para mostrar en la sección de Productos Destacados del inicio</p>
             </div>
             <div class="form-group">
-              <label>Materiales Disponibles</label>
+              <label>Tallas Disponibles</label>
               <div class="materials-grid">
                 <button v-for="material in materialOptions" :key="material" type="button" class="material-chip" :class="{ selected: isMaterialSelected(material) }" @click="toggleProductMaterial(material)">
                   {{ material }}
                 </button>
               </div>
               <div v-if="productForm.colors.length > 0" class="selected-materials">
-                <span class="selected-label">Seleccionados: </span>
+                <span class="selected-label">Seleccionadas: </span>
                 <span class="selected-list">{{ productForm.colors.join(', ') }}</span>
               </div>
             </div>
             <div class="form-group">
-              <label>Imagen del Producto (URL) *</label>
+              <label>Imágenes del Producto (URL) *</label>
               <div class="image-urls">
-                <div class="image-url-row">
-                  <input :value="productForm.images[0]" @input="(e) => updateImageUrl(0, (e.target as HTMLInputElement).value)" type="text" class="form-input" placeholder="https://ejemplo.com/imagen.jpg" />
+                <div v-for="(img, idx) in productForm.images" :key="idx" class="image-url-row">
+                  <input :value="img" @input="(e) => updateImageUrl(idx, (e.target as HTMLInputElement).value)" type="text" class="form-input" :placeholder="'URL imagen ' + (idx + 1)" />
+                  <button v-if="productForm.images.length > 1" type="button" class="image-remove-btn" @click="removeImageUrl(idx)" title="Eliminar">✕</button>
+                  <button type="button" class="image-main-btn" :class="{ active: idx === mainImageIndex }" @click="mainImageIndex = idx" title="Marcar como principal">
+                    <svg width="14" height="14" viewBox="0 0 24 24" :fill="idx === mainImageIndex ? '#FFD84D' : 'none'" :stroke="idx === mainImageIndex ? '#FFD84D' : '#9CA3AF'" stroke-width="2">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                      <circle cx="12" cy="10" r="3"/>
+                    </svg>
+                  </button>
                 </div>
+                <button type="button" class="image-add-btn" @click="addImageUrl">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  </svg>
+                  Agregar imagen
+                </button>
               </div>
 
-              <div v-if="productForm.images[0] && productForm.images[0].trim()" class="images-preview-grid" style="margin-top: 12px;">
-                <div class="image-preview-item">
-                  <img :src="getPreviewUrl(productForm.images[0])" alt="Vista previa" />
-                  <span class="image-index">Principal</span>
+              <div v-if="productForm.images.some(img => img && img.trim())" class="images-preview-grid" style="margin-top: 12px;">
+                <div v-for="(img, idx) in productForm.images" :key="idx" v-show="img && img.trim()" class="image-preview-item" :class="{ 'is-main': idx === mainImageIndex }">
+                  <img :src="getPreviewUrl(img)" alt="Vista previa" />
+                  <span v-if="idx === mainImageIndex" class="image-index">Principal</span>
+                  <div class="image-preview-arrows">
+                    <button v-if="idx > 0" type="button" class="preview-arrow-btn" @click="moveImageUrl(idx, -1)" title="Mover izquierda">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <button v-if="idx < productForm.images.length - 1" type="button" class="preview-arrow-btn" @click="moveImageUrl(idx, 1)" title="Mover derecha">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -1125,16 +1069,20 @@
                   <circle cx="9" cy="9" r="2"/>
                   <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
                 </svg>
-                <p>Pega una URL de imagen para ver la vista previa</p>
+                <p>Pega URLs de imágenes para ver la vista previa</p>
               </div>
             </div>
             <div v-if="productForm.originalPrice && productForm.originalPrice > productForm.price" class="discount-info">
               <span class="discount-badge">💰 Descuento: {{ Math.round(((productForm.originalPrice - productForm.price) / productForm.originalPrice) * 100) }}%</span>
             </div>
             <div class="form-actions">
-              <button type="button" class="btn btn-secondary" @click="closeProductForm">Cancelar</button>
-              <button type="submit" class="btn btn-primary" :disabled="!isFormValid">
-                {{ editingProduct ? 'Actualizar Producto' : 'Crear Producto' }}
+              <button type="button" class="btn btn-secondary" @click="closeProductForm" :disabled="savingProduct">Cancelar</button>
+              <button type="submit" class="btn btn-primary" :disabled="!isFormValid || savingProduct">
+                <span v-if="savingProduct" class="btn-loading-text">
+                  <svg class="spinner-sm" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-linecap="round" /></svg>
+                  {{ editingProduct ? 'Actualizando...' : 'Creando...' }}
+                </span>
+                <span v-else>{{ editingProduct ? 'Actualizar Producto' : 'Crear Producto' }}</span>
               </button>
             </div>
           </form>
@@ -1225,6 +1173,25 @@
         </div>
       </div>
     </div>
+
+    <!-- Confirm Modal -->
+    <div v-if="confirmModal.open" class="modal-overlay" @click.self="confirmModal.onCancel()">
+      <div class="modal confirm-modal">
+        <div class="confirm-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h3 class="confirm-title">{{ confirmModal.title }}</h3>
+        <p class="confirm-message">{{ confirmModal.message }}</p>
+        <div class="confirm-actions">
+          <button class="btn btn-secondary" @click="confirmModal.onCancel()">Cancelar</button>
+          <button class="btn btn-primary" @click="confirmModal.onConfirm()">Aceptar</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1264,100 +1231,106 @@ const editingProduct = ref<Product | null>(null)
 const editingCategory = ref<Category | null>(null)
 const searchProducts = ref('')
 const searchCategories = ref('')
-const searchSales = ref('')
 const selectedCategoryFilter = ref('')
+const searchSales = ref('')
+const orderStatusFilter = ref('')
 const productStatusFilter = ref('')
+const productFeaturedFilter = ref('')
+const productPriceFilter = ref('')
 const productPage = ref(1)
-const productsPerPage = 8
+const productsPerPage = 10
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' },
   { id: 'products', label: 'Productos', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>' },
   { id: 'categories', label: 'Categorías', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>' },
-  { id: 'brands', label: 'Marcas', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>' },
-  { id: 'orders', label: 'Pedidos', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>', badge: '12' },
-  { id: 'clients', label: 'Clientes', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' },
-  { id: 'inventory', label: 'Inventario', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>' },
-  { id: 'sales', label: 'Cotizaciones', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' },
-  { id: 'whatsapp-quotes', label: 'Cotizaciones WhatsApp', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.051 3.488"/></svg>' },
-  { id: 'blog', label: 'Blog', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' },
-  { id: 'banners', label: 'Banners', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>' },
-  { id: 'users', label: 'Usuarios', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' },
-  { id: 'settings', label: 'Configuración', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>' }
+  { id: 'sales', label: 'Pedidos', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' }
 ]
 
 const dashboardStats = computed(() => [
   {
-    label: 'Ventas Totales',
-    value: `$${totalRevenue.value.toLocaleString()}`,
-    change: `${Math.round((totalSalesCount.value / 10) * 100) || 18.5}%`,
-    changeType: 'up',
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
-    iconBg: 'linear-gradient(135deg, #F4B400, #FFC107)'
-  },
-  {
     label: 'Productos',
     value: products.value.length.toString(),
-    change: '8.2%',
-    changeType: 'up',
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',
-    iconBg: 'linear-gradient(135deg, #F4B400, #FFC107)'
+    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D2B1F" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',
+    iconBg: 'linear-gradient(135deg, #FFD84D, #FF8E8E)'
+  },
+  {
+    label: 'Categorías',
+    value: categories.value.length.toString(),
+    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D2B1F" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>',
+    iconBg: 'linear-gradient(135deg, #FFD84D, #FF8E8E)'
+  },
+  {
+    label: 'Ventas',
+    value: `$${totalRevenue.value.toLocaleString()}`,
+    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D2B1F" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    iconBg: 'linear-gradient(135deg, #FFD84D, #FF8E8E)'
   },
   {
     label: 'Pedidos',
     value: totalSalesCount.value.toString(),
-    change: '12.7%',
-    changeType: 'up',
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
-    iconBg: 'linear-gradient(135deg, #F4B400, #FFC107)'
-  },
-  {
-    label: 'Clientes',
-    value: new Set(sales.value.map(s => s.customerEmail)).size.toString() || '1',
-    change: '9.1%',
-    changeType: 'up',
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-    iconBg: 'linear-gradient(135deg, #F4B400, #FFC107)'
-  },
-  {
-    label: 'Cotizaciones',
-    value: totalSalesCount.value.toString(),
-    change: '15.4%',
-    changeType: 'up',
-    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
-    iconBg: 'linear-gradient(135deg, #F4B400, #FFC107)'
+    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D2B1F" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>',
+    iconBg: 'linear-gradient(135deg, #FFD84D, #FF8E8E)'
   }
 ])
 
-const recentOrders = computed(() => sales.value.slice(0, 5).map(s => ({
-  id: s.id,
-  date: formatDate(s.date),
-  status: getSaleStatusText(s.status),
-  statusClass: s.status,
-  amount: `$${s.totalAmount.toLocaleString()}`
-})))
+const categoryColors = ['#FFD84D', '#FF8E8E', '#8B6914', '#A0522D', '#D2691E', '#DAA520', '#F4A460', '#DEB887']
 
-const topProducts = [
-  { name: 'Guantes Dieléctricos Clase 00', emoji: '🧤', sales: '152', price: '$120.000' },
-  { name: 'Multímetro Fluke 117', emoji: '🔧', sales: '98', price: '$850.000' },
-  { name: 'Casco Dieléctrico Class E', emoji: '⛑️', sales: '76', price: '$45.000' },
-  { name: 'Botas Dieléctricas Dielectric', emoji: '👢', sales: '62', price: '$320.000' }
-]
+const productsByCategory = computed(() => {
+  const map: Record<string, number> = {}
+  categories.value.forEach(c => { map[c.name] = 0 })
+  products.value.forEach(p => {
+    const catId = p.category || ''
+    const catObj = categories.value.find(c => String(c.id) === String(catId))
+    const catName = catObj ? catObj.name : (catId || 'Sin categoría')
+    map[catName] = (map[catName] || 0) + 1
+  })
+  const entries = Object.entries(map).sort((a, b) => b[1] - a[1])
+  const max = entries.length > 0 ? Math.max(entries[0][1], 1) : 1
+  return entries.map(([name, count], i) => ({
+    name,
+    count,
+    percent: Math.round((count / max) * 100),
+    color: categoryColors[i % categoryColors.length]
+  }))
+})
 
-const inventoryAlerts = [
-  { name: 'Cable THHN #12', emoji: '🔌', stock: '5 rollos' },
-  { name: 'Breaker Termomagnético 2x20A', emoji: '⚡', stock: '3 unidades' },
-  { name: 'Relé Térmico 9-13A', emoji: '🔌', stock: '2 unidades' },
-  { name: 'Conector Eléctrico Tipo U', emoji: '🔌', stock: '4 unidades' }
-]
+const productsByPrice = computed(() => {
+  const ranges = [
+    { label: '$0 - $20k', min: 0, max: 20000, color: '#FFD84D' },
+    { label: '$20k - $50k', min: 20000, max: 50000, color: '#FF8E8E' },
+    { label: '$50k - $100k', min: 50000, max: 100000, color: '#8B6914' },
+    { label: '$100k - $200k', min: 100000, max: 200000, color: '#A0522D' },
+    { label: '$200k+', min: 200000, max: Infinity, color: '#D2691E' }
+  ]
+  const counts = ranges.map(r => ({
+    ...r,
+    count: products.value.filter(p => p.price >= r.min && p.price < r.max).length
+  }))
+  const max = Math.max(...counts.map(c => c.count), 1)
+  return counts.map(c => ({ ...c, percent: Math.round((c.count / max) * 100) }))
+})
 
-const recentQuotations = [
-  { id: 'COT-0054', date: '7 Jun, 2025', status: 'Pendiente', statusClass: 'pending', amount: '$3.250.000' },
-  { id: 'COT-0053', date: '6 Jun, 2025', status: 'Pendiente', statusClass: 'pending', amount: '$1.850.000' },
-  { id: 'COT-0052', date: '5 Jun, 2025', status: 'Aprobada', statusClass: 'completed', amount: '$4.500.000' },
-  { id: 'COT-0051', date: '5 Jun, 2025', status: 'Pendiente', statusClass: 'pending', amount: '$950.000' },
-  { id: 'COT-0050', date: '4 Jun, 2025', status: 'Rechazada', statusClass: 'cancelled', amount: '$1.200.000' }
-]
+const productStatusData = computed(() => {
+  const total = products.value.length || 1
+  const availableCount = products.value.filter(p => p.status === 'available').length
+  const unavailableCount = products.value.filter(p => p.status !== 'available').length
+  const circumference = 2 * Math.PI * 50
+  return {
+    availableCount,
+    unavailableCount,
+    availableArc: Math.round((availableCount / total) * circumference),
+    unavailableArc: Math.round((unavailableCount / total) * circumference),
+    totalArc: circumference
+  }
+})
+
+const featuredProducts = computed(() => products.value.filter(p => p.isShowcase).slice(0, 5))
+const featuredCount = computed(() => products.value.filter(p => p.isShowcase).length)
+const featuredPercent = computed(() => {
+  const total = products.value.length || 1
+  return Math.round((featuredCount.value / total) * 100)
+})
 
 const { products: backendProducts, categories, availableProducts, addProduct, updateProduct, deleteProduct, loadCategories, loadProducts, addCategory, updateCategory, deleteCategory } = useProducts()
 const products = backendProducts
@@ -1467,7 +1440,7 @@ const productForm = ref({
 
 const getPreviewUrl = (url: string) => url || ''
 
-const materialOptions = ['Esmeralda', 'Oro', 'Plata']
+const materialOptions = ['Bebe', 'T2', 'T3', 'T4', 'T5-6', 'Otro']
 const categoryForm = ref<CreateCategoryRequest>({ name: '', description: '' })
 const categoryImageUrls = ref<string[]>([''])
 
@@ -1481,14 +1454,52 @@ const brandImageUrls = ref<string[]>([''])
 const availableProductsCount = computed(() => availableProducts.value.length)
 const totalValue = computed(() => sales.value.filter(s => s.status === 'completed').reduce((sum, s) => sum + s.totalAmount, 0))
 const completedSales = computed(() => sales.value.filter(s => s.status === 'completed'))
+const completedSalesCount = computed(() => completedSales.value.length)
 const totalRevenue = computed(() => completedSales.value.reduce((sum, s) => sum + s.totalAmount, 0))
 const pendingSales = computed(() => sales.value.filter(s => s.status === 'pending').length)
 const totalSalesCount = computed(() => sales.value.length)
+
+const filteredOrders = computed(() => {
+  let result = sales.value
+  if (orderStatusFilter.value) {
+    result = result.filter(s => s.status === orderStatusFilter.value)
+  }
+  if (searchSales.value.trim()) {
+    const q = searchSales.value.toLowerCase().trim()
+    result = result.filter(s => s.customerName.toLowerCase().includes(q) || s.customerEmail.toLowerCase().includes(q) || s.productName.toLowerCase().includes(q) || (s.items && s.items.some(i => i.productName.toLowerCase().includes(q))))
+  }
+  return result
+})
+
+const updateOrderStatus = async (orderId: string, newStatus: string) => {
+  try {
+    const { apiClient } = await import('@/services/api')
+    await apiClient.put(`/purchases/${orderId}`, { status: newStatus })
+    await loadPurchases()
+  } catch (e) {
+    console.error('Error updating order status:', e)
+  }
+}
 
 const filteredProducts = computed(() => {
   let baseList = selectedCategoryFilter.value ? products.value.filter(p => p.category === selectedCategoryFilter.value) : products.value
   if (productStatusFilter.value) {
     baseList = baseList.filter(p => p.status === productStatusFilter.value)
+  }
+  if (productFeaturedFilter.value) {
+    const isFeatured = productFeaturedFilter.value === 'yes'
+    baseList = baseList.filter(p => Boolean(p.isShowcase) === isFeatured)
+  }
+  if (productPriceFilter.value) {
+    baseList = baseList.filter(p => {
+      switch (productPriceFilter.value) {
+        case 'lt100': return p.price < 100000
+        case '100-300': return p.price >= 100000 && p.price <= 300000
+        case '300-500': return p.price > 300000 && p.price <= 500000
+        case 'gt500': return p.price > 500000
+        default: return true
+      }
+    })
   }
   if (!searchProducts.value.trim()) return baseList
   const q = searchProducts.value.toLowerCase().trim()
@@ -1512,15 +1523,15 @@ const toggleProductFeatured = async (product: Product) => {
 }
 
 const filteredCategories = computed(() => {
-  if (!searchCategories.value.trim()) return categories.value
-  const q = searchCategories.value.toLowerCase().trim()
-  return categories.value.filter(c => c.name.toLowerCase().includes(q) || c.description?.toLowerCase().includes(q))
-})
-
-const filteredSales = computed(() => {
-  if (!searchSales.value.trim()) return sales.value
-  const q = searchSales.value.toLowerCase().trim()
-  return sales.value.filter(s => s.customerName.toLowerCase().includes(q) || s.customerEmail.toLowerCase().includes(q) || s.productName.toLowerCase().includes(q) || (s.items && s.items.some(i => i.productName.toLowerCase().includes(q))))
+  let result = categories.value
+  if (selectedCategoryFilter.value) {
+    result = result.filter(c => c.id === selectedCategoryFilter.value)
+  }
+  if (searchCategories.value.trim()) {
+    const q = searchCategories.value.toLowerCase().trim()
+    result = result.filter(c => c.name.toLowerCase().includes(q) || c.description?.toLowerCase().includes(q))
+  }
+  return result
 })
 
 const getColorHex = (colorName: string): string => {
@@ -1533,8 +1544,30 @@ const setSection = (section: string) => {
   sidebarOpen.value = false
 }
 
-const handleLogout = () => {
-  if (confirm('¿Estás seguro de cerrar sesión?')) {
+const userName = computed(() => authService.getCurrentUser()?.name || 'Administrador')
+
+const confirmModal = ref({
+  open: false,
+  title: '',
+  message: '',
+  onConfirm: () => {},
+  onCancel: () => {}
+})
+
+function showConfirm(title: string, message: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    confirmModal.value = {
+      open: true,
+      title,
+      message,
+      onConfirm: () => { confirmModal.value.open = false; resolve(true) },
+      onCancel: () => { confirmModal.value.open = false; resolve(false) }
+    }
+  })
+}
+
+const handleLogout = async () => {
+  if (await showConfirm('Cerrar sesión', '¿Estás seguro de cerrar sesión?')) {
     authService.logout()
     router.push('/')
   }
@@ -1543,14 +1576,14 @@ const handleLogout = () => {
 const getStatusText = (status: string) => ({ 'available': 'Disponible', 'out-of-stock': 'Sin Stock', 'coming-soon': 'Próximamente' }[status] || status)
 const getSaleStatusText = (status: string) => ({ 'completed': 'Completada', 'pending': 'Pendiente', 'cancelled': 'Cancelada' }[status] || status)
 const formatDate = (date: Date) => date.toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' })
-const getProductsInCategory = (categoryId: string) => products.value.filter(p => p.category === categoryId).length
+const getProductsInCategory = (categoryId: string) => products.value.filter(p => String(p.category) === String(categoryId)).length
 
 const editProduct = (product: Product) => {
   editingProduct.value = product
-  productForm.value = { name: product.name, description: product.description, price: product.price, originalPrice: product.originalPrice || 0, images: product.images ? [...product.images] : [''], category: product.category, status: product.status, colors: product.colors ? [...product.colors] : [], isShowcase: product.isShowcase || false }
+  productForm.value = { name: product.name, description: product.description, price: product.price, originalPrice: product.originalPrice || 0, images: product.images && product.images.length > 0 ? [...product.images] : [''], category: product.category, status: product.status, colors: product.colors ? [...product.colors] : [], isShowcase: product.isShowcase || false }
+  mainImageIndex.value = 0
   showProductForm.value = true
 }
-
 const editCategory = (category: Category) => {
   editingCategory.value = category
   categoryForm.value = { name: category.name, description: category.description || '', imageUrls: category.imageUrls || [] }
@@ -1558,15 +1591,15 @@ const editCategory = (category: Category) => {
   showCategoryForm.value = true
 }
 
-const deleteProductConfirm = (id: string) => {
-  if (confirm('¿Estás seguro de eliminar este producto?')) deleteProduct(id)
+const deleteProductConfirm = async (id: string) => {
+  if (await showConfirm('Eliminar producto', '¿Estás seguro de eliminar este producto?')) deleteProduct(id)
 }
 
 const handleDeleteCategory = async (id: string) => {
   const count = getProductsInCategory(id)
   let msg = '¿Estás seguro de eliminar esta categoría?'
-  if (count > 0) msg = `⚠️ Esta categoría tiene ${count} producto(s) asociado(s).\n\n¿Estás seguro de que deseas continuar?`
-  if (confirm(msg)) await deleteCategory(Number(id))
+  if (count > 0) msg = `⚠️ Esta categoría tiene ${count} producto(s) asociado(s). ¿Estás seguro de que deseas continuar?`
+  if (await showConfirm('Eliminar categoría', msg)) await deleteCategory(id)
 }
 
 const isFormValid = computed(() => {
@@ -1575,6 +1608,27 @@ const isFormValid = computed(() => {
 })
 
 const updateImageUrl = (index: number, value: string) => { productForm.value.images[index] = value }
+const mainImageIndex = ref(0)
+const addImageUrl = () => { productForm.value.images.push('') }
+const removeImageUrl = (index: number) => {
+  productForm.value.images.splice(index, 1)
+  if (mainImageIndex.value >= productForm.value.images.length) {
+    mainImageIndex.value = Math.max(0, productForm.value.images.length - 1)
+  }
+}
+const moveImageUrl = (index: number, direction: -1 | 1) => {
+  const images = productForm.value.images
+  const newIndex = index + direction
+  if (newIndex < 0 || newIndex >= images.length) return
+  const temp = images[index]
+  images[index] = images[newIndex]
+  images[newIndex] = temp
+  if (mainImageIndex.value === index) {
+    mainImageIndex.value = newIndex
+  } else if (mainImageIndex.value === newIndex) {
+    mainImageIndex.value = index
+  }
+}
 
 const normalizeString = (str: string): string => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().replace(/\s+/g, ' ')
 const isMaterialSelected = (material: string) => productForm.value.colors.some(c => normalizeString(c) === normalizeString(material))
@@ -1590,21 +1644,36 @@ const handlePriceInput = (event: Event, field: 'price' | 'originalPrice') => {
   productForm.value[field] = raw ? parseInt(raw, 10) : 0
 }
 
-const saveProduct = () => {
+const savingProduct = ref(false)
+
+const saveProduct = async () => {
   const payload = { ...productForm.value, images: productForm.value.images.map(i => i.trim()).filter(Boolean) }
   if (editingProduct.value) {
-    if (!confirm(`¿Actualizar producto "${editingProduct.value.name}"?`)) return
-    updateProduct(editingProduct.value.id, payload)
-  } else { addProduct(payload) }
-  closeProductForm()
+    if (!await showConfirm('Actualizar producto', `¿Actualizar producto "${editingProduct.value.name}"?`)) return
+    savingProduct.value = true
+    try {
+      await updateProduct(editingProduct.value.id, payload)
+      closeProductForm()
+    } finally {
+      savingProduct.value = false
+    }
+  } else {
+    savingProduct.value = true
+    try {
+      await addProduct(payload)
+      closeProductForm()
+    } finally {
+      savingProduct.value = false
+    }
+  }
 }
 
 const saveCategory = async () => {
   const urls = categoryImageUrls.value.map(i => i.trim()).filter(Boolean)
   const payload: CreateCategoryRequest = { name: categoryForm.value.name, description: categoryForm.value.description, imageUrls: urls.length > 0 ? urls : undefined }
   if (editingCategory.value) {
-    if (!confirm(`¿Actualizar categoría "${editingCategory.value.name}"?`)) return
-    await updateCategory(Number(editingCategory.value.id), payload)
+    if (!await showConfirm('Actualizar categoría', `¿Actualizar categoría "${editingCategory.value.name}"?`)) return
+    await updateCategory(editingCategory.value.id, payload)
   } else { await addCategory(payload) }
   closeCategoryForm()
 }
@@ -1645,14 +1714,14 @@ const editBrand = (brand: Brand) => {
 
 const handleDeleteBrand = async (id: string) => {
   const msg = '¿Estás seguro de eliminar esta marca?'
-  if (confirm(msg)) await deleteBrand(Number(id))
+  if (await showConfirm('Eliminar marca', msg)) await deleteBrand(Number(id))
 }
 
 const saveBrand = async () => {
   const urls = brandImageUrls.value.map(i => i.trim()).filter(Boolean)
   const payload: CreateBrandRequest = { name: brandForm.value.name, description: brandForm.value.description, imageUrls: urls.length > 0 ? urls : undefined }
   if (editingBrand.value) {
-    if (!confirm(`¿Actualizar marca "${editingBrand.value.name}"?`)) return
+    if (!await showConfirm('Actualizar marca', `¿Actualizar marca "${editingBrand.value.name}"?`)) return
     await updateBrand(Number(editingBrand.value.id), payload)
   } else { await createBrand(payload) }
   closeBrandForm()
@@ -1671,9 +1740,9 @@ const removeBrandImageUrl = (index: number) => { brandImageUrls.value.splice(ind
 
 // Cotizaciones WhatsApp
 const whatsappQuotes = ref([
-  { id: 1, name: 'Juan Pérez', company: 'Constructora ABC', city: 'Bogotá', phone: '3229118168', productCount: 3, status: 'pending', products: 'Guantes Dieléctricos, Breaker Schneider, Casco Honeywell' },
-  { id: 2, name: 'María García', company: 'Electricos del Norte', city: 'Medellín', phone: '3101234567', productCount: 2, status: 'responded', products: 'Multímetro Fluke, Alicate isolado' },
-  { id: 3, name: 'Carlos López', company: 'Industrial Solutions', city: 'Cali', phone: '3159876543', productCount: 5, status: 'pending', products: 'Cable THW, Conector bipolar, Tablero distribución' },
+  { id: 1, name: 'Laura Martínez', company: 'Mamá de Sofía', city: 'Bogotá', phone: '3206770595', productCount: 3, status: 'pending', products: 'Camiseta infantil, Pantalón jeans, Chaqueta' },
+  { id: 2, name: 'Andrés Ramírez', company: 'Papá de Mateo', city: 'Medellín', phone: '3101234567', productCount: 2, status: 'responded', products: 'Vestido floral, Falda plisada' },
+  { id: 3, name: 'Valentina López', company: 'Mamá de Lucas', city: 'Cali', phone: '3159876543', productCount: 5, status: 'pending', products: 'Body bebé, Enterizo, Gorro, Medias, Zapatos' },
 ])
 
 const openWhatsApp = (quote: { phone: string; name: string }) => {
@@ -1687,12 +1756,12 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 .admin-layout, .admin-layout *, .admin-layout *::before, .admin-layout *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 .admin-layout {
-  --c-primary: #F4B400;
-  --c-primary-hover: #D99A00;
-  --c-accent: #FFC107;
-  --c-black: #111111;
-  --c-dark: #1A1A2E;
-  --c-sidebar: #111111;
+  --c-primary: #FFD84D;
+  --c-primary-hover: #8B6914;
+  --c-accent: #FF8E8E;
+  --c-black: #3D2B1F;
+  --c-dark: #5C3D1A;
+  --c-sidebar: #FFF8E8;
   --c-white: #FFFFFF;
   --c-light: #F5F5F5;
   --c-gray: #6B7280;
@@ -1702,13 +1771,14 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   --c-danger: #EF4444;
   --c-warning: #F59E0B;
   --c-info: #3B82F6;
-  --sidebar-w: 260px;
+  --sidebar-w: 240px;
   --topbar-h: 64px;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   display: flex;
   min-height: 100vh;
   background: var(--c-light);
   color: var(--c-black);
+  overflow-x: hidden;
 }
 
 /* ===== SIDEBAR ===== */
@@ -1728,7 +1798,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 
 .sidebar-header {
   padding: 24px 20px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(139,105,20,0.1);
 }
 
 .sidebar-logo {
@@ -1742,9 +1812,16 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   object-fit: contain;
 }
 
+.logo-pollito {
+  height: 40px;
+  width: 40px;
+  object-fit: contain;
+  margin-right: 6px;
+}
+
 .sidebar-subtitle {
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.35);
+  color: #8B6914;
   margin-top: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1766,7 +1843,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   border-radius: 10px;
   border: none;
   background: none;
-  color: rgba(255,255,255,0.55);
+  color: #5C3D1A;
   font-size: 0.88rem;
   font-weight: 500;
   cursor: pointer;
@@ -1776,13 +1853,13 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 }
 
 .nav-item:hover {
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.9);
+  background: rgba(255,216,77,0.15);
+  color: #3D2B1F;
 }
 
 .nav-item.active {
   background: var(--c-primary);
-  color: var(--c-black);
+  color: #3D2B1F;
   font-weight: 600;
 }
 
@@ -1794,7 +1871,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   flex-shrink: 0;
 }
 
-.nav-item.active .nav-icon { color: var(--c-black); }
+.nav-item.active .nav-icon { color: #3D2B1F; }
 
 .nav-badge {
   margin-left: auto;
@@ -1810,15 +1887,15 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 
 .sidebar-footer {
   padding: 16px 10px 20px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid rgba(139,105,20,0.1);
 }
 
-.logout { color: rgba(255,255,255,0.45); }
-.logout:hover { background: rgba(239,68,68,0.12); color: #fca5a5; }
+.logout { color: #8B6914; }
+.logout:hover { background: rgba(239,68,68,0.12); color: #EF4444; }
 
 .copyright {
   font-size: 0.65rem;
-  color: rgba(255,255,255,0.2);
+  color: #8B6914;
   text-align: center;
   line-height: 1.5;
   margin-top: 12px;
@@ -1907,7 +1984,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   outline: none;
   transition: all 0.2s ease;
 }
-.topbar-search .search-input:focus { border-color: var(--c-primary); background: var(--c-white); box-shadow: 0 0 0 3px rgba(244,180,0,0.1); }
+.topbar-search .search-input:focus { border-color: var(--c-primary); background: var(--c-white); box-shadow: 0 0 0 3px rgba(255,216,77,0.1); }
 .topbar-search .search-input::placeholder { color: var(--c-gray-light); }
 
 .topbar-actions {
@@ -2108,6 +2185,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   border: 1px solid var(--c-border);
   border-radius: 14px;
   overflow: hidden;
+  padding-right: 20px;
 }
 
 .card-header {
@@ -2145,7 +2223,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 }
 
 /* ===== CHART ===== */
-.chart-card { grid-column: span 2; }
+.chart-card { grid-column: span 1; }
 
 .chart-placeholder {
   padding: 20px;
@@ -2208,6 +2286,209 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
+}
+
+.dashboard-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* ===== STATS ROW 4 ===== */
+.stats-row-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* ===== BAR CHART ===== */
+.bar-chart { padding: 8px 0; }
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.bar-label {
+  min-width: 110px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--c-black);
+  text-align: right;
+}
+
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.6s ease;
+}
+
+.bar-value {
+  min-width: 24px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--c-black);
+  text-align: right;
+}
+
+/* ===== DONUT CHART ===== */
+.donut-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.donut-svg {
+  width: 140px;
+  height: 140px;
+}
+
+.donut-total {
+  font-size: 16px;
+  font-weight: 800;
+  fill: var(--c-black);
+}
+
+.donut-subtitle {
+  font-size: 9px;
+  fill: var(--c-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.donut-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 0.78rem;
+  color: var(--c-black);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ===== FEATURED PRODUCTS ===== */
+.featured-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 0;
+}
+
+.featured-big-number {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.featured-count {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--c-primary);
+}
+
+.featured-label {
+  font-size: 0.78rem;
+  color: var(--c-gray);
+}
+
+.featured-bar-track {
+  width: 100%;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.featured-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD84D, #FF8E8E);
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.featured-percent {
+  font-size: 0.75rem;
+  color: var(--c-gray);
+}
+
+.featured-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.featured-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--c-border);
+}
+
+.featured-item:first-child { border-top: none; }
+
+.featured-item-img {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--c-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featured-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-item-emoji {
+  font-size: 1.2rem;
+}
+
+.featured-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.featured-item-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c-black);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.featured-item-price {
+  font-size: 0.72rem;
+  color: var(--c-primary);
+  font-weight: 600;
 }
 
 /* ===== ORDERS LIST ===== */
@@ -2276,7 +2557,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   font-weight: 600;
   cursor: pointer;
 }
-.card-footer-btn:hover { background: rgba(244,180,0,0.04); }
+.card-footer-btn:hover { background: rgba(255,216,77,0.04); }
 
 /* ===== TOP PRODUCTS ===== */
 .products-top-list { padding: 0; }
@@ -2461,7 +2742,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   outline: none;
   transition: all 0.2s ease;
 }
-.search-field:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(244,180,0,0.1); }
+.search-field:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(255,216,77,0.1); }
 .search-field::placeholder { color: var(--c-gray-light); }
 
 .search-clear {
@@ -2678,30 +2959,43 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   margin-bottom: 24px;
 }
 
+.cat-stats-row-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 .cat-stat-card {
   background: var(--c-white);
   border: 1px solid var(--c-border);
   border-radius: 12px;
-  padding: 18px 20px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+}
+
+.cat-stats-cards {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.cat-stat-card-full {
+  grid-column: 1 / -1;
 }
 
 .cat-stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.cat-stat-icon.yellow { background: rgba(244,180,0,0.12); color: var(--c-primary); }
+.cat-stat-icon.yellow { background: rgba(255,216,77,0.12); color: var(--c-primary); }
 .cat-stat-icon.green { background: rgba(16,185,129,0.12); color: var(--c-success); }
 .cat-stat-icon.red { background: rgba(239,68,68,0.12); color: var(--c-danger); }
 .cat-stat-icon.blue { background: rgba(59,130,246,0.12); color: var(--c-info); }
+.cat-stat-icon.orange { background: rgba(249,115,22,0.12); color: #f97316; }
 
 .cat-stat-info {
   display: flex;
@@ -2709,20 +3003,20 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 }
 
 .cat-stat-value {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--c-black);
   line-height: 1.1;
 }
 
 .cat-stat-label {
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--c-black);
 }
 
 .cat-stat-sub {
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   color: var(--c-gray);
 }
 
@@ -2817,7 +3111,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   vertical-align: middle;
 }
 
-.cat-table tbody tr:hover { background: rgba(244,180,0,0.02); }
+.cat-table tbody tr:hover { background: rgba(255,216,77,0.02); }
 .cat-table tbody tr:last-child td { border-bottom: none; }
 
 .col-check { width: 40px; text-align: center; }
@@ -2938,6 +3232,29 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 }
 .cat-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+.page-btn {
+  min-width: 32px;
+  height: 32px;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  background: var(--c-white);
+  color: var(--c-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0 8px;
+}
+.page-btn:hover:not(:disabled):not(.active) { border-color: var(--c-primary); color: var(--c-primary); }
+.page-btn.active {
+  background: var(--c-primary);
+  color: var(--c-black);
+  border-color: var(--c-primary);
+}
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
 /* ===== SALES ===== */
 .sales-stats-row {
   display: grid;
@@ -2989,7 +3306,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   border-bottom: 1px solid var(--c-border);
 }
 
-.data-table tbody tr:hover { background: rgba(244,180,0,0.02); }
+.data-table tbody tr:hover { background: rgba(255,216,77,0.02); }
 .data-table tbody tr:last-child td { border-bottom: none; }
 
 .cell-stack { display: flex; flex-direction: column; gap: 2px; }
@@ -3154,6 +3471,17 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 
 .modal-body { padding: 24px; }
 
+.confirm-modal {
+  max-width: 400px;
+  text-align: center;
+  padding: 32px;
+}
+.confirm-icon { margin-bottom: 16px; }
+.confirm-title { font-size: 1.15rem; font-weight: 700; color: var(--c-black); margin-bottom: 8px; }
+.confirm-message { font-size: 0.9rem; color: #666; margin-bottom: 24px; line-height: 1.5; }
+.confirm-actions { display: flex; gap: 12px; justify-content: center; }
+.confirm-actions .btn { min-width: 120px; }
+
 .form-group { margin-bottom: 18px; }
 .form-group label { display: block; font-weight: 600; font-size: 0.85rem; color: var(--c-black); margin-bottom: 6px; }
 
@@ -3170,7 +3498,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   outline: none;
   transition: border-color 0.2s;
 }
-.form-input:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(244,180,0,0.1); }
+.form-input:focus { border-color: var(--c-primary); box-shadow: 0 0 0 3px rgba(255,216,77,0.1); }
 .form-input::placeholder { color: var(--c-gray-light); }
 
 .price-input { position: relative; display: flex; align-items: center; }
@@ -3202,7 +3530,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   transition: all 0.2s;
 }
 .material-chip:hover { border-color: var(--c-primary); }
-.material-chip.selected { background: rgba(244,180,0,0.1); border-color: var(--c-primary); color: var(--c-primary); }
+.material-chip.selected { background: rgba(255,216,77,0.1); border-color: var(--c-primary); color: var(--c-primary); }
 
 .selected-materials {
   padding: 8px 12px;
@@ -3213,7 +3541,81 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 .selected-list { font-size: 0.82rem; color: var(--c-black); }
 
 .image-urls { display: flex; flex-direction: column; gap: 8px; }
-.image-url-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.image-url-row { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; align-items: center; }
+
+.image-preview-arrows {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.preview-arrow-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.preview-arrow-btn:hover { background: rgba(255,255,255,0.25); }
+
+.image-remove-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #ef4444;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+.image-remove-btn:hover { background: #fef2f2; border-color: #ef4444; }
+
+.image-main-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.image-main-btn:hover { border-color: #FFD84D; background: #fffbeb; }
+.image-main-btn.active { border-color: #FFD84D; background: #fffbeb; }
+
+.image-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px dashed #d1d5db;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7280;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: fit-content;
+}
+.image-add-btn:hover { border-color: #9ca3af; color: #374151; }
 
 .images-preview-grid {
   display: grid;
@@ -3227,6 +3629,10 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   overflow: hidden;
   border: 1px solid var(--c-border);
   background: var(--c-light);
+}
+
+.image-preview-item.is-main {
+  border: 2px solid #FFD84D;
 }
 
 .image-preview-item img { width: 100%; height: 80px; object-fit: cover; display: block; }
@@ -3306,7 +3712,117 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   margin: 0 auto;
 }
 
+.spinner-sm {
+  width: 16px;
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+}
+
+.btn-loading-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== ORDERS / PEDIDOS ===== */
+.orders-toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.orders-search {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.orders-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.88rem;
+  font-family: var(--font-body);
+  color: var(--c-black);
+  background: transparent;
+}
+
+.orders-filter-select {
+  padding: 10px 14px;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-family: var(--font-body);
+  color: var(--c-black);
+  background: var(--c-white);
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.orders-table-container {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.orders-table thead {
+  background: var(--c-light);
+}
+
+.orders-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--c-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.orders-table td {
+  padding: 14px 16px;
+  border-top: 1px solid var(--c-border);
+  font-size: 0.88rem;
+}
+
+.orders-table tbody tr:hover {
+  background: var(--c-light);
+}
+
+.order-id-cell {
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--c-dark);
+  font-size: 0.82rem;
+}
+
+.status-select {
+  padding: 6px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-family: var(--font-body);
+  cursor: pointer;
+  background: var(--c-white);
+}
+
+.status-select.completed { border-color: #10b981; color: #10b981; }
+.status-select.pending { border-color: #f59e0b; color: #f59e0b; }
+.status-select.cancelled { border-color: #ef4444; color: #ef4444; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
@@ -3338,7 +3854,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 
   .sidebar-open .sidebar-overlay { display: block; }
 
-  .main-area { margin-left: 0; }
+  .main-area { margin-left: 0; overflow-x: hidden; }
 
   .menu-toggle { display: flex; }
 
@@ -3347,6 +3863,9 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   .topbar-user .user-info { display: none; }
 
   .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .stats-row-4 { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid-3 { grid-template-columns: 1fr; }
+  .dashboard-charts-grid { grid-template-columns: repeat(2, 1fr); }
 
   .main-content { padding: 16px; }
 
@@ -3359,6 +3878,7 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   .products-grid { grid-template-columns: 1fr; }
 
   .cat-stats-row { grid-template-columns: repeat(2, 1fr); }
+  .cat-stats-row-5 { grid-template-columns: repeat(3, 1fr); }
   .cat-toolbar { flex-direction: column; align-items: stretch; }
   .cat-toolbar-left,
   .cat-toolbar-right { flex-wrap: wrap; }
@@ -3369,7 +3889,289 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 
 @media (max-width: 480px) {
   .stats-row { grid-template-columns: 1fr; }
+  .stats-row-4 { grid-template-columns: 1fr; }
   .stat-card { padding: 14px; }
   .stat-value { font-size: 1.1rem; }
+}
+
+/* ===== MOBILE DASHBOARD FIXES ===== */
+@media (max-width: 640px) {
+  .main-content { padding: 12px; overflow-x: hidden; }
+
+  .page-title { font-size: 1.1rem; }
+  .page-subtitle { font-size: 0.78rem; }
+
+  .content-header { flex-direction: column; gap: 12px; }
+
+  .section-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .section-top .btn { width: 100%; justify-content: center; }
+
+  .stats-row,
+  .stats-row-4,
+  .cat-stats-row,
+  .cat-stats-row-5,
+  .cat-stats-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .stat-card,
+  .cat-stat-card {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .stat-icon,
+  .cat-stat-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .stat-icon svg,
+  .cat-stat-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .stat-label { font-size: 0.68rem; }
+  .stat-value { font-size: 1rem; }
+
+  .cat-stat-value { font-size: 1rem; }
+  .cat-stat-label { font-size: 0.68rem; }
+  .cat-stat-sub { font-size: 0.6rem; }
+
+  .dashboard-charts-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .prod-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .prod-toolbar-left {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  .prod-filter-select {
+    min-width: auto;
+    white-space: nowrap;
+    padding: 7px 10px;
+    font-size: 0.78rem;
+  }
+
+  .search-sm { max-width: 100%; width: 100%; }
+
+  .prod-toolbar-right { width: 100%; }
+
+  /* ===== PRODUCTS TABLE -> CARDS ON MOBILE ===== */
+  .cat-table-wrap {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .cat-table-wrap .cat-table {
+    display: block;
+  }
+
+  .cat-table-wrap .cat-table thead {
+    display: none;
+  }
+
+  .cat-table-wrap .cat-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cat-table-wrap .cat-table tbody tr {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+    padding: 12px;
+    gap: 8px 12px;
+  }
+
+  .cat-table-wrap .cat-table td {
+    padding: 0;
+    border: none;
+    font-size: 0.82rem;
+  }
+
+  .cat-table-wrap .col-check { display: none; }
+
+  .cat-table-wrap .col-product {
+    min-width: 0;
+    flex: 1 1 100%;
+  }
+
+  .cat-table-wrap .col-product .prod-cell {
+    gap: 10px;
+  }
+
+  .cat-table-wrap .prod-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+  }
+
+  .cat-table-wrap .prod-name {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .cat-table-wrap .prod-desc {
+    max-width: 100%;
+    font-size: 0.72rem;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+  }
+
+  .cat-table-wrap .col-category {
+    min-width: 0;
+  }
+
+  .cat-table-wrap .col-category .prod-category-badge {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+  }
+
+  .cat-table-wrap .col-price {
+    min-width: 0;
+  }
+
+  .cat-table-wrap .col-price .prod-price {
+    font-size: 1rem;
+  }
+
+  .cat-table-wrap .col-status {
+    min-width: 0;
+  }
+
+  .cat-table-wrap .prod-status-badge {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+  }
+
+  .cat-table-wrap .col-featured {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .cat-table-wrap .prod-star-btn {
+    padding: 2px;
+  }
+
+  .cat-table-wrap .col-actions {
+    min-width: 0;
+    margin-left: auto;
+  }
+
+  .cat-table-wrap .cat-actions {
+    justify-content: flex-end;
+  }
+
+  .cat-table-wrap .cat-table tbody tr:hover {
+    background: var(--c-white);
+  }
+
+  /* Other tables still scroll horizontally */
+  .cat-table-container,
+  .orders-table-container,
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cat-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cat-toolbar-left,
+  .cat-toolbar-right {
+    width: 100%;
+  }
+
+  .cat-toolbar-right {
+    flex-direction: column;
+  }
+
+  .cat-search-input { width: 100%; }
+
+  .orders-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .orders-search { width: 100%; }
+
+  .orders-filter-select {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .sales-stats-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .mini-stat { padding: 14px; }
+
+  .cat-pagination {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .cat-pagination-info { font-size: 0.75rem; text-align: center; }
+
+  .empty-state { padding: 40px 16px; }
+  .empty-icon { font-size: 2.5rem; }
+  .empty-state h3 { font-size: 1rem; }
+  .empty-state p { font-size: 0.82rem; }
+
+  .modal { max-width: calc(100vw - 32px); margin: 0 16px; }
+  .modal-header { padding: 16px 16px 0; }
+  .modal-body { padding: 16px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-actions { flex-direction: column; }
+  .form-actions .btn { width: 100%; justify-content: center; }
+
+  .topbar {
+    padding: 0 12px;
+    gap: 8px;
+    overflow: hidden;
+  }
+
+  .home-btn { display: none; }
 }
 </style>

@@ -1,12 +1,12 @@
 // EJEMPLO DE IMPLEMENTACIÓN BACKEND PARA WOMPI WIDGET
 // Este archivo es solo de referencia - implementar en tu backend de Azure Functions
 
-/\*
+/*
 ENDPOINT: POST /v1/wompi/payments
 
 ENTRADA (CreateWompiPurchaseRequest):
 {
-"wallpaperNumbers": [1, 2, 3],
+"items": [{ "productId": 1, "quantity": 2, "selectedColor": "azul" }],
 "buyerEmail": "usuario@email.com",
 "buyerName": "Juan Pérez",
 "buyerIdentificationNumber": "123456789",
@@ -21,17 +21,16 @@ RESPUESTA NECESARIA PARA EL WIDGET:
 "data": {
 "purchase": {
 "id": "purchase_123456789",
-"wallpaperNumbers": [1, 2, 3],
-"amount": 4500000, // amount en centavos (45000 \* 100)
+"totalAmount": 4500000, // amount en centavos (45000 \* 100)
 "currency": "COP",
 "status": "PENDING",
-"provider": "WOMPI"
+"orderStatus": "PENDING"
 },
 "payment": {
-"transactionId": "wompi_trans_123456789",
-"reference": "wallpaper_ref_123456789", // Referencia única
+"wompiTransactionId": "wompi_trans_123456789",
+"reference": "pikiitos_ref_123456789", // Referencia única
 "publicKey": "pub_test_X0zDA9xoKdePzhd8a0x9HAez7HgGO2fH", // Tu llave pública de Wompi
-"signature": "37c8407747e595535433ef8f6a811d853cd943046624a0ec04662b17bbf33bf5" // Firma de integridad SHA256
+"paymentUrl": "https://checkout.wompi.dev/..."
 }
 }
 }
@@ -42,7 +41,7 @@ PASOS PARA GENERAR LA FIRMA DE INTEGRIDAD:
    referencia + monto_en_centavos + moneda + secreto_integridad
 
 Ejemplo:
-"wallpaper_ref_1234567894500000COPprod_integrity_Z5mMke9x0k8gpErbDqwrJXMqsI6SFli6"
+"pikiitos_ref_1234567894500000COPprod_integrity_Z5mMke9x0k8gpErbDqwrJXMqsI6SFli6"
 
 2. Generar SHA256 del string concatenado:
 

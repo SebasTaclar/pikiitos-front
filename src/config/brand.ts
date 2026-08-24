@@ -1,12 +1,14 @@
 export const BRAND = {
-	name: 'DISEF Comercializadora Industrial'
+	name: 'Pikiitos'
 } as const
 
 export const SOCIALS = {
-	facebookUrl: 'https://www.facebook.com/disefcolombia/',
-	instagramUrl: 'https://www.instagram.com/disefcolombia/',
-	instagramHandle: '@disefcolombia',
-	tiktokUrl: 'https://www.tiktok.com/@disefcolombia'
+	facebookUrl: 'https://facebook.com/pikiitos',
+	instagramUrl: 'https://www.instagram.com/pikiitos.co?igsi=MWljd2NsY3p6NTJvcQ%3D%3D&utm_source=qr',
+	instagramHandle: '@pikiitos.co',
+	tiktokUrl: 'https://www.tiktok.com/@pikiitos?_r=1&_t=ZS-994hJPhcsEu',
+	whatsappNumber: '573206770595',
+	whatsappUrl: 'https://wa.me/573206770595'
 } as const
 
 export const STORE = {

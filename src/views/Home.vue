@@ -2,19 +2,25 @@
   <main class="home-main">
     <Hero />
 
-    <CategoriesSection />
+    <div id="categorias">
+      <CategoriesSection />
+    </div>
 
-    <ProductsSection @quick-view="handleQuickView" />
+    <ProductsSection />
 
     <EmotionalBanner />
 
-    <StorySection />
+    <div id="nosotros">
+      <StorySection />
+    </div>
 
     <Benefits />
 
     <Testimonials />
 
-    <Newsletter />
+    <div id="contacto">
+      <Newsletter />
+    </div>
   </main>
 </template>
 
@@ -27,13 +33,6 @@ import StorySection from '@/components/StorySection.vue'
 import Benefits from '@/components/Benefits.vue'
 import Testimonials from '@/components/Testimonials.vue'
 import Newsletter from '@/components/Newsletter.vue'
-import { useProductQuickView } from '@/composables/useProductQuickView'
-
-const { open: openQuickView } = useProductQuickView()
-
-const handleQuickView = (product: unknown) => {
-  openQuickView(product as never)
-}
 
 defineOptions({ name: 'HomeView' })
 </script>

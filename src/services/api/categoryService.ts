@@ -29,10 +29,7 @@ class CategoryService {
         }
       }
 
-      console.log('🌐 [categoryService] Llamando GET', endpoint)
-      const result = await apiClient.get<GetCategoriesResponse>(endpoint)
-      console.log('📥 [categoryService] Respuesta recibida:', result)
-      return result
+      return await apiClient.get<GetCategoriesResponse>(endpoint)
     } catch (error) {
       console.error('❌ [categoryService] Error fetching categories:', error)
       throw error

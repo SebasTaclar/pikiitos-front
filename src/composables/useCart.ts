@@ -25,7 +25,7 @@ export interface Product {
 // Función para cargar el carrito desde localStorage
 const loadCartFromStorage = (): CartItem[] => {
   try {
-    const storedCart = localStorage.getItem('appstorepro_cart')
+    const storedCart = localStorage.getItem('pikiitos_cart')
     return storedCart ? JSON.parse(storedCart) : []
   } catch (error) {
     console.error('Error al cargar el carrito desde localStorage:', error)
@@ -36,7 +36,7 @@ const loadCartFromStorage = (): CartItem[] => {
 // Función para guardar el carrito en localStorage
 const saveCartToStorage = (items: CartItem[]) => {
   try {
-    localStorage.setItem('appstorepro_cart', JSON.stringify(items))
+    localStorage.setItem('pikiitos_cart', JSON.stringify(items))
   } catch (error) {
     console.error('Error al guardar el carrito en localStorage:', error)
   }

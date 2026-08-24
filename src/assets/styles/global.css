@@ -1,23 +1,23 @@
-/* SOYDANI - Paleta de colores Rojo, Negro, Blanco */
+/* PIKITOS - Paleta de colores Amarillo, Crema, Rosa */
 :root {
-  /* Colores principales - Rojo, Negro, Blanco */
-  --primary-red: #DC2626;       /* Rojo principal */
-  --secondary-red: #EF4444;     /* Rojo claro */
-  --tertiary-red: #B91C1C;      /* Rojo medio */
-  --dark-red: #991B1B;          /* Rojo oscuro */
+  /* Colores principales - Amarillo, Crema, Rosa */
+  --primary-red: #FFD84D;       /* Amarillo principal */
+  --secondary-red: #FFE87A;     /* Amarillo claro */
+  --tertiary-red: #E6C040;      /* Amarillo medio */
+  --dark-red: #CCA830;          /* Amarillo oscuro */
   --white: #ffffff;             /* Blanco */
-  --black: #000000;             /* Negro puro */
+  --black: #3D2E1F;             /* Texto oscuro */
 
-  /* Paleta de marca SOYDANI */
-  --brand-primary: #DC2626;            /* Rojo principal */
-  --brand-primary-contrast: #ffffff;   /* Texto sobre superficies rojas */
-  --brand-bg-start: #000000;           /* Negro puro inicio */
-  --brand-bg-end: #1a1a1a;             /* Gris muy oscuro fin */
-  --brand-surface: #0a0a0a;            /* Superficie cards/nav */
-  --brand-border: rgba(220, 38, 38, 0.3); /* Bordes rojos sutiles */
-  --brand-accent: #DC2626;             /* Acento rojo */
-  --brand-accent-alt: #EF4444;         /* Acento rojo claro */
-  --brand-accent-glow: rgba(220, 38, 38, 0.5);
+  /* Paleta de marca PIKITOS */
+  --brand-primary: #FFD84D;            /* Amarillo principal */
+  --brand-primary-contrast: #3D2E1F;   /* Texto sobre superficies amarillas */
+  --brand-bg-start: #FFF8E8;           /* Crema inicio */
+  --brand-bg-end: #FFFFFF;             /* Blanco fin */
+  --brand-surface: #FFFFFF;            /* Superficie cards/nav */
+  --brand-border: rgba(255, 216, 77, 0.3); /* Bordes amarillos sutiles */
+  --brand-accent: #FF8E8E;             /* Acento rosa */
+  --brand-accent-alt: #FFD1B3;         /* Acento peach */
+  --brand-accent-glow: rgba(255, 216, 77, 0.5);
   --brand-gradient: linear-gradient(135deg, var(--brand-bg-start) 0%, var(--brand-bg-end) 100%);
   --brand-accent-gradient: linear-gradient(135deg, var(--brand-accent) 0%, var(--brand-accent-alt) 100%);
   --brand-danger: #ef4444;

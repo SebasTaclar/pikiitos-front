@@ -20,7 +20,7 @@
           </span>
         </div>
         <div class="flex items-center gap-4 text-xs font-poppins text-pikiitos-text-light">
-          <a href="https://wa.me/573001234567" target="_blank" class="flex items-center gap-1.5 hover:text-pikiitos-yellow transition-colors">
+          <a href="https://wa.me/573206770595" target="_blank" class="flex items-center gap-1.5 hover:text-pikiitos-yellow transition-colors">
             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 0C4.477 0 0 4.477 0 10c0 1.89.525 3.66 1.438 5.168L0 20l4.928-1.394A9.955 9.955 0 0010 20c5.523 0 10-4.477 10-10S15.523 0 10 0zm0 18c-1.67 0-3.22-.46-4.552-1.256l-.324-.192-2.924.822.78-2.852-.21-.33A7.954 7.954 0 012 10c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/></svg>
             WhatsApp
           </a>
@@ -44,26 +44,90 @@
 
         <!-- Logo -->
         <RouterLink to="/" class="flex-shrink-0 flex items-center" @click="closeMobileMenu" aria-label="Pikiitos - Ir al inicio">
-          <Logo :size="36" :show-text="true" class="hidden sm:flex" />
-          <Logo :size="36" class="sm:hidden" />
+          <Logo :size="36" :show-text="true" />
         </RouterLink>
 
         <!-- Desktop Navigation -->
         <div class="hidden lg:flex items-center gap-1">
-          <RouterLink
-            v-for="link in navLinks"
-            :key="link.to"
-            :to="link.to"
-            class="relative px-4 py-2 text-sm font-poppins font-medium text-pikiitos-text-light rounded-full transition-all duration-300 hover:text-pikiitos-brown hover:bg-pikiitos-cream"
-            :class="{ '!text-pikiitos-brown !bg-pikiitos-yellow/15': isCurrentRoute(link.to) }"
-            @click="closeMobileMenu"
-          >
-            {{ link.label }}
-            <span
-              v-if="isCurrentRoute(link.to)"
-              class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-pikiitos-yellow rounded-full"
-            ></span>
-          </RouterLink>
+          <template v-for="link in navLinks" :key="link.to">
+            <!-- Tienda dropdown -->
+            <div
+              v-if="link.hasDropdown"
+              class="relative"
+              @mouseenter="tiendaDropdownOpen = true"
+              @mouseleave="tiendaDropdownOpen = false"
+            >
+              <RouterLink
+                :to="link.to"
+                class="relative px-4 py-2 text-sm font-poppins font-medium text-pikiitos-text-light rounded-full transition-all duration-300 hover:text-pikiitos-brown hover:bg-pikiitos-cream inline-flex items-center gap-1"
+                :class="{ '!text-pikiitos-brown !bg-pikiitos-yellow/15': isCurrentRoute(link) }"
+                @click="closeMobileMenu"
+              >
+                {{ link.label }}
+                <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': tiendaDropdownOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                <span
+                  v-if="isCurrentRoute(link)"
+                  class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-pikiitos-yellow rounded-full"
+                ></span>
+              </RouterLink>
+
+              <!-- Dropdown -->
+              <Transition
+                enter-active-class="transition-all duration-200 ease-out"
+                leave-active-class="transition-all duration-150 ease-in"
+                enter-from-class="opacity-0 -translate-y-1 scale-95"
+                enter-to-class="opacity-100 translate-y-0 scale-100"
+                leave-from-class="opacity-100 translate-y-0 scale-100"
+                leave-to-class="opacity-0 -translate-y-1 scale-95"
+              >
+                <div
+                  v-if="tiendaDropdownOpen"
+                  class="absolute top-full left-0 mt-1 w-56 bg-white rounded-2xl shadow-lg border border-pikiitos-cream/60 py-2 z-50"
+                >
+                  <RouterLink
+                    to="/productos"
+                    class="block px-4 py-2.5 text-sm font-poppins font-medium text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-colors"
+                    @click="closeMobileMenu"
+                  >
+                    Ver todos
+                  </RouterLink>
+                  <div class="mx-4 my-1 border-t border-pikiitos-cream/50"></div>
+                  <RouterLink
+                    v-for="cat in navCategories"
+                    :key="cat.id"
+                    :to="`/categorias/${slugify(cat.name)}`"
+                    class="block px-4 py-2.5 text-sm font-poppins text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-colors"
+                    @click="closeMobileMenu"
+                  >
+                    {{ cat.name }}
+                  </RouterLink>
+                  <div class="mx-4 my-1 border-t border-pikiitos-cream/50"></div>
+                  <RouterLink
+                    to="/ofertas"
+                    class="block px-4 py-2.5 text-sm font-poppins font-medium text-pikiitos-pink hover:bg-pikiitos-pink/10 transition-colors"
+                    @click="closeMobileMenu"
+                  >
+                    Ofertas
+                  </RouterLink>
+                </div>
+              </Transition>
+            </div>
+
+            <!-- Normal link -->
+            <RouterLink
+              v-else
+              :to="link.to"
+              class="relative px-4 py-2 text-sm font-poppins font-medium text-pikiitos-text-light rounded-full transition-all duration-300 hover:text-pikiitos-brown hover:bg-pikiitos-cream"
+              :class="{ '!text-pikiitos-brown !bg-pikiitos-yellow/15': isCurrentRoute(link) }"
+              @click="closeMobileMenu"
+            >
+              {{ link.label }}
+              <span
+                v-if="isCurrentRoute(link)"
+                class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-pikiitos-yellow rounded-full"
+              ></span>
+            </RouterLink>
+          </template>
         </div>
 
         <!-- Right Actions -->
@@ -72,7 +136,7 @@
           <button
             v-if="showSearch"
             @click="openSearch"
-            class="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all"
+            class="flex items-center justify-center w-10 h-10 rounded-xl text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all"
             aria-label="Buscar productos"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -80,21 +144,11 @@
 
           <!-- Account -->
           <RouterLink
-            v-if="!isLoggedIn && showSearch"
             to="/login"
             class="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all"
             aria-label="Iniciar sesión"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-          </RouterLink>
-
-          <RouterLink
-            v-else-if="isLoggedIn && isAdmin && showSearch"
-            to="/admin/products"
-            class="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all"
-            aria-label="Panel admin"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
           </RouterLink>
 
           <!-- Cart -->
@@ -111,6 +165,7 @@
               {{ totalItems > 99 ? '99+' : totalItems }}
             </span>
           </button>
+          <img src="https://res.cloudinary.com/dlwzazojt/image/upload/v1787459544/Gemini_Generated_Image_2gp6hd2gp6hd2gp6_o64izx.jpg" alt="" class="w-12.5 h-10 rounded-full object-cover hidden xl:block" />
         </div>
       </div>
     </nav>
@@ -124,36 +179,75 @@
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <div v-if="isMobileMenuOpen" class="lg:hidden bg-white border-t border-pikiitos-cream/50 shadow-soft-lg">
-        <div class="px-4 py-4 space-y-1">
-          <RouterLink
-            v-for="link in navLinks"
-            :key="link.to"
-            :to="link.to"
-            class="block px-4 py-3 text-base font-poppins font-medium rounded-2xl transition-all"
-            :class="isCurrentRoute(link.to) ? 'bg-pikiitos-yellow/15 text-pikiitos-brown' : 'text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown'"
-            @click="closeMobileMenu"
-          >
-            {{ link.label }}
-          </RouterLink>
+      <div v-if="isMobileMenuOpen" class="lg:hidden bg-white border-t border-pikiitos-cream/50 shadow-soft-lg max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <div class="px-4 py-4 space-y-4">
+          <template v-for="link in navLinks" :key="link.to">
+            <!-- Tienda mobile with subcategories -->
+            <div v-if="link.hasDropdown">
+              <button
+                @click="mobileTiendaOpen = !mobileTiendaOpen"
+                class="w-full flex items-center justify-between px-4 py-3 text-base font-poppins font-medium rounded-2xl transition-all"
+                :class="isCurrentRoute(link) ? 'bg-pikiitos-yellow/15 text-pikiitos-brown' : 'text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown'"
+              >
+                {{ link.label }}
+                <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': mobileTiendaOpen }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <Transition
+                enter-active-class="transition-all duration-200 ease-out"
+                leave-active-class="transition-all duration-150 ease-in"
+                enter-from-class="opacity-0 max-h-0"
+                enter-to-class="opacity-100 max-h-96"
+                leave-from-class="opacity-100 max-h-96"
+                leave-to-class="opacity-0 max-h-0"
+              >
+                <div v-if="mobileTiendaOpen" class="overflow-hidden ml-4 mt-1 space-y-1">
+                  <RouterLink
+                    to="/productos"
+                    class="block px-4 py-2.5 text-sm font-poppins font-medium text-pikiitos-text-light rounded-xl hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all"
+                    @click="closeMobileMenu"
+                  >
+                    Ver todos
+                  </RouterLink>
+                  <RouterLink
+                    v-for="cat in navCategories"
+                    :key="cat.id"
+                    :to="`/categorias/${slugify(cat.name)}`"
+                    class="block px-4 py-2.5 text-sm font-poppins text-pikiitos-text-light rounded-xl hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all"
+                    @click="closeMobileMenu"
+                  >
+                    {{ cat.name }}
+                  </RouterLink>
+                  <RouterLink
+                    to="/ofertas"
+                    class="block px-4 py-2.5 text-sm font-poppins font-medium text-pikiitos-pink rounded-xl hover:bg-pikiitos-pink/10 transition-all"
+                    @click="closeMobileMenu"
+                  >
+                    Ofertas
+                  </RouterLink>
+                </div>
+              </Transition>
+            </div>
+
+            <!-- Normal link -->
+            <RouterLink
+              v-else
+              :to="link.to"
+              class="block px-4 py-3 text-base font-poppins font-medium rounded-2xl transition-all"
+              :class="isCurrentRoute(link) ? 'bg-pikiitos-yellow/15 text-pikiitos-brown' : 'text-pikiitos-text-light hover:bg-pikiitos-cream hover:text-pikiitos-brown'"
+              @click="closeMobileMenu"
+            >
+              {{ link.label }}
+            </RouterLink>
+          </template>
 
           <div class="pt-3 border-t border-pikiitos-cream/50 mt-3 space-y-2">
-            <button
-              v-if="showSearch"
-              @click="openSearch(); closeMobileMenu()"
-              class="w-full flex items-center gap-3 px-4 py-3 text-base font-poppins text-pikiitos-text-light rounded-2xl hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              Buscar
-            </button>
-
-            <RouterLink v-if="!isLoggedIn" to="/login" class="block px-4 py-3 text-base font-poppins font-medium text-pikiitos-text-light rounded-2xl hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all" @click="closeMobileMenu">
-              Iniciar sesión
-            </RouterLink>
-
             <div v-if="isLoggedIn" class="px-4 py-3 text-base font-poppins font-medium text-pikiitos-brown bg-pikiitos-cream/50 rounded-2xl">
               Hola, {{ username }}
             </div>
+
+            <RouterLink v-if="!isLoggedIn" to="/login" class="block px-4 py-4 pt-16 text-base font-poppins font-medium text-pikiitos-text-light rounded-2xl hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all" @click="closeMobileMenu">
+              Iniciar sesión
+            </RouterLink>
 
             <RouterLink v-if="isLoggedIn && isAdmin" to="/admin/products" class="block px-4 py-3 text-base font-poppins font-medium text-pikiitos-text-light rounded-2xl hover:bg-pikiitos-cream hover:text-pikiitos-brown transition-all" @click="closeMobileMenu">
               Panel admin
@@ -179,27 +273,69 @@ import router from '@/router'
 import Logo from '@/components/Logo.vue'
 import GlobalSearchOverlay from '@/components/GlobalSearchOverlay.vue'
 import { useQuotation } from '@/composables/useQuotation'
+import { useCategories } from '@/composables/useCategories'
 
 const isLoggedIn = ref(false)
 const username = ref('')
 const isMobileMenuOpen = ref(false)
 const isSearchOpen = ref(false)
 const isScrolled = ref(false)
+const tiendaDropdownOpen = ref(false)
+const mobileTiendaOpen = ref(false)
+const currentSection = ref('')
 
 const { totalItems, toggleDrawer } = useQuotation()
+const { categories: navCategories, loadCategories } = useCategories()
 
 const currentRoute = useRoute()
 const isAdmin = computed(() => authService.isAdmin())
 const showSearch = computed(() => !currentRoute.path.startsWith('/admin') && currentRoute.path !== '/login')
 
 const navLinks = [
-  { to: '/', label: 'Inicio' },
-  { to: '/productos', label: 'Tienda' },
-  { to: '/colecciones', label: 'Colecciones' },
-  { to: '/nosotros', label: 'Nuestra Historia' },
+  { to: '/', label: 'Inicio', section: 'inicio' },
+  { to: '/#categorias', label: 'Colecciones', section: 'categorias' },
+  { to: '/#nosotros', label: 'Nosotros', section: 'nosotros' },
+  { to: '/productos', label: 'Tienda', hasDropdown: true },
+  { to: '/#contacto', label: 'Contacto', section: 'contacto' },
 ]
 
-const isCurrentRoute = (path: string): boolean => currentRoute.path === path
+const sectionIds = ['inicio', 'categorias', 'nosotros', 'contacto']
+
+function slugify(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+}
+
+const isCurrentRoute = (link: { to: string; section?: string }): boolean => {
+  if (currentRoute.path !== '/') return currentRoute.path === link.to
+  if (link.section) return currentSection.value === link.section
+  return currentRoute.path === link.to
+}
+
+const detectSection = () => {
+  if (currentRoute.path !== '/') {
+    currentSection.value = ''
+    return
+  }
+
+  const scrollY = window.scrollY + 120
+
+  for (let i = sectionIds.length - 1; i >= 0; i--) {
+    const el = document.getElementById(sectionIds[i])
+    if (el && el.offsetTop <= scrollY) {
+      currentSection.value = sectionIds[i]
+      return
+    }
+  }
+
+  currentSection.value = 'inicio'
+}
 
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
@@ -207,6 +343,7 @@ const toggleMobileMenu = () => {
 
 const closeMobileMenu = () => {
   isMobileMenuOpen.value = false
+  mobileTiendaOpen.value = false
 }
 
 const openSearch = () => {
@@ -215,6 +352,7 @@ const openSearch = () => {
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 10
+  detectSection()
 }
 
 const checkAuthStatus = () => {
@@ -241,6 +379,8 @@ const handleMobileLogout = () => {
 
 onMounted(() => {
   checkAuthStatus()
+  loadCategories()
+  detectSection()
   window.addEventListener('scroll', handleScroll, { passive: true })
 })
 
@@ -251,6 +391,7 @@ onUnmounted(() => {
 watch(currentRoute, () => {
   checkAuthStatus()
   closeMobileMenu()
+  detectSection()
 })
 
 defineOptions({ name: 'PikiitosNavbar' })

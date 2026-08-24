@@ -1,5 +1,5 @@
 ### Variables
-@baseUrl = https://appstorepro-back-dwgtarbdaecbdvfw.centralus-01.azurewebsites.net
+@baseUrl = https://pikiitos-back-afacbwcsg4hqdvd6.eastus-01.azurewebsites.net
 # @baseUrl = http://localhost:7071
 
 @token = YOUR_JWT_TOKEN_HERE

@@ -19,7 +19,6 @@ class ProductService {
     try {
       let endpoint = '/products'
 
-      // Agregar query params si existen
       if (params) {
         const queryParams = new URLSearchParams()
         if (params.name) queryParams.append('name', params.name)
@@ -32,12 +31,9 @@ class ProductService {
         }
       }
 
-      console.log('🌐 [productService] Llamando GET', endpoint)
-      const result = await apiClient.get<GetProductsResponse>(endpoint)
-      console.log('📥 [productService] Respuesta recibida:', result)
-      return result
+      return await apiClient.get<GetProductsResponse>(endpoint)
     } catch (error) {
-      console.error('❌ [productService] Error fetching products:', error)
+      console.error('Error fetching products:', error)
       throw error
     }
   }
@@ -47,12 +43,9 @@ class ProductService {
    */
   async getProductById(id: number): Promise<ApiResponse<Product>> {
     try {
-      console.log('🌐 [productService] Llamando GET /products/', id)
-      const result = await apiClient.get<Product>(`/products/${id}`)
-      console.log('📥 [productService] Producto recibido:', result)
-      return result
+      return await apiClient.get<Product>(`/products/${id}`)
     } catch (error) {
-      console.error('❌ [productService] Error fetching product by ID:', error)
+      console.error('Error fetching product by ID:', error)
       throw error
     }
   }
@@ -64,12 +57,9 @@ class ProductService {
     productData: CreateProductRequest,
   ): Promise<ApiResponse<CreateProductResponse>> {
     try {
-      console.log('🌐 [productService] Llamando POST /products', productData)
-      const result = await apiClient.post<CreateProductResponse>('/products', productData)
-      console.log('📥 [productService] Producto creado:', result)
-      return result
+      return await apiClient.post<CreateProductResponse>('/products', productData)
     } catch (error) {
-      console.error('❌ [productService] Error creating product:', error)
+      console.error('Error creating product:', error)
       throw error
     }
   }
@@ -82,12 +72,9 @@ class ProductService {
     productData: UpdateProductRequest,
   ): Promise<ApiResponse<Product>> {
     try {
-      console.log('🌐 [productService] Llamando PUT /products/', id, productData)
-      const result = await apiClient.put<Product>(`/products/${id}`, productData)
-      console.log('📥 [productService] Producto actualizado:', result)
-      return result
+      return await apiClient.put<Product>(`/products/${id}`, productData)
     } catch (error) {
-      console.error('❌ [productService] Error updating product:', error)
+      console.error('Error updating product:', error)
       throw error
     }
   }
@@ -97,16 +84,12 @@ class ProductService {
    */
   async deleteProduct(id: number): Promise<ApiResponse<{ message: string }>> {
     try {
-      console.log('🌐 [productService] Llamando DELETE /products/', id)
-      const result = await apiClient.delete<{ message: string }>(`/products/${id}`)
-      console.log('📥 [productService] Producto eliminado:', result)
-      return result
+      return await apiClient.delete<{ message: string }>(`/products/${id}`)
     } catch (error) {
-      console.error('❌ [productService] Error deleting product:', error)
+      console.error('Error deleting product:', error)
       throw error
     }
   }
 }
 
-// Instancia singleton del servicio de productos
 export const productService = new ProductService()

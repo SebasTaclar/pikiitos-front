@@ -8,8 +8,10 @@ export interface QuotationItem {
   image: string
   quantity: number
   category: string
+  categoryName?: string
   observations?: string
   price?: number
+  characteristic?: string
 }
 
 export interface QuotationProduct {
@@ -20,12 +22,13 @@ export interface QuotationProduct {
   price: number
   image: string
   category: string
+  categoryName?: string
   description: string
   inStock: boolean
   originalPrice?: number
 }
 
-const STORAGE_KEY = 'disef_quotation'
+const STORAGE_KEY = 'pikiitos_quotation'
 
 const loadFromStorage = (): QuotationItem[] => {
   try {
@@ -54,7 +57,7 @@ watch(quotationItems, (newItems) => {
 
 function buildWhatsAppMessage(items: QuotationItem[]): string {
   const lines: string[] = []
-  lines.push('Hola DISEF.')
+  lines.push('Hola Pikiitos.')
   lines.push('')
   lines.push('Estoy interesado en recibir una cotización de los siguientes productos:')
   lines.push('')
@@ -91,18 +94,23 @@ export function useQuotation() {
     return quotationItems.value.reduce((total, item) => total + item.quantity, 0)
   })
 
+  const totalPrice = computed(() => {
+    return quotationItems.value.reduce((total, item) => total + (item.price || 0) * item.quantity, 0)
+  })
+
   const addToQuotation = (
     product: QuotationProduct,
     quantity: number = 1,
-    observations?: string
+    characteristic?: string
   ) => {
-    const existing = quotationItems.value.find(item => item.id === product.id)
+    const key = characteristic ? `${product.id}_${characteristic}` : product.id
+    const existing = quotationItems.value.find(item => {
+      const itemKey = item.characteristic ? `${item.id}_${item.characteristic}` : item.id
+      return itemKey === key
+    })
 
     if (existing) {
       existing.quantity += quantity
-      if (observations && observations.trim()) {
-        existing.observations = observations
-      }
     } else {
       quotationItems.value.push({
         id: product.id,
@@ -112,8 +120,9 @@ export function useQuotation() {
         image: product.image,
         quantity,
         category: product.category,
-        observations,
-        price: product.price
+        categoryName: product.categoryName,
+        price: product.price,
+        characteristic
       })
     }
   }
@@ -167,13 +176,14 @@ export function useQuotation() {
   const sendToWhatsApp = () => {
     const message = buildWhatsAppMessage(quotationItems.value)
     const encoded = encodeURIComponent(message)
-    window.open(`https://wa.me/573229118168?text=${encoded}`, '_blank')
+    window.open(`https://wa.me/573206770595?text=${encoded}`, '_blank')
   }
 
   return {
     quotationItems: computed(() => quotationItems.value),
     isDrawerOpen: computed(() => isDrawerOpen.value),
     totalItems,
+    totalPrice,
     addToQuotation,
     removeFromQuotation,
     updateQuantity,

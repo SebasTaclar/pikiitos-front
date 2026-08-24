@@ -43,7 +43,7 @@
 2. Inicia sesión con tu cuenta de Google
 3. Haz clic en "Agregar propiedad"
 4. Selecciona "Prefijo de URL"
-5. Ingresa: `https://mistorepro.com`
+5. Ingresa: `https://pikiitos.co`
 
 ### Paso 2: Verificar Propiedad del Sitio
 Elige uno de estos métodos:
@@ -73,14 +73,12 @@ Elige uno de estos métodos:
 
 ### Paso 4: Solicitar Indexación
 1. Ve a "Inspección de URLs"
-2. Ingresa tu URL principal: `https://mistorepro.com`
-3. Haz clic en "Solicitar indexación"
-4. Repite para páginas importantes:
-   - https://mistorepro.com/iphone
-   - https://mistorepro.com/mac
-   - https://mistorepro.com/ipad
-   - https://mistorepro.com/apple-watch
-   - https://mistorepro.com/accesorios
+2. Ingresa tu URL principal: `https://pikiitos.co`
+3. Haz clic en "Solicitar indexacion"
+4. Repite para paginas importantes:
+   - https://pikiitos.co/ninas
+   - https://pikiitos.co/ninos
+   - https://pikiitos.co/ofertas
 
 ---
 
@@ -92,7 +90,7 @@ Elige uno de estos métodos:
 3. Haz clic en "Add a Site"
 
 ### Paso 2: Verificación
-1. Ingresa: `https://mistorepro.com`
+1. Ingresa: `https://pikiitos.co`
 2. Selecciona método de verificación (Meta Tag)
 3. Copia el código que te proporcionen
 4. Edita `index.html` y descomenta:
@@ -103,7 +101,7 @@ Elige uno de estos métodos:
 
 ### Paso 3: Enviar Sitemap a Bing
 1. Ve a "Sitemaps"
-2. Agrega: `https://mistorepro.com/sitemap.xml`
+2. Agrega: `https://pikiitos.co/sitemap.xml`
 3. Haz clic en "Submit"
 
 ---
@@ -160,7 +158,7 @@ Puedes usar: https://realfavicongenerator.net/
 
 1. **Google PageSpeed Insights**
    - URL: https://pagespeed.web.dev/
-   - Analiza: `https://mistorepro.com`
+   - Analiza: `https://pikiitos.co`
 
 2. **Google Rich Results Test**
    - URL: https://search.google.com/test/rich-results
@@ -176,7 +174,7 @@ Puedes usar: https://realfavicongenerator.net/
 
 5. **Security Headers**
    - URL: https://securityheaders.com/
-   - Analiza: `https://mistorepro.com`
+   - Analiza: `https://pikiitos.co`
 
 ---
 
@@ -192,7 +190,7 @@ Puedes usar: https://realfavicongenerator.net/
 
 ## ✅ Checklist de Verificación
 
-- [ ] Sitio desplegado y accesible en `https://mistorepro.com`
+- [ ] Sitio desplegado y accesible en `https://pikiitos.co`
 - [ ] Certificado SSL activo (HTTPS)
 - [ ] Google Search Console configurado y verificado
 - [ ] Sitemap enviado a Google Search Console
@@ -210,7 +208,7 @@ Puedes usar: https://realfavicongenerator.net/
 ## 🆘 Solución de Problemas
 
 ### El sitio no aparece en Google
-1. Verifica que el sitio esté indexado: `site:mistorepro.com` en Google
+1. Verifica que el sitio este indexado: `site:pikiitos.co` en Google
 2. Revisa Google Search Console > Cobertura
 3. Asegúrate de que robots.txt no bloquee el rastreo
 4. Verifica que el sitemap esté enviado correctamente

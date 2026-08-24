@@ -1,5 +1,5 @@
 <template>
-  <section class="relative overflow-hidden bg-gradient-to-br from-pikiitos-cream via-white to-pikiitos-yellow/10 min-h-[85vh] lg:min-h-[90vh] flex items-center">
+  <section class="relative overflow-hidden bg-gradient-to-br from-pikiitos-cream via-white to-pikiitos-yellow/10 min-h-[85vh] lg:min-h-[90vh] flex items-center pt-8 lg:pt-0 pb-5 lg:pb-16">
     <!-- Floating decorative elements -->
     <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
       <div class="absolute top-20 left-[8%] w-16 h-16 bg-pikiitos-yellow/20 rounded-full animate-float blur-sm"></div>
@@ -19,7 +19,7 @@
       <div class="section-container">
         <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <!-- Text Content -->
-          <div class="text-center lg:text-left order-2 lg:order-1">
+          <div class="text-center lg:text-left order-1">
             <div class="inline-flex items-center gap-2 bg-pikiitos-yellow/15 border border-pikiitos-yellow/20 rounded-full px-4 py-2 mb-6 animate-fade-in-up">
               <span class="text-lg">🐣</span>
               <span class="text-sm font-poppins font-medium text-pikiitos-brown">Nueva colección disponible</span>
@@ -36,32 +36,10 @@
             <p class="font-poppins text-lg sm:text-xl text-pikiitos-text-light max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s">
               Diseños llenos de amor, color y alegría para que los más pequeños vivan cada momento con estilo y comodidad.
             </p>
-
-            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up" style="animation-delay: 0.3s">
-              <RouterLink to="/productos" class="btn-pikiitos text-base">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                Explorar Tienda
-              </RouterLink>
-              <RouterLink to="/colecciones" class="btn-pikiitos-outline text-base">
-                Ver Colecciones
-              </RouterLink>
-            </div>
-
-            <!-- Trust signals -->
-            <div class="flex items-center gap-6 mt-10 justify-center lg:justify-start animate-fade-in-up" style="animation-delay: 0.4s">
-              <div class="flex items-center gap-2">
-                <div class="flex -space-x-2">
-                  <div class="w-8 h-8 rounded-full bg-pikiitos-pink/20 border-2 border-white flex items-center justify-center text-xs">👶</div>
-                  <div class="w-8 h-8 rounded-full bg-pikiitos-baby/20 border-2 border-white flex items-center justify-center text-xs">👧</div>
-                  <div class="w-8 h-8 rounded-full bg-pikiitos-mint/20 border-2 border-white flex items-center justify-center text-xs">👦</div>
-                </div>
-                <span class="text-sm font-poppins text-pikiitos-text-muted">+2,000 familias felices</span>
-              </div>
-            </div>
           </div>
 
           <!-- Hero Image / Illustration -->
-          <div class="order-1 lg:order-2 flex justify-center animate-fade-in" style="animation-delay: 0.2s">
+          <div class="order-2 flex justify-center animate-fade-in" style="animation-delay: 0.2s">
             <div class="relative">
               <!-- Main circle -->
               <div class="w-72 h-72 sm:w-80 sm:h-80 lg:w-[420px] lg:h-[420px] xl:w-[480px] xl:h-[480px] rounded-full bg-gradient-to-br from-pikiitos-yellow/30 via-pikiitos-peach/20 to-pikiitos-pink/10 flex items-center justify-center relative">
@@ -96,11 +74,11 @@
                   </div>
                 </div>
 
-                <div class="absolute top-1/2 -right-8 lg:-right-6 bg-white rounded-2xl shadow-soft px-4 py-3 animate-float-delayed">
+                <div class="absolute top-[40%] -right-8 lg:top-1/2 lg:-right-6 bg-white rounded-2xl shadow-soft px-4 py-3 animate-float-delayed">
                   <div class="flex items-center gap-2">
                     <span class="text-2xl">🚚</span>
                     <div>
-                      <p class="font-poppins font-semibold text-pikiitos-brown text-sm">Envío Gratis</p>
+                      <p class="font-poppins font-semibold text-pikiitos-brown text-sm">Envíos</p>
                       <p class="font-poppins text-pikiitos-text-muted text-xs">A todo Colombia</p>
                     </div>
                   </div>
@@ -108,6 +86,17 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="order-3 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up mt-6 lg:mt-0" style="animation-delay: 0.3s">
+          <RouterLink to="/productos" class="btn-pikiitos text-base">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            Explorar Tienda
+          </RouterLink>
+          <RouterLink to="/#categorias" class="btn-pikiitos-outline text-base">
+            Ver Colecciones
+          </RouterLink>
         </div>
       </div>
     </div>
