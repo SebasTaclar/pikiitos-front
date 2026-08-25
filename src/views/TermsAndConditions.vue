@@ -39,16 +39,6 @@
                 {{ t('social.instagramLabel') }}: @{{ instagramHandle }}
               </a>
             </div>
-
-            <div class="pickup-card">
-              <h3 class="pickup-title">{{ t('termsPage.pickupTitle') }}</h3>
-              <p class="pickup-line location-name">{{ t('store.pickup.title') }}</p>
-              <p class="pickup-line">{{ t('store.pickup.addressLine') }}</p>
-              <h4 class="pickup-hours-title">{{ t('store.pickup.hoursTitle') }}</h4>
-              <p class="pickup-line">{{ t('store.pickup.hours.weekday') }}</p>
-              <p class="pickup-line">{{ t('store.pickup.hours.saturday') }}</p>
-              <p class="pickup-line">{{ t('store.pickup.hours.sunday') }}</p>
-            </div>
           </div>
         </section>
 
@@ -81,7 +71,7 @@ const { t, tm, locale } = useI18n()
 const instagramUrl = SOCIALS.instagramUrl
 const instagramHandle = SOCIALS.instagramHandle
 
-const LAST_UPDATED_ISO = '2025-12-13'
+const LAST_UPDATED_ISO = '2026-08-23'
 
 const formattedLastUpdated = computed(() => {
   const date = new Date(`${LAST_UPDATED_ISO}T00:00:00`)
@@ -266,39 +256,6 @@ const acceptAndGoBack = () => {
   background: rgb(201, 168, 89);
   box-shadow: 0 0 0 4px rgba(201, 168, 89, 0.15);
   flex-shrink: 0;
-}
-
-.pickup-card {
-  margin-top: 1.25rem;
-  background: rgba(6, 19, 24, 0.35);
-  border: 1px solid rgba(201, 168, 89, 0.12);
-  border-radius: 14px;
-  padding: 1.25rem;
-}
-
-.pickup-title {
-  margin: 0 0 0.75rem;
-  color: rgba(246, 245, 241, 0.96);
-  font-size: 1.05rem;
-  font-weight: 800;
-}
-
-.pickup-hours-title {
-  margin: 1rem 0 0.6rem;
-  color: rgba(246, 245, 241, 0.9);
-  font-size: 0.98rem;
-  font-weight: 800;
-}
-
-.pickup-line {
-  margin: 0.5rem 0;
-  color: rgba(246, 245, 241, 0.84);
-  line-height: 1.7;
-}
-
-.location-name {
-  color: rgb(201, 168, 89);
-  font-weight: 800;
 }
 
 .acceptance {

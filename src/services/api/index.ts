@@ -6,11 +6,7 @@ export * from './authService'
 export * from './brandService'
 export * from './categoryService'
 export * from './productService'
-export * from './playerService'
-export * from './teamService'
-export * from './tournamentService'
 export * from './paymentService'
-export * from './wallpaperService'
 
 // Exportar tipos comunes
 export type { ApiResponse, ApiError } from './apiConfig'

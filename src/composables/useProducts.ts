@@ -50,10 +50,11 @@ const showcaseProducts = ref<ShowcaseProduct[]>([])
 const isLoadingShowcase = ref(false)
 const showcaseError = ref<string | null>(null)
 
-// Usar el composable de productos (localStorage)
+  // Usar el composable de productos (localStorage)
 const backendProductsComposable = useBackendProducts()
 const {
   products: backendProducts,
+  loading: backendLoading,
   loadProducts,
   createProduct,
   updateProduct: updateBackendProduct,
@@ -244,6 +245,7 @@ export function useProducts() {
   return {
     // State
     products: backendProducts,
+    loading: backendLoading,
     regularProducts,
     categories: backendCategories,
     showcaseProducts,

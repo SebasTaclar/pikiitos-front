@@ -1,88 +1,34 @@
 import { ref, computed } from 'vue'
+import { categoryService } from '@/services/api/categoryService'
 import type { Category } from '@/types/CategoryType'
-import defaultCategories from '@/data/categories.json'
-
-const STORAGE_KEY = 'pikiitos_categories'
 
 // Estado global de categorías
 const categories = ref<Category[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-// Normaliza cualquier forma entrante al tipo Category
-function normalizeCategory(input: unknown): Category {
-  if (typeof input === 'object' && input !== null) {
-    const anyCat = input as Record<string, unknown>
-    const id = anyCat.id !== undefined ? String(anyCat.id) : crypto.randomUUID()
-    const name = String(anyCat.name || '')
-    const description = anyCat.description ? String(anyCat.description) : undefined
-    const imageUrls = Array.isArray(anyCat.imageUrls) ? anyCat.imageUrls.map(String) : undefined
-    const createdAtRaw = anyCat.createdAt
-    const updatedAtRaw = anyCat.updatedAt
-    return {
-      id,
-      name,
-      description,
-      imageUrls,
-      createdAt: createdAtRaw ? new Date(String(createdAtRaw)) : new Date(),
-      updatedAt: updatedAtRaw ? new Date(String(updatedAtRaw)) : undefined
-    }
-  }
-  return {
-    id: crypto.randomUUID(),
-    name: '',
-    description: '',
-    createdAt: new Date()
-  }
-}
-
-// Leer categorías desde localStorage
-function loadFromStorage(): Category[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw) as unknown[]
-      return parsed.map(normalizeCategory)
-    }
-  } catch {
-    console.warn('Error al leer categorías desde localStorage')
-  }
-  return []
-}
-
-// Guardar categorías en localStorage
-function saveToStorage(items: Category[]) {
-  try {
-    const serializable = items.map(c => ({
-      ...c,
-      createdAt: c.createdAt instanceof Date ? c.createdAt.toISOString() : String(c.createdAt),
-      updatedAt: c.updatedAt instanceof Date ? c.updatedAt.toISOString() : c.updatedAt
-    }))
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializable))
-  } catch (e) {
-    console.error('Error al guardar categorías en localStorage:', e)
-  }
-}
-
-// Cargar datos iniciales desde JSON si localStorage está vacío
-function bootstrapIfNeeded() {
-  const existing = loadFromStorage()
-  if (existing.length === 0 && defaultCategories.categories.length > 0) {
-    const normalized = defaultCategories.categories.map(normalizeCategory)
-    saveToStorage(normalized)
-    return normalized
-  }
-  return existing
-}
-
 export function useCategories() {
-  const loadCategories = async (_filters?: { name?: string; description?: string }) => {
+  const loadCategories = async (filters?: { name?: string; description?: string }) => {
     loading.value = true
     error.value = null
 
     try {
-      const stored = bootstrapIfNeeded()
-      categories.value = stored
+      const result = await categoryService.getCategories(filters)
+
+      if (result.success && result.data) {
+        const rawData = result.data
+        const items = Array.isArray(rawData) ? rawData : rawData.categories || []
+
+        categories.value = items.map((item: any) => ({
+          id: String(item.id),
+          name: item.name || '',
+          description: item.description || '',
+          imageUrls: Array.isArray(item.imageUrls) ? item.imageUrls : undefined,
+          createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
+          updatedAt: item.updatedAt ? new Date(item.updatedAt) : undefined,
+        }))
+      }
+
       return { success: true, data: categories.value }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al cargar categorías'
@@ -98,19 +44,22 @@ export function useCategories() {
     error.value = null
 
     try {
-      const newCategory: Category = {
-        id: crypto.randomUUID(),
-        name: categoryData.name,
-        description: categoryData.description,
-        imageUrls: categoryData.imageUrls,
-        createdAt: new Date()
+      const result = await categoryService.createCategory(categoryData)
+
+      if (result.success && result.data) {
+        const item = result.data as any
+        const newCategory: Category = {
+          id: String(item.id),
+          name: item.name,
+          description: item.description || '',
+          imageUrls: item.imageUrls || undefined,
+          createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
+        }
+        categories.value.push(newCategory)
+        return { success: true, data: newCategory, message: 'Categoría creada exitosamente' }
       }
 
-      const normalized = normalizeCategory(newCategory)
-      categories.value.push(normalized)
-      saveToStorage(categories.value)
-
-      return { success: true, data: normalized, message: 'Categoría creada exitosamente' }
+      return { success: false, message: 'Error al crear categoría' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al crear categoría'
       error.value = errorMessage
@@ -125,17 +74,17 @@ export function useCategories() {
     error.value = null
 
     try {
-      const index = categories.value.findIndex((cat) => cat.id === String(id))
-      if (index === -1) {
-        throw new Error('Categoría no encontrada')
+      const result = await categoryService.updateCategory(Number(id), categoryData)
+
+      if (result.success) {
+        const index = categories.value.findIndex(c => c.id === String(id))
+        if (index !== -1) {
+          categories.value[index] = { ...categories.value[index], ...categoryData, updatedAt: new Date() }
+        }
+        return { success: true, data: categories.value[index], message: 'Categoría actualizada exitosamente' }
       }
 
-      const updated = { ...categories.value[index], ...categoryData, updatedAt: new Date() }
-      const normalized = normalizeCategory(updated)
-      categories.value[index] = normalized
-      saveToStorage(categories.value)
-
-      return { success: true, data: normalized, message: 'Categoría actualizada exitosamente' }
+      return { success: false, message: 'Error al actualizar categoría' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al actualizar categoría'
       error.value = errorMessage
@@ -150,9 +99,14 @@ export function useCategories() {
     error.value = null
 
     try {
-      categories.value = categories.value.filter((cat) => cat.id !== String(id))
-      saveToStorage(categories.value)
-      return { success: true, message: 'Categoría eliminada exitosamente' }
+      const result = await categoryService.deleteCategory(Number(id))
+
+      if (result.success) {
+        categories.value = categories.value.filter(c => c.id !== String(id))
+        return { success: true, message: 'Categoría eliminada exitosamente' }
+      }
+
+      return { success: false, message: 'Error al eliminar categoría' }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Error al eliminar categoría'
       error.value = errorMessage
@@ -163,7 +117,7 @@ export function useCategories() {
   }
 
   const getCategoryById = (id: number | string): Category | undefined => {
-    return categories.value.find((cat) => cat.id === String(id))
+    return categories.value.find(c => c.id === String(id))
   }
 
   const clearError = () => {

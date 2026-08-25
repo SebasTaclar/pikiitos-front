@@ -1,29 +1,3 @@
 {
-  "brands": [
-    {
-      "id": "1",
-      "name": "Bosch",
-      "description": "Herramientas eléctricas y de medición de alta precisión"
-    },
-    {
-      "id": "2",
-      "name": "Makita",
-      "description": "Herramientas eléctricas inalámbricas y a cable profesional"
-    },
-    {
-      "id": "3",
-      "name": "3M",
-      "description": "Equipos de protección personal y seguridad industrial"
-    },
-    {
-      "id": "4",
-      "name": "Fluke",
-      "description": "Instrumentos de medición y diagnóstico eléctrico"
-    },
-    {
-      "id": "5",
-      "name": "DeWalt",
-      "description": "Herramientas eléctricas de construcción y obra pesada"
-    }
-  ]
+  "brands": []
 }

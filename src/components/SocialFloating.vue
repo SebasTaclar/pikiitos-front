@@ -21,8 +21,8 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-// Número de WhatsApp de DISEF Comercializadora Industrial
-const rawNumber = '3229118168'
+// Numero de WhatsApp de Pikiitos Store
+const rawNumber = '3206770595'
 // Normaliza a formato internacional (prepend 57 para Colombia)
 const whatsappNumber = '57' + rawNumber.replace(/[^\d]/g, '')
 
@@ -206,18 +206,23 @@ defineOptions({ name: 'SocialFloating' })
 
 @media (max-width: 480px) {
   .floating-whatsapp {
-    bottom: 10px;
-    right: 10px;
+    bottom: 20px;
+    right: 16px;
+    z-index: 9999;
   }
 
   .social-btn {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
   }
 
   .social-icon {
     width: 26px;
     height: 26px;
+  }
+
+  .social-tooltip {
+    display: none;
   }
 }
 </style>

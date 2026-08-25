@@ -28,13 +28,16 @@
               >
               <div class="item-details">
                 <h3>{{ item.name }}</h3>
-                <div v-if="item.characteristics && item.characteristics.length > 0" class="item-characteristics">
-                  <span v-for="(char, index) in item.characteristics" :key="index" class="item-char-badge">
-                    {{ char }}
+                <div v-if="item.characteristic || item.categoryName" class="item-characteristics">
+                  <span v-if="item.characteristic" class="item-char-badge">
+                    {{ item.characteristic }}
+                  </span>
+                  <span v-if="item.categoryName" class="item-char-badge item-char-category">
+                    {{ item.categoryName }}
                   </span>
                 </div>
                 <p class="item-quantity">Cantidad: {{ item.quantity }}</p>
-                <p class="item-price">${{ (item.price * item.quantity).toLocaleString() }} COP</p>
+                <p class="item-price">${{ ((item.price ?? 0) * item.quantity).toLocaleString() }} COP</p>
               </div>
             </div>
 
@@ -51,11 +54,11 @@
             </div>
             <div class="total-row">
               <span>{{ t('checkout.shipping') }}:</span>
-              <span>{{ deliveryMethod === 'delivery' ? t('checkout.shippingDeliveryValue') : t('checkout.shippingPickupValue') }}</span>
+              <span>{{ t('checkout.shippingByDestination') }}</span>
             </div>
             <div class="total-row total-final">
               <span>{{ t('checkout.total') }}:</span>
-              <span>${{ finalTotal.toLocaleString() }}</span>
+              <span>{{ t('checkout.totalAtDelivery') }}</span>
             </div>
           </div>
 
@@ -157,101 +160,51 @@
           <div class="form-section">
             <h2>{{ t('checkout.deliveryTitle') }}</h2>
 
-            <div class="delivery-options">
-              <label class="delivery-option" :class="{ 'selected': deliveryMethod === 'delivery' }">
-                <input
-                  v-model="deliveryMethod"
-                  type="radio"
-                  value="delivery"
-                  name="delivery"
-                >
-                <div class="option-content">
-                  <div class="option-header">
-                    <span class="option-icon">🚚</span>
-                    <span class="option-title">{{ t('checkout.deliveryHome') }}</span>
-                  </div>
-                  <span class="option-price">{{ t('checkout.shippingDeliveryValue') }}</span>
-                </div>
-              </label>
+            <p class="shipping-note">{{ t('checkout.shippingNote') }}</p>
 
-              <label class="delivery-option" :class="{ 'selected': deliveryMethod === 'pickup' }">
+            <!-- Dirección de envío -->
+            <div class="address-section">
+              <div class="form-group">
+                <label for="address">{{ t('checkout.address') }} <span class="required">*</span></label>
                 <input
-                  v-model="deliveryMethod"
-                  type="radio"
-                  value="pickup"
-                  name="delivery"
+                  id="address"
+                  v-model="formData.address"
+                  type="text"
+                  :placeholder="t('checkout.addressPlaceholder')"
+                  :class="{ 'error': errors.address }"
+                  @input="clearError('address')"
                 >
-                <div class="option-content">
-                  <div class="option-header">
-                    <span class="option-icon">🏪</span>
-                    <span class="option-title">{{ t('checkout.deliveryPickup') }}</span>
-                  </div>
-                  <span class="option-price">{{ t('checkout.shippingPickupValue') }}</span>
-                </div>
-              </label>
-            </div>
+                <span v-if="errors.address" class="error-message">{{ errors.address }}</span>
+              </div>
 
-            <!-- Dirección de envío (solo si es delivery) -->
-            <transition name="fade">
-              <div v-if="deliveryMethod === 'delivery'" class="address-section">
+              <div class="form-row">
                 <div class="form-group">
-                  <label for="address">{{ t('checkout.address') }} <span class="required">*</span></label>
+                  <label for="city">{{ t('checkout.city') }} <span class="required">*</span></label>
                   <input
-                    id="address"
-                    v-model="formData.address"
+                    id="city"
+                    v-model="formData.city"
                     type="text"
-                    :placeholder="t('checkout.addressPlaceholder')"
-                    :class="{ 'error': errors.address }"
-                    @input="clearError('address')"
+                    :placeholder="t('checkout.cityPlaceholder')"
+                    :class="{ 'error': errors.city }"
+                    @input="clearError('city')"
                   >
-                  <span v-if="errors.address" class="error-message">{{ errors.address }}</span>
+                  <span v-if="errors.city" class="error-message">{{ errors.city }}</span>
                 </div>
 
-                <div class="form-row">
-                  <div class="form-group">
-                    <label for="city">{{ t('checkout.city') }} <span class="required">*</span></label>
-                    <input
-                      id="city"
-                      v-model="formData.city"
-                      type="text"
-                      :placeholder="t('checkout.cityPlaceholder')"
-                      :class="{ 'error': errors.city }"
-                      @input="clearError('city')"
-                    >
-                    <span v-if="errors.city" class="error-message">{{ errors.city }}</span>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="phone">{{ t('checkout.deliveryPhone') }} <span class="required">*</span></label>
-                    <input
-                      id="phone"
-                      v-model="formData.phone"
-                      type="tel"
-                      :placeholder="t('checkout.phonePlaceholder')"
-                      :class="{ 'error': errors.phone }"
-                      @input="clearError('phone')"
-                    >
-                    <span v-if="errors.phone" class="error-message">{{ errors.phone }}</span>
-                  </div>
+                <div class="form-group">
+                  <label for="phone">{{ t('checkout.deliveryPhone') }} <span class="required">*</span></label>
+                  <input
+                    id="phone"
+                    v-model="formData.phone"
+                    type="tel"
+                    :placeholder="t('checkout.phonePlaceholder')"
+                    :class="{ 'error': errors.phone }"
+                    @input="clearError('phone')"
+                  >
+                  <span v-if="errors.phone" class="error-message">{{ errors.phone }}</span>
                 </div>
               </div>
-            </transition>
-
-            <!-- Información de pickup (solo si es pickup) -->
-            <transition name="fade">
-              <div v-if="deliveryMethod === 'pickup'" class="pickup-info">
-                <div class="info-card">
-                  <h3>📍 {{ t('checkout.pickupLocationTitle') }}</h3>
-                  <p class="location-name"><strong>{{ t('store.pickup.title') }}</strong></p>
-                  <p class="location-address">{{ t('store.pickup.addressLine') }}</p>
-
-                  <h4>⏰ {{ t('store.pickup.hoursTitle') }}</h4>
-                  <p>{{ t('store.pickup.hours.weekday') }}</p>
-                  <p>{{ t('store.pickup.hours.saturday') }}</p>
-                  <p>{{ t('store.pickup.hours.sunday') }}</p>
-                </div>
-              </div>
-            </transition>
+            </div>
           </div>
 
           <!-- Mensaje de error general -->
@@ -276,9 +229,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCart } from '@/composables/useCart'
+import { useQuotation } from '@/composables/useQuotation'
 import { paymentService } from '@/services/api/paymentService'
 import type { CreateProductPaymentRequest } from '@/services/api/paymentService'
 import { useI18n } from 'vue-i18n'
@@ -289,8 +242,10 @@ defineOptions({
 })
 
 const router = useRouter()
-const { cartItems, totalPrice, clearCart } = useCart()
+const { quotationItems, totalPrice, clearQuotation } = useQuotation()
 const { t } = useI18n()
+
+const cartItems = quotationItems
 
 const instagramUrl = SOCIALS.instagramUrl
 
@@ -306,25 +261,8 @@ const formData = ref({
   phone: ''
 })
 
-const deliveryMethod = ref<'delivery' | 'pickup'>('delivery')
 const isProcessing = ref(false)
 const errors = ref<Record<string, string>>({})
-
-watch(
-  deliveryMethod,
-  (value) => {
-    if (value === 'pickup') {
-      // Estos campos no aplican para pickup
-      formData.value.address = ''
-      formData.value.city = ''
-      formData.value.phone = ''
-      delete errors.value.address
-      delete errors.value.city
-      delete errors.value.phone
-    }
-  },
-  { immediate: true }
-)
 
 // Función para verificar si el usuario ya aceptó los términos
 const checkTermsAcceptance = () => {
@@ -356,10 +294,9 @@ onUnmounted(() => {
   window.removeEventListener('focus', handleWindowFocus)
 })
 
-// Total final (incluye envío si aplica)
+// Total final
 const finalTotal = computed(() => {
-  const shipping = deliveryMethod.value === 'delivery' ? 15000 : 0
-  return totalPrice.value + shipping
+  return totalPrice.value
 })
 
 // Validación
@@ -384,16 +321,14 @@ const validateForm = (): boolean => {
     errors.value.contactNumber = t('checkout.errors.phoneRequired')
   }
 
-  if (deliveryMethod.value === 'delivery') {
-    if (!formData.value.address.trim()) {
-      errors.value.address = t('checkout.errors.addressRequired')
-    }
-    if (!formData.value.city.trim()) {
-      errors.value.city = t('checkout.errors.cityRequired')
-    }
-    if (!formData.value.phone.trim()) {
-      errors.value.phone = t('checkout.errors.deliveryPhoneRequired')
-    }
+  if (!formData.value.address.trim()) {
+    errors.value.address = t('checkout.errors.addressRequired')
+  }
+  if (!formData.value.city.trim()) {
+    errors.value.city = t('checkout.errors.cityRequired')
+  }
+  if (!formData.value.phone.trim()) {
+    errors.value.phone = t('checkout.errors.deliveryPhoneRequired')
   }
 
   if (!formData.value.acceptTerms) {
@@ -447,8 +382,8 @@ const confirmOrder = async () => {
       }
 
       // Solo agregar selectedColor si existe
-      if (item.selectedColor) {
-        cartItem.selectedColor = item.selectedColor
+      if (item.characteristic) {
+        cartItem.selectedColor = item.characteristic
       }
 
       return cartItem
@@ -466,10 +401,8 @@ const confirmOrder = async () => {
       items: items
     }
 
-    // Si es envío a domicilio, agregar dirección
-    if (deliveryMethod.value === 'delivery') {
-      paymentRequest.shippingAddress = `${formData.value.address}, ${formData.value.city}`
-    }
+    // Dirección de envío
+    paymentRequest.shippingAddress = `${formData.value.address}, ${formData.value.city}`
 
     console.log('📤 Enviando request de pago:', paymentRequest)
 
@@ -496,7 +429,7 @@ const confirmOrder = async () => {
       console.log('💾 Purchase ID guardado:', response.data.purchase.id)
 
       // Limpiar carrito
-      clearCart()
+      clearQuotation()
       console.log('🗑️ Carrito limpiado')
 
       // Redirigir a Wompi
@@ -561,12 +494,11 @@ const goToHome = () => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap');
-
 .checkout-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, #071e25 0%, #081f2a 60%, #061318 100%);
-  padding: 5rem 1rem;
+  background: #FFF8E8;
+  padding: 10px 5rem;
+  padding-bottom: 3rem;
 }
 
 .checkout-container {
@@ -576,74 +508,88 @@ const goToHome = () => {
 
 .checkout-header {
   margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .back-button {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(201, 168, 89, 0.18);
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  background: #ffffff;
+  border: 2px solid #f5edd8;
+  padding: 0.65rem 1.25rem;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1rem;
-  transition: all 0.3s ease;
-  color: rgba(246, 245, 241, 0.9);
+  transition: all 0.2s ease;
+  color: #4A3728;
 }
 
 .back-button:hover {
-  background: rgba(201, 168, 89, 0.08);
-  transform: translateX(-4px);
-  border-color: rgba(201, 168, 89, 0.35);
+  background: #4A3728;
+  color: #ffffff;
+  border-color: #4A3728;
 }
 
 .checkout-title {
   font-size: 2rem;
-  color: rgba(246, 245, 241, 0.95);
+  color: #4A3728;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  letter-spacing: 0.5px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
 }
 
 .checkout-content {
   display: grid;
-  grid-template-columns: 1fr 1.5fr;
-  gap: 2rem;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1.5rem;
+  align-items: start;
 }
 
 /* Resumen del pedido */
 .order-summary {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.035) 100%);
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 20px rgba(74, 55, 40, 0.06);
   height: fit-content;
   position: sticky;
-  top: 2rem;
-  border: 1px solid rgba(201, 168, 89, 0.16);
+  top: 6rem;
+  border: 1px solid #f5edd8;
 }
 
 .order-summary h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: rgba(246, 245, 241, 0.95);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  letter-spacing: 0.4px;
+  font-size: 1.3rem;
+  margin-bottom: 1.25rem;
+  color: #4A3728;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
 }
 
 .cart-items {
-  max-height: 400px;
+  max-height: 380px;
   overflow-y: auto;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.cart-items::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cart-items::-webkit-scrollbar-thumb {
+  background: #f5edd8;
+  border-radius: 10px;
 }
 
 .cart-item {
   display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  border-bottom: 1px solid rgba(201, 168, 89, 0.12);
+  gap: 0.85rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #f5edd8;
 }
 
 .cart-item:last-child {
@@ -651,117 +597,121 @@ const goToHome = () => {
 }
 
 .item-image {
-  width: 80px;
-  height: 80px;
+  width: 72px;
+  height: 72px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 2px solid #f5edd8;
 }
 
 .item-details h3 {
-  font-size: 1rem;
-  margin: 0 0 0.5rem 0;
-  color: rgba(246, 245, 241, 0.92);
-}
-
-.item-quantity {
-  font-size: 0.875rem;
-  color: rgba(246, 245, 241, 0.68);
-  margin: 0.25rem 0;
-}
-
-.item-color {
-  font-size: 0.875rem;
-  color: rgb(201, 168, 89);
-  margin: 0.25rem 0;
-  font-weight: 500;
+  font-size: 0.9rem;
+  margin: 0 0 0.3rem 0;
+  color: #4A3728;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
 }
 
 .item-characteristics {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.5rem 0;
+  gap: 0.35rem;
+  margin: 0.35rem 0;
 }
 
 .item-char-badge {
-  font-size: 0.75rem;
-  color: rgba(246, 245, 241, 0.95);
-  background: rgba(201, 168, 89, 0.2);
-  padding: 0.25rem 0.6rem;
-  border-radius: 8px;
+  font-size: 0.7rem;
+  color: #4A3728;
+  background: #D7AC43;
+  padding: 0.2rem 0.55rem;
+  border-radius: 50px;
   display: inline-block;
-  font-weight: 600;
-  border: 1px solid rgba(201, 168, 89, 0.3);
-  text-transform: lowercase;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+}
+
+.item-char-category {
+  background: rgba(74, 55, 40, 0.08);
+  color: #6B5B4E;
+}
+
+.item-quantity {
+  font-size: 0.8rem;
+  color: #8B7355;
+  margin: 0.15rem 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 .item-price {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: rgb(201, 168, 89);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #4A3728;
   margin: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 .empty-cart {
   text-align: center;
   padding: 3rem 1rem;
-  color: rgba(246, 245, 241, 0.7);
+  color: #8B7355;
 }
 
 .order-total {
-  border-top: 1px solid rgba(201, 168, 89, 0.18);
+  border-top: 2px solid #f5edd8;
   padding-top: 1rem;
 }
 
 .total-row {
   display: flex;
   justify-content: space-between;
-  padding: 0.75rem 0;
-  font-size: 1rem;
-  color: rgba(246, 245, 241, 0.7);
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #8B7355;
+  font-family: 'Poppins', sans-serif;
 }
 
 .total-final {
-  border-top: 1px solid rgba(201, 168, 89, 0.18);
+  border-top: 2px solid #f5edd8;
   margin-top: 0.5rem;
-  padding-top: 1rem;
-  font-size: 1.25rem;
+  padding-top: 0.85rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  color: rgba(246, 245, 241, 0.95);
+  color: #4A3728;
+  font-family: 'Poppins', sans-serif;
 }
 
 .continue-shopping {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   text-align: center;
 }
 
 .btn-continue {
-  background: transparent;
-  color: rgb(201, 168, 89);
-  border: 2px solid rgba(201, 168, 89, 0.6);
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-size: 1rem;
+  background: #FFF8E8;
+  color: #4A3728;
+  border: 2px solid #f5edd8;
+  padding: 0.7rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
   font-weight: 600;
+  font-family: 'Poppins', sans-serif;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   width: 100%;
 }
 
 .btn-continue:hover {
-  background: rgba(201, 168, 89, 0.14);
-  color: rgba(246, 245, 241, 0.95);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(201, 168, 89, 0.12);
+  background: #4A3728;
+  color: #ffffff;
+  border-color: #4A3728;
 }
 
 /* Formulario */
 .checkout-form {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.035) 100%);
-  border-radius: 16px;
+  background: #ffffff;
+  border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(201, 168, 89, 0.16);
+  box-shadow: 0 4px 20px rgba(74, 55, 40, 0.06);
+  border: 1px solid #f5edd8;
 }
 
 .form-section {
@@ -769,52 +719,66 @@ const goToHome = () => {
 }
 
 .form-section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  color: rgba(246, 245, 241, 0.95);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  letter-spacing: 0.4px;
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
+  color: #4A3728;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #f5edd8;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: rgba(246, 245, 241, 0.88);
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #4A3728;
+  font-size: 0.85rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 .form-group input[type="text"],
 .form-group input[type="email"],
 .form-group input[type="tel"] {
   width: 100%;
-  padding: 0.875rem 1rem;
-  border: 1px solid rgba(201, 168, 89, 0.22);
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(246, 245, 241, 0.92);
+  padding: 0.8rem 1rem;
+  border: 2px solid #f5edd8;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s ease;
+  background: #FFF8E8;
+  color: #4A3728;
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: rgba(201, 168, 89, 0.75);
-  box-shadow: 0 0 0 3px rgba(201, 168, 89, 0.14);
+  border-color: #D7AC43;
+  box-shadow: 0 0 0 3px rgba(215, 172, 67, 0.15);
+  background: #ffffff;
+}
+
+.form-group input::placeholder {
+  color: #8B7355;
+  opacity: 0.6;
 }
 
 .form-group input.error {
-  border-color: rgba(255, 140, 140, 0.95);
+  border-color: #E88D92;
+  background: #FFF0F0;
 }
 
 .error-message {
-  color: rgba(255, 140, 140, 0.95);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+  color: #E88D92;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
   display: block;
+  font-family: 'Poppins', sans-serif;
 }
 
 .form-row {
@@ -826,25 +790,28 @@ const goToHome = () => {
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   cursor: pointer;
   font-weight: normal;
-  color: rgba(246, 245, 241, 0.88);
+  color: #4A3728;
+  font-size: 0.85rem;
+  font-family: 'Poppins', sans-serif;
 }
 
 .checkbox-label input[type="checkbox"] {
   width: 18px;
   height: 18px;
   cursor: pointer;
+  accent-color: #D7AC43;
 }
 
 .instagram-link-container {
-  background: linear-gradient(135deg, rgba(201, 168, 89, 0.16) 0%, rgba(201, 168, 89, 0.06) 100%);
+  background: linear-gradient(135deg, #FFF8E8, #f5edd8);
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 14px;
   margin-bottom: 1rem;
   text-align: center;
-  border: 1px solid rgba(201, 168, 89, 0.22);
+  border: 1px solid #f5edd8;
 }
 
 .instagram-text {
@@ -852,201 +819,115 @@ const goToHome = () => {
 }
 
 .instagram-link {
-  color: rgba(246, 245, 241, 0.92);
+  color: #4A3728;
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  font-family: 'Poppins', sans-serif;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .ig-dot {
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border-radius: 999px;
-  background: rgb(201, 168, 89);
-  box-shadow: 0 0 0 4px rgba(201, 168, 89, 0.15);
+  background: #D7AC43;
+  box-shadow: 0 0 0 4px rgba(215, 172, 67, 0.2);
   flex-shrink: 0;
 }
 
 .instagram-link:hover {
-  transform: scale(1.05);
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.privacy-text {
-  font-size: 0.875rem;
-  color: rgba(246, 245, 241, 0.84);
-  margin-top: 1rem;
+  color: #D7AC43;
 }
 
 .privacy-link {
-  color: rgb(201, 168, 89);
+  color: #D7AC43;
   text-decoration: underline;
   font-weight: 600;
 }
 
 .privacy-link:hover {
-  color: rgba(201, 168, 89, 0.9);
+  color: #4A3728;
 }
 
 .required {
-  color: rgba(201, 168, 89, 0.95);
-  margin-left: 0.25rem;
+  color: #E88D92;
+  margin-left: 0.15rem;
 }
 
-/* Opciones de entrega */
-.delivery-options {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+/* Dirección de envío */
+.shipping-note {
+  font-size: 0.85rem;
+  color: #8B7355;
+  margin-bottom: 1.25rem;
+  font-family: 'Poppins', sans-serif;
 }
 
-.delivery-option {
-  border: 2px solid rgba(201, 168, 89, 0.22);
-  border-radius: 12px;
-  padding: 1.25rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.delivery-option:hover {
-  border-color: rgba(201, 168, 89, 0.55);
-  background: rgba(201, 168, 89, 0.08);
-}
-
-.delivery-option.selected {
-  border-color: rgba(201, 168, 89, 0.7);
-  background: rgba(201, 168, 89, 0.1);
-  box-shadow: 0 0 0 3px rgba(201, 168, 89, 0.14);
-}
-
-.delivery-option input[type="radio"] {
-  position: absolute;
-  opacity: 0;
-}
-
-.option-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.option-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.option-icon {
-  font-size: 1.5rem;
-}
-
-.option-title {
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: rgba(246, 245, 241, 0.92);
-}
-
-.option-price {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: rgb(201, 168, 89);
-}
-
-/* Información de pickup */
-.pickup-info {
+.address-section {
   margin-top: 1rem;
-}
-
-.info-card {
-  background: rgba(201, 168, 89, 0.08);
-  border: 1px solid rgba(201, 168, 89, 0.3);
-  border-radius: 12px;
-  padding: 1.5rem;
-}
-
-.info-card h3 {
-  font-size: 1.125rem;
-  margin-bottom: 1rem;
-  color: #ffffff;
-}
-
-.info-card h4 {
-  font-size: 1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
-  color: #f5f5f7;
-}
-
-.info-card p {
-  margin: 0.5rem 0;
-  color: rgba(246, 245, 241, 0.84);
-  line-height: 1.6;
-}
-
-.location-name {
-  color: rgb(201, 168, 89) !important;
-  font-size: 1rem;
-}
-
-.location-address {
-  color: rgba(246, 245, 241, 0.84) !important;
-  font-size: 0.95rem;
-  margin-bottom: 1rem !important;
 }
 
 /* Alerta de error */
 .error-alert {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(255, 140, 140, 0.55);
-  border-radius: 12px;
+  background: #FFF0F0;
+  border: 1px solid #E88D92;
+  border-radius: 14px;
   padding: 1rem;
   margin-top: 1.5rem;
-  color: rgba(255, 140, 140, 0.95);
-  font-weight: 500;
+  color: #E88D92;
+  font-weight: 600;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
 }
 
 /* Botón de confirmar */
 .btn-confirm {
   width: 100%;
-  padding: 1.25rem;
-  background: linear-gradient(135deg, rgb(201, 168, 89) 0%, rgb(180, 145, 65) 100%);
-  color: #061318;
+  padding: 1.15rem;
+  background: #D7AC43;
+  color: #4A3728;
   border: none;
-  border-radius: 12px;
-  font-size: 1.125rem;
-  font-weight: 600;
+  border-radius: 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 2rem;
+  transition: all 0.2s ease;
+  margin-top: 1.5rem;
 }
 
 .btn-confirm:hover:not(:disabled) {
+  background: #4A3728;
+  color: #ffffff;
   transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(201, 168, 89, 0.2);
+  box-shadow: 0 8px 24px rgba(74, 55, 40, 0.2);
 }
 
 .btn-confirm:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .btn-primary {
-  padding: 0.875rem 2rem;
-  background: rgb(201, 168, 89);
-  color: #061318;
+  padding: 0.85rem 2rem;
+  background: #D7AC43;
+  color: #4A3728;
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #4A3728;
+  color: #ffffff;
 }
 
 /* Animaciones */
@@ -1083,7 +964,7 @@ const goToHome = () => {
 
 @media (max-width: 640px) {
   .checkout-page {
-    padding: 1rem 0.5rem;
+    padding: 0;
   }
 
   .checkout-title {
@@ -1092,7 +973,8 @@ const goToHome = () => {
 
   .order-summary,
   .checkout-form {
-    padding: 1.5rem;
+    padding: 1.25rem;
+    border-radius: 16px;
   }
 }
 </style>

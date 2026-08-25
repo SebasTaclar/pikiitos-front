@@ -1,11 +1,11 @@
 {
-  "name": "Joyería Angelie",
-  "short_name": "Angelie",
-  "description": "Joyería en Bogotá: anillos, aretes, collares, pulseras y esmeraldas. Piezas en oro y plata con atención personalizada.",
+  "name": "Pikiitos Store",
+  "short_name": "Pikiitos",
+  "description": "Ropa infantil diseñada con amor para que cada momento sea un recuerdo inolvidable. Encuentra las mejores prendas para tus peques en Bogotá.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#DC2626",
+  "background_color": "#FFF8E8",
+  "theme_color": "#FFD84D",
   "orientation": "portrait-primary",
   "lang": "es-CO",
   "dir": "ltr",
@@ -70,10 +70,10 @@
   ],
   "shortcuts": [
     {
-      "name": "Tecnología",
-      "short_name": "Tech",
-      "description": "Ver productos de tecnología",
-      "url": "/iphone",
+      "name": "Ropa Niñas",
+      "short_name": "Niñas",
+      "description": "Ver ropa para niñas",
+      "url": "/ninas",
       "icons": [
         {
           "src": "/icons/icon-96x96.png",
@@ -82,10 +82,10 @@
       ]
     },
     {
-      "name": "Navidad",
-      "short_name": "Navidad",
-      "description": "Ver decoración navideña",
-      "url": "/mac",
+      "name": "Ropa Niños",
+      "short_name": "Niños",
+      "description": "Ver ropa para niños",
+      "url": "/ninos",
       "icons": [
         {
           "src": "/icons/icon-96x96.png",
@@ -94,10 +94,10 @@
       ]
     },
     {
-      "name": "Hogar",
-      "short_name": "Hogar",
-      "description": "Ver artículos del hogar",
-      "url": "/ipad",
+      "name": "Ofertas",
+      "short_name": "Ofertas",
+      "description": "Ver ofertas especiales",
+      "url": "/ofertas",
       "icons": [
         {
           "src": "/icons/icon-96x96.png",

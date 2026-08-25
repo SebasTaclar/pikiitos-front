@@ -1,23 +1,13 @@
 import { apiClient } from './apiConfig'
 import type { ApiResponse } from './apiConfig'
 
-// Tipos para el sistema de pagos
-export interface CreatePaymentRequest {
-  wallpaperNumbers: number[]
-  buyerEmail: string
-  buyerName: string
-  buyerIdentificationNumber: string
-  buyerContactNumber: string
-  amount: number
-}
-
-// Nuevo tipo para pagos de productos del checkout
+// Tipos para el sistema de pagos de productos
 export interface CreateProductPaymentRequest {
   buyerEmail: string
   buyerName: string
   buyerIdentificationNumber: string
   buyerContactNumber: string
-  shippingAddress?: string // Opcional, solo si es envío a domicilio
+  shippingAddress?: string
   items: {
     productId: number
     quantity: number
@@ -72,43 +62,6 @@ export interface GetPurchasesResponse {
   purchases: Purchase[]
 }
 
-
-export interface PaymentResponse {
-  message: string
-  purchase: {
-    id: string
-    wallpaperNumbers: number[]
-    amount: number
-    currency: string
-    status: string
-  }
-  payment: {
-    preferenceId: string
-    paymentUrl: string
-    externalReference: string
-  }
-}
-
-export interface WompiPaymentResponse {
-  message: string
-  purchase: {
-    id: string
-    wallpaperNumbers: number[]
-    amount: number
-    currency: string
-    status: string
-    provider: string
-  }
-  payment: {
-    reference: string
-    publicKey: string
-    signature: string
-    amountInCents: number
-    currency: string
-    checkoutUrl: string // URL del Web Checkout para redirección
-  }
-}
-
 export class PaymentService {
   /**
    * Crear un nuevo pago para productos del checkout
@@ -121,34 +74,6 @@ export class PaymentService {
       return response
     } catch (error) {
       console.error('Error creating product payment:', error)
-      throw error
-    }
-  }
-
-  /**
-   * Crear un nuevo pago para un wallpaper
-   */
-  async createPayment(request: CreatePaymentRequest): Promise<ApiResponse<PaymentResponse>> {
-    try {
-      const response = await apiClient.post<PaymentResponse>('/payment/create', request)
-      return response
-    } catch (error) {
-      console.error('Error creating payment:', error)
-      throw error
-    }
-  }
-
-  /**
-   * Crear un nuevo pago con Wompi
-   */
-  async createWompiPayment(
-    request: CreatePaymentRequest,
-  ): Promise<ApiResponse<WompiPaymentResponse>> {
-    try {
-      const response = await apiClient.post<WompiPaymentResponse>('/wompi/payments', request)
-      return response
-    } catch (error) {
-      console.error('Error creating Wompi payment:', error)
       throw error
     }
   }
@@ -183,7 +108,6 @@ export class PaymentService {
 
   /**
    * Verificar si un usuario ya compró un producto específico
-   * @deprecated - Método legacy de wallpapers, adaptar para productos si es necesario
    */
   async hasUserPurchasedProduct(email: string, productName: string): Promise<boolean> {
     try {

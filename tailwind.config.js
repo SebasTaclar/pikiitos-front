@@ -29,6 +29,8 @@ export default {
         fredoka: ['"Fredoka"', 'sans-serif'],
         nunito: ['"Nunito"', 'sans-serif'],
         poppins: ['"Poppins"', 'sans-serif'],
+        script: ['"Great Vibes"', 'cursive'],
+        dancing: ['"Dancing Script"', 'cursive'],
       },
       borderRadius: {
         '4xl': '2rem',

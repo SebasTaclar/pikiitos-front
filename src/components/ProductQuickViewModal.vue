@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div v-if="open" class="qv-overlay" role="dialog" aria-modal="true" aria-label="Detalle del producto" @click="emit('close')">
     <div class="qv-modal" @click.stop>
       <button class="qv-close" type="button" aria-label="Cerrar" @click="emit('close')">
@@ -16,7 +16,7 @@
             <img :src="activeImage" :alt="product.name" loading="lazy" decoding="async" />
           </div>
 
-          <div v-if="product.images?.length" class="qv-thumbs" aria-label="Galería">
+          <div v-if="product.images?.length" class="qv-thumbs" aria-label="GalerÃ­a">
             <button
               v-for="(img, idx) in product.images"
               :key="img + idx"
@@ -40,20 +40,21 @@
 
           <div class="qv-price">
             <span class="qv-price-current">${{ formatPrice(product.price) }} COP</span>
-            <span v-if="product.originalPrice" class="qv-price-original">${{ formatPrice(product.originalPrice) }} COP</span>
+            <span v-if="product.originalPrice && product.originalPrice > product.price" class="qv-price-original">${{ formatPrice(product.originalPrice) }} COP</span>
           </div>
 
           <div v-if="product.description" class="qv-description">{{ product.description }}</div>
 
           <div v-if="product.colors?.length" class="qv-colors">
-            <div class="qv-colors-title">Características</div>
+            <div class="qv-colors-title">Talla</div>
             <div class="qv-colors-list">
               <button
                 v-for="c in product.colors"
                 :key="c"
                 type="button"
-                class="qv-color active"
-                disabled
+                class="qv-color"
+                :class="{ active: selectedColor === c }"
+                @click="selectedColor = c"
               >
                 {{ c }}
               </button>
@@ -61,23 +62,18 @@
           </div>
 
           <div class="qv-observations">
-            <label class="obs-label">Observaciones (opcional)</label>
-            <input
-              v-model="observations"
-              type="text"
-              class="obs-input"
-              placeholder="Ej: Necesito talla XL, Curva C, Entrega urgente"
-            />
           </div>
 
           <div class="qv-actions">
+            <p v-if="showSizeWarning" class="text-center text-xs text-red-400 mb-2 font-poppins animate-pulse">Selecciona una talla antes de agregar</p>
+            <p v-else-if="product.status === 'available' && product.colors?.length && !selectedColor" class="text-center text-xs text-pikiitos-text-muted mb-2 font-poppins">Escoge tu talla</p>
             <button
               type="button"
               class="qv-add"
-              :disabled="isAddDisabled"
+              :disabled="product.status !== 'available'"
               @click="addToQuotationFromModal"
             >
-              {{ product.status === 'available' ? 'Agregar a cotización' : 'No disponible' }}
+              {{ product.status === 'available' ? 'Agregar al carrito' : 'No disponible' }}
             </button>
           </div>
 
@@ -109,12 +105,13 @@ const { categories, loadCategories, getCategoryById } = useProducts()
 const activeImageIndex = ref(0)
 const selectedColor = ref<string | null>(null)
 const observations = ref('')
+const showSizeWarning = ref(false)
 
 const categoryLabel = computed(() => {
   if (!props.product) return ''
   const id = String(props.product.category || '')
   const name = getCategoryById(id)?.name
-  return (name || 'Sin categoría').toUpperCase()
+  return (name || 'Sin categorÃ­a').toUpperCase()
 })
 
 const activeImage = computed(() => {
@@ -122,13 +119,6 @@ const activeImage = computed(() => {
   if (!p) return ''
   const imgs = p.images || []
   return imgs[activeImageIndex.value] || imgs[0] || '/images/banner1.jpg'
-})
-
-const isAddDisabled = computed(() => {
-  const p = props.product
-  if (!p) return true
-  if (p.status !== 'available') return true
-  return false
 })
 
 const formatPrice = (value: number): string => {
@@ -144,7 +134,7 @@ const statusText = (status: Product['status']): string => {
     case 'out-of-stock':
       return 'Agotado'
     case 'coming-soon':
-      return 'Próximamente'
+      return 'Proximamente'
     default:
       return ''
   }
@@ -158,6 +148,15 @@ const ensureCategoriesLoaded = async () => {
 
 const addToQuotationFromModal = () => {
   if (!props.product) return
+  if (props.product.status !== 'available') return
+
+  if (props.product.colors && props.product.colors.length > 0 && !selectedColor.value) {
+    showSizeWarning.value = true
+    setTimeout(() => { showSizeWarning.value = false }, 2500)
+    return
+  }
+
+  const catName = getCategoryById(String(props.product.category || ''))?.name || ''
 
   const mapped: QuotationProduct = {
     id: props.product.id,
@@ -166,13 +165,15 @@ const addToQuotationFromModal = () => {
     brand: props.product.brand || 'N/A',
     price: props.product.price,
     image: props.product.images?.[0] || '',
-    category: getCategoryById(String(props.product.category || ''))?.name || '',
+    category: String(props.product.category || ''),
+    categoryName: catName,
     description: props.product.description,
     inStock: props.product.status === 'available',
     originalPrice: props.product.originalPrice
   }
 
-  addToQuotation(mapped, 1, observations.value || undefined)
+  addToQuotation(mapped, 1, selectedColor.value || undefined)
+  selectedColor.value = null
   observations.value = ''
   emit('close')
   openDrawer()
@@ -204,6 +205,7 @@ watch(
   () => {
     activeImageIndex.value = 0
     selectedColor.value = null
+    showSizeWarning.value = false
   },
   { immediate: true }
 )
@@ -218,55 +220,65 @@ onBeforeUnmount(() => {
   position: fixed;
   inset: 0;
   z-index: 2200;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(74, 55, 40, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
 }
 
 .qv-modal {
   width: min(1100px, calc(100% - 24px));
-  max-height: 86vh;
+  max-height: 96vh;
   overflow: auto;
-  background: var(--app-bg-primary);
-  border: 1px solid var(--app-border-color);
-  border-radius: 14px;
+  background: white;
+  border: 1px solid rgba(215, 172, 67, 0.15);
+  border-radius: 20px;
   position: relative;
-  box-shadow: var(--shadow-heavy);
+  box-shadow: 0 25px 60px rgba(74, 55, 40, 0.2), 0 0 0 1px rgba(215, 172, 67, 0.08);
 }
 
 .qv-close {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  border: 1px solid var(--app-border-color);
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--app-text-secondary);
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #6B5B4E;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s;
+  z-index: 2;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.qv-close:hover {
+  background: #4A3728;
+  color: white;
+  transform: rotate(90deg);
 }
 
 .qv-body {
-  padding: 18px;
+  padding: 24px;
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
-  gap: 18px;
+  gap: 24px;
 }
 
 .qv-hero {
-  width: 100%;
+  width: 80%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  border-radius: 12px;
-  background: var(--app-bg-secondary);
-  border: 1px solid var(--app-border-color);
+  border-radius: 16px;
+  background: #FFF8E8;
+  margin-left: 60px;
 }
 
 .qv-hero img {
@@ -274,6 +286,11 @@ onBeforeUnmount(() => {
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.4s;
+}
+
+.qv-hero:hover img {
+  transform: scale(1.03);
 }
 
 .qv-thumbs {
@@ -284,16 +301,22 @@ onBeforeUnmount(() => {
 }
 
 .qv-thumb {
-  border: 1px solid var(--app-border-color);
-  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid transparent;
+  background: white;
   border-radius: 10px;
   padding: 0;
   overflow: hidden;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.qv-thumb:hover {
+  border-color: rgba(215, 172, 67, 0.4);
 }
 
 .qv-thumb.active {
-  border-color: rgba(201, 168, 89, 0.85);
+  border-color: #D7AC43;
+  box-shadow: 0 0 0 2px rgba(215, 172, 67, 0.2);
 }
 
 .qv-thumb img {
@@ -304,101 +327,145 @@ onBeforeUnmount(() => {
 }
 
 .qv-title {
-  font-size: 1.25rem;
-  color: var(--app-text-primary);
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #4A3728;
   line-height: 1.2;
 }
 
 .qv-meta {
   margin-top: 6px;
-  font-size: 0.85rem;
-  color: var(--app-text-muted);
-  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #D7AC43;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.qv-brand, .qv-sku {
+  margin-top: 4px;
+  font-size: 0.82rem;
+  color: #8B7355;
+  font-family: "Poppins", sans-serif;
 }
 
 .qv-price {
-  margin-top: 12px;
+  margin-top: 14px;
   display: flex;
   align-items: baseline;
   gap: 10px;
+  padding: 10px 14px;
+  background: #FFF8E8;
+  border-radius: 12px;
+  border: 1px solid rgba(215, 172, 67, 0.12);
 }
 
 .qv-price-current {
-  font-size: 1.2rem;
-  color: var(--app-text-primary);
+  font-family: "Fredoka", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #4A3728;
 }
 
 .qv-price-original {
-  font-size: 0.95rem;
-  color: var(--app-text-muted);
+  font-size: 0.9rem;
+  color: #8B7355;
   text-decoration: line-through;
 }
 
 .qv-description {
-  margin-top: 12px;
-  color: var(--app-text-secondary);
-  line-height: 1.55;
+  margin-top: 14px;
+  color: #6B5B4E;
+  line-height: 1.6;
+  font-size: 0.9rem;
+  font-family: "Poppins", sans-serif;
 }
 
 .qv-colors {
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 .qv-colors-title {
-  color: var(--app-text-secondary);
-  font-size: 0.92rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #4A3728;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .qv-colors-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   margin-top: 10px;
+  margin-bottom: 8rem;
 }
 
 .qv-color {
-  border: 1px solid var(--app-border-color);
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--app-text-primary);
-  padding: 8px 10px;
-  border-radius: 10px;
-  cursor: pointer;
+  border: 1px solid rgba(215, 172, 67, 0.2);
+  background: white;
+  color: #4A3728;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
 }
 
 .qv-color.active {
-  border-color: rgba(201, 168, 89, 0.85);
-  box-shadow: 0 0 0 3px rgba(201, 168, 89, 0.14);
+  border-color: #D7AC43;
+  background: #FFF8E8;
+  box-shadow: 0 0 0 2px rgba(215, 172, 67, 0.15);
 }
 
 .qv-actions {
-  margin-top: 16px;
+  margin-top: 18px;
 }
 
 .qv-add {
   width: 100%;
-  height: 46px;
-  border-radius: 12px;
+  height: 48px;
+  border-radius: 14px;
   border: 0;
-  background: linear-gradient(135deg, rgb(201, 168, 89) 0%, rgb(180, 145, 65) 100%);
-  color: var(--black);
+  background: #4A3728;
+  color: white;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 0.92rem;
   cursor: pointer;
-  box-shadow: var(--shadow-light);
+  transition: all 0.2s;
 }
 
 .qv-add:hover {
-  background: linear-gradient(135deg, rgb(180, 145, 65) 0%, rgb(201, 168, 89) 100%);
-  box-shadow: var(--shadow-medium);
+  background: #D7AC43;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(215, 172, 67, 0.3);
+}
+
+.qv-add:active {
+  transform: scale(0.98);
 }
 
 .qv-add:disabled {
-  opacity: 0.55;
+  background: #E8DDD0;
+  color: #8B7355;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .qv-status {
   margin-top: 10px;
-  color: var(--app-text-muted);
-  font-size: 0.9rem;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  color: #8B7355;
+  text-align: center;
+}
+
+.qv-observations {
+  margin-top: 14px;
 }
 
 @media (max-width: 980px) {
@@ -409,5 +476,10 @@ onBeforeUnmount(() => {
   .qv-thumbs {
     grid-template-columns: repeat(5, minmax(0, 1fr));
   }
+
+  .qv-price-current {
+    font-size: 1.2rem;
+  }
 }
 </style>
+

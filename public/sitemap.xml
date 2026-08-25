@@ -4,100 +4,63 @@
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   
-  <!-- Página Principal -->
+  <!-- Pagina Principal -->
   <url>
-    <loc>https://www.mistorepro.com/</loc>
-    <lastmod>2025-11-26</lastmod>
+    <loc>https://pikiitos.co/</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
-  <!-- Categorías de Productos -->
+  <!-- Categorias de Productos -->
   <url>
-    <loc>https://www.mistorepro.com/iphone</loc>
-    <lastmod>2025-11-02</lastmod>
+    <loc>https://pikiitos.co/productos</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://www.mistorepro.com/mac</loc>
-    <lastmod>2025-11-02</lastmod>
+    <loc>https://pikiitos.co/categorias/ninas</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://www.mistorepro.com/ipad</loc>
-    <lastmod>2025-11-02</lastmod>
+    <loc>https://pikiitos.co/categorias/ninos</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://www.mistorepro.com/watch</loc>
-    <lastmod>2025-11-02</lastmod>
+    <loc>https://pikiitos.co/colecciones</loc>
+    <lastmod>2026-08-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://pikiitos.co/ofertas</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://www.mistorepro.com/airpods</loc>
-    <lastmod>2025-11-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mistorepro.com/accesorios</loc>
-    <lastmod>2025-11-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- Páginas de Proceso de Compra -->
-  <url>
-    <loc>https://www.mistorepro.com/checkout</loc>
-    <lastmod>2025-11-02</lastmod>
+    <loc>https://pikiitos.co/nosotros</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
+  <!-- Paginas Legales e Informacion -->
   <url>
-    <loc>https://www.mistorepro.com/payment-success</loc>
-    <lastmod>2025-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mistorepro.com/payment-pending</loc>
-    <lastmod>2025-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.mistorepro.com/payment-failure</loc>
-    <lastmod>2025-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <!-- Páginas Legales e Información -->
-  <url>
-    <loc>https://www.mistorepro.com/terms</loc>
-    <lastmod>2025-11-02</lastmod>
+    <loc>https://pikiitos.co/terms-and-conditions</loc>
+    <lastmod>2026-08-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-  </url>
-  
-  <!-- Login (no indexar, pero incluir para estructura) -->
-  <url>
-    <loc>https://www.mistorepro.com/login</loc>
-    <lastmod>2025-11-02</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
   </url>
   
 </urlset>

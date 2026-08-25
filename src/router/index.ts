@@ -45,7 +45,7 @@ const router = createRouter({
       path: '/productos',
       name: 'productos',
       component: () => import('../views/CategoryProducts.vue'),
-      props: { slug: 'todos', title: 'Tienda' },
+      props: { slug: 'todos' },
     },
     {
       path: '/categorias/:slug',
@@ -69,7 +69,7 @@ const router = createRouter({
       path: '/ofertas',
       name: 'ofertas',
       component: () => import('../views/CategoryProducts.vue'),
-      props: { slug: 'ofertas', title: 'Ofertas' },
+      props: { slug: 'ofertas' },
     },
     {
       path: '/admin/products',
@@ -94,22 +94,13 @@ const router = createRouter({
     },
     {
       path: '/checkout',
-      redirect: '/',
+      name: 'checkout',
+      component: () => import('../views/Checkout.vue'),
     },
     {
       path: '/terms-and-conditions',
       name: 'TermsAndConditions',
       component: () => import('../views/TermsAndConditions.vue'),
-    },
-    {
-      path: '/test-sync',
-      name: 'test-sync',
-      component: () => import('../views/TestSync.vue'),
-    },
-    {
-      path: '/test-purchases',
-      name: 'test-purchases',
-      component: () => import('../views/TestPurchases.vue'),
     },
     {
       path: '/:pathMatch(.*)*',

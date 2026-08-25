@@ -7,15 +7,13 @@
         <div class="drawer-header">
           <div class="drawer-header-content">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10 9 9 9 8 9"/>
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <path d="M16 10a4 4 0 01-8 0"/>
             </svg>
-            <h3>Mi Cotización</h3>
+            <h3>Mi Carrito</h3>
           </div>
-          <button type="button" @click="closeDrawer" class="drawer-close-btn" aria-label="Cerrar cotización">
+          <button type="button" @click="closeDrawer" class="drawer-close-btn" aria-label="Cerrar carrito">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="m18 6-12 12"/>
               <path d="m6 6 12 12"/>
@@ -26,61 +24,66 @@
         <!-- Content -->
         <div class="drawer-content">
           <div v-if="quotationItems.length === 0" class="drawer-empty">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="empty-icon">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-            </svg>
-            <p>No hay productos en tu cotización</p>
-            <span>Agrega productos desde el catálogo</span>
+            <div class="empty-bag">
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+            </div>
+            <p class="empty-title">Tu carrito esta vacio</p>
+            <span class="empty-sub">Agrega productos desde el catalogo</span>
+            <button type="button" @click="closeDrawer" class="empty-btn">Explorar productos</button>
           </div>
 
           <div v-else class="drawer-items">
             <div v-for="item in quotationItems" :key="item.id" class="drawer-item">
               <img :src="item.image" :alt="item.name" class="drawer-item-image" />
               <div class="drawer-item-info">
-                <h4 class="drawer-item-name">{{ item.name }}</h4>
-                <span class="drawer-item-meta">Marca: {{ item.brand }}</span>
-                <span class="drawer-item-meta">SKU: {{ item.sku }}</span>
-
-                <div class="drawer-item-quantity">
+                <div class="drawer-item-header">
+                  <h4 class="drawer-item-name">{{ item.name }}</h4>
                   <button
                     type="button"
-                    class="qty-btn qty-minus"
-                    @click="updateQuantity(item.id, item.quantity - 1)"
-                    aria-label="Disminuir cantidad"
-                  >-</button>
-                  <span class="qty-value">{{ item.quantity }}</span>
-                  <button
-                    type="button"
-                    class="qty-btn qty-plus"
-                    @click="updateQuantity(item.id, item.quantity + 1)"
-                    aria-label="Aumentar cantidad"
-                  >+</button>
+                    class="drawer-item-remove"
+                    @click="removeFromQuotation(item.id)"
+                    aria-label="Eliminar producto"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M3 6h18"/>
+                      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                  </button>
                 </div>
 
-                <div class="drawer-item-obs">
-                  <input
-                    type="text"
-                    :value="item.observations"
-                    @input="updateObs(item.id, ($event.target as HTMLInputElement).value)"
-                    placeholder="Ej: Talla 10, Curva C"
-                    class="obs-input"
-                  />
+                <div class="drawer-item-tags">
+                  <span v-if="item.characteristic" class="tag tag-size">Talla: {{ item.characteristic }}</span>
+                  <span v-if="item.categoryName" class="tag tag-category">{{ item.categoryName }}</span>
+                </div>
+
+                <div class="drawer-item-bottom">
+                  <div class="drawer-item-quantity">
+                    <button
+                      type="button"
+                      class="qty-btn"
+                      @click="updateQuantity(item.id, item.quantity - 1)"
+                      aria-label="Disminuir cantidad"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <span class="qty-value">{{ item.quantity }}</span>
+                    <button
+                      type="button"
+                      class="qty-btn qty-plus"
+                      @click="updateQuantity(item.id, item.quantity + 1)"
+                      aria-label="Aumentar cantidad"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                  </div>
+                  <span v-if="item.price" class="drawer-item-price">${{ (item.price * item.quantity).toLocaleString('es-CO') }}</span>
                 </div>
               </div>
-
-              <button
-                type="button"
-                class="drawer-item-remove"
-                @click="removeFromQuotation(item.id)"
-                aria-label="Eliminar producto"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M3 6h18"/>
-                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                </svg>
-              </button>
             </div>
           </div>
         </div>
@@ -88,17 +91,22 @@
         <!-- Footer -->
         <div v-if="quotationItems.length > 0" class="drawer-footer">
           <div class="drawer-summary">
-            <span class="summary-count">{{ totalItems }} productos seleccionados</span>
+            <div class="summary-row">
+              <span class="summary-count">{{ totalItems }} {{ totalItems === 1 ? 'producto' : 'productos' }}</span>
+              <span v-if="totalPrice > 0" class="summary-total">${{ totalPrice.toLocaleString('es-CO') }}</span>
+            </div>
           </div>
           <div class="drawer-actions">
             <button type="button" @click="closeDrawer" class="btn-continue">
-              Continuar explorando
+              Seguir explorando
             </button>
-            <button type="button" @click="sendToWhatsApp" class="btn-send-quote">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.051 3.488"/>
+            <button type="button" @click="goToCheckout" class="btn-checkout">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
               </svg>
-              Solicitar cotización
+              Comprar ahora
             </button>
           </div>
         </div>
@@ -109,27 +117,20 @@
 
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useQuotation } from '@/composables/useQuotation'
 
 const route = useRoute()
+const router = useRouter()
 
-const {
-  quotationItems,
-  isDrawerOpen,
-  totalItems,
-  removeFromQuotation,
-  updateQuantity,
-  updateObservations,
-  closeDrawer,
-  sendToWhatsApp
-} = useQuotation()
+const { quotationItems, isDrawerOpen, totalItems, totalPrice, removeFromQuotation, updateQuantity, closeDrawer } = useQuotation()
+
+const goToCheckout = () => {
+  closeDrawer()
+  router.push('/checkout')
+}
 
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
-
-const updateObs = (productId: string, value: string) => {
-  updateObservations(productId, value)
-}
 
 watch(
   () => isAdminRoute.value,
@@ -142,18 +143,23 @@ watch(
 
 <style scoped>
 .global-quotation {
-  --q-ink: #071e25;
-  --q-gold: rgb(201, 168, 89);
-  --q-gold-deep: rgb(215, 172, 67);
+  --pikiitos-brown: #4A3728;
+  --pikiitos-brown-light: #6B5B4E;
+  --pikiitos-gold: #D7AC43;
+  --pikiitos-pink: #E88D92;
+  --pikiitos-cream: #FFF8E8;
+  --pikiitos-cream-dark: #f5edd8;
+  --pikiitos-text: #4A3728;
+  --pikiitos-text-light: #8B7355;
 }
 
 /* Overlay */
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(74, 55, 40, 0.4);
   z-index: 3000;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
   animation: fadeIn 0.2s ease;
 }
 
@@ -173,7 +179,7 @@ watch(
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.15);
+  box-shadow: -8px 0 40px rgba(74, 55, 40, 0.15);
   animation: slideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -185,11 +191,11 @@ watch(
 /* Header */
 .drawer-header {
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--pikiitos-cream-dark);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #0b0b0b;
+  background: var(--pikiitos-brown);
   color: #ffffff;
 }
 
@@ -201,13 +207,14 @@ watch(
 
 .drawer-header h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #ffffff;
+  font-family: 'Fredoka', sans-serif;
 }
 
 .drawer-close-btn {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   border: none;
   border-radius: 8px;
   padding: 0.4rem;
@@ -220,7 +227,7 @@ watch(
 }
 
 .drawer-close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* Content */
@@ -230,6 +237,7 @@ watch(
   padding: 1rem 1.5rem;
 }
 
+/* Empty */
 .drawer-empty {
   display: flex;
   flex-direction: column;
@@ -237,162 +245,122 @@ watch(
   justify-content: center;
   height: 100%;
   text-align: center;
-  color: #666;
   gap: 0.5rem;
 }
 
-.empty-icon {
-  opacity: 0.3;
+.empty-bag {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: var(--pikiitos-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  color: var(--pikiitos-gold);
+}
+
+.empty-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--pikiitos-brown);
+  font-family: 'Fredoka', sans-serif;
+}
+
+.empty-sub {
+  font-size: 0.85rem;
+  color: var(--pikiitos-text-light);
   margin-bottom: 0.5rem;
 }
 
-.drawer-empty p {
-  margin: 0;
+.empty-btn {
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.5rem;
+  background: var(--pikiitos-brown);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
 }
 
-.drawer-empty span {
-  font-size: 0.85rem;
-  color: #999;
+.empty-btn:hover {
+  background: var(--pikiitos-gold);
+  color: var(--pikiitos-brown);
 }
 
 /* Items */
 .drawer-items {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
 .drawer-item {
   display: flex;
   gap: 0.85rem;
-  padding: 1rem;
-  background: #f8f8f8;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 0.9rem;
+  background: var(--pikiitos-cream);
+  border-radius: 14px;
+  border: 1px solid transparent;
   position: relative;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .drawer-item:hover {
-  border-color: rgba(201, 168, 89, 0.4);
+  border-color: var(--pikiitos-gold);
+  box-shadow: 0 2px 12px rgba(215, 172, 67, 0.15);
 }
 
 .drawer-item-image {
-  width: 70px;
-  height: 70px;
+  width: 72px;
+  height: 72px;
   object-fit: cover;
   border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .drawer-item-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.35rem;
   min-width: 0;
+}
+
+.drawer-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .drawer-item-name {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--pikiitos-brown);
   line-height: 1.3;
-}
-
-.drawer-item-meta {
-  font-size: 0.78rem;
-  color: #777;
-}
-
-.drawer-item-quantity {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.3rem;
-}
-
-.qty-btn {
-  border: 1px solid #ddd;
-  background: #fff;
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s ease;
-  color: #333;
-}
-
-.qty-btn:hover {
-  border-color: var(--q-gold);
-  color: var(--q-gold);
-}
-
-.qty-plus {
-  background: var(--q-gold);
-  border-color: var(--q-gold);
-  color: #0b0b0b;
-}
-
-.qty-plus:hover {
-  background: var(--q-gold-deep);
-}
-
-.qty-value {
-  min-width: 20px;
-  text-align: center;
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #1a1a1a;
-}
-
-.drawer-item-obs {
-  margin-top: 0.3rem;
-}
-
-.obs-input {
-  width: 100%;
-  padding: 0.35rem 0.6rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 0.78rem;
-  color: #333;
-  background: #fff;
-  transition: border-color 0.2s ease;
-  box-sizing: border-box;
-}
-
-.obs-input:focus {
-  outline: none;
-  border-color: var(--q-gold);
-}
-
-.obs-input::placeholder {
-  color: #aaa;
+  font-family: 'Fredoka', sans-serif;
 }
 
 .drawer-item-remove {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
   background: none;
   border: none;
   cursor: pointer;
-  color: #999;
-  padding: 0.25rem;
+  color: var(--pikiitos-text-light);
+  padding: 0.2rem;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.15s ease;
+  flex-shrink: 0;
 }
 
 .drawer-item-remove:hover {
@@ -400,22 +368,123 @@ watch(
   background: rgba(229, 57, 53, 0.08);
 }
 
+.drawer-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 50px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.tag-size {
+  background: var(--pikiitos-gold);
+  color: var(--pikiitos-brown);
+}
+
+.tag-category {
+  background: rgba(74, 55, 40, 0.08);
+  color: var(--pikiitos-brown-light);
+}
+
+.drawer-item-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+}
+
+.drawer-item-quantity {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--pikiitos-cream-dark);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.qty-btn {
+  border: none;
+  background: #ffffff;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  color: var(--pikiitos-brown-light);
+}
+
+.qty-btn:hover {
+  background: var(--pikiitos-cream);
+  color: var(--pikiitos-brown);
+}
+
+.qty-plus {
+  background: var(--pikiitos-brown);
+  color: #ffffff;
+}
+
+.qty-plus:hover {
+  background: var(--pikiitos-gold);
+  color: var(--pikiitos-brown);
+}
+
+.qty-value {
+  min-width: 32px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--pikiitos-brown);
+  border-left: 1px solid var(--pikiitos-cream-dark);
+  border-right: 1px solid var(--pikiitos-cream-dark);
+  padding: 0.2rem 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.drawer-item-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--pikiitos-brown);
+  font-family: 'Poppins', sans-serif;
+}
+
 /* Footer */
 .drawer-footer {
   padding: 1rem 1.5rem 1.5rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  background: #fff;
+  border-top: 1px solid var(--pikiitos-cream-dark);
+  background: #ffffff;
 }
 
 .drawer-summary {
-  text-align: center;
   margin-bottom: 1rem;
 }
 
+.summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .summary-count {
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.85rem;
+  color: var(--pikiitos-text-light);
   font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+}
+
+.summary-total {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--pikiitos-brown);
+  font-family: 'Poppins', sans-serif;
 }
 
 .drawer-actions {
@@ -425,43 +494,47 @@ watch(
 }
 
 .btn-continue,
-.btn-send-quote {
+.btn-checkout {
   border: none;
-  border-radius: 10px;
-  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
   cursor: pointer;
   font-weight: 700;
   font-size: 0.9rem;
   transition: all 0.2s ease;
   text-align: center;
+  font-family: 'Poppins', sans-serif;
 }
 
 .btn-continue {
-  background: #f0f0f0;
-  color: #555;
+  background: var(--pikiitos-cream);
+  color: var(--pikiitos-brown-light);
+  border: 1px solid var(--pikiitos-cream-dark);
 }
 
 .btn-continue:hover {
-  background: #e5e5e5;
+  background: var(--pikiitos-cream-dark);
+  color: var(--pikiitos-brown);
 }
 
-.btn-send-quote {
-  background: #25d366;
-  color: #fff;
+.btn-checkout {
+  background: var(--pikiitos-gold);
+  color: var(--pikiitos-brown);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
 }
 
-.btn-send-quote:hover {
-  background: #20b858;
+.btn-checkout:hover {
+  background: var(--pikiitos-brown);
+  color: #ffffff;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  box-shadow: 0 4px 16px rgba(74, 55, 40, 0.25);
 }
 
 /* Responsive */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .drawer-panel {
     width: 100%;
     max-width: 100%;
@@ -469,6 +542,10 @@ watch(
 
   .drawer-header {
     padding: 1rem;
+  }
+
+  .drawer-header h3 {
+    font-size: 1rem;
   }
 
   .drawer-content {
@@ -484,8 +561,32 @@ watch(
     height: 60px;
   }
 
+  .drawer-item-info {
+    min-width: 0;
+    width: 0;
+    flex: 1;
+  }
+
+  .drawer-item-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .drawer-item-bottom {
+    gap: 0.5rem;
+  }
+
+  .drawer-item-price {
+    white-space: nowrap;
+  }
+
   .drawer-footer {
     padding: 0.75rem 1rem 1rem;
+  }
+
+  .summary-row {
+    gap: 0.5rem;
   }
 }
 </style>

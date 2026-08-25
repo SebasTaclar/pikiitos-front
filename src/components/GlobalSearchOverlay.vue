@@ -104,7 +104,7 @@ const emit = defineEmits<{ 'update:open': [value: boolean] }>()
 const query = ref('')
 const inputEl = ref<HTMLInputElement | null>(null)
 
-const { regularProducts, categories, getCategoryById, loadProducts, loadCategories } = useProducts()
+const { products, getCategoryById, loadProducts, loadCategories } = useProducts()
 const quickView = useProductQuickView()
 
 const isLoading = ref(false)
@@ -138,12 +138,7 @@ const formatPrice = (value: number): string => {
 const ensureLoaded = async () => {
   isLoading.value = true
   try {
-    if (!categories.value.length) {
-      await loadCategories()
-    }
-    if (!regularProducts.value.length) {
-      await loadProducts()
-    }
+    await Promise.all([loadCategories(), loadProducts()])
   } finally {
     isLoading.value = false
   }
@@ -156,13 +151,11 @@ const filteredProducts = computed(() => {
   const limit = 48
   const results: ProductType[] = []
 
-  for (const p of regularProducts.value) {
-    // En caso de que lleguen productos showcase por error
-    if (p.isShowcase) continue
-
+  for (const p of products.value) {
     const name = normalizeText(String(p.name || ''))
     const description = normalizeText(String(p.description || ''))
-    const catName = normalizeText(categoryNameById(String(p.category || '')))
+    const cat = getCategoryById(String(p.category || ''))
+    const catName = normalizeText(cat?.name || '')
 
     if (name.includes(q) || description.includes(q) || catName.includes(q)) {
       results.push(p)
@@ -275,35 +268,35 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 84px 16px 16px;
+  padding: 80px 16px 16px;
 }
 
 .search-overlay-backdrop {
   position: absolute;
   inset: 0;
   border: 0;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(10px);
+  background: rgba(74, 55, 40, 0.5);
+  backdrop-filter: blur(8px);
 }
 
 .search-overlay-inner {
   position: relative;
-  width: min(1100px, calc(100% - 32px));
+  width: min(700px, calc(100% - 32px));
   z-index: 1;
-  padding: 18px;
+  padding: 20px;
   display: grid;
   gap: 12px;
-  background: var(--app-bg-primary);
-  border: 1px solid var(--app-border-color);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-medium);
+  background: #ffffff;
+  border: 1px solid #f5edd8;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(74, 55, 40, 0.2);
 }
 
 .search-top {
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
 }
 
 .search-overlay-form {
@@ -313,23 +306,25 @@ onBeforeUnmount(() => {
 
 .search-overlay-input {
   width: 100%;
-  height: 46px;
-  border-radius: 8px;
-  border: 1px solid var(--app-border-color);
-  background: var(--app-input-bg);
-  padding: 0 92px 0 14px;
-  font-size: 1rem;
-  color: var(--app-text-primary);
+  height: 50px;
+  border-radius: 14px;
+  border: 2px solid #f5edd8;
+  background: #fff8e8;
+  padding: 0 92px 0 16px;
+  font-size: 0.95rem;
+  font-family: 'Poppins', sans-serif;
+  color: #4A3728;
   outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .search-overlay-input::placeholder {
-  color: var(--app-text-muted);
+  color: #8B7355;
 }
 
 .search-overlay-input:focus {
-  border-color: rgba(201, 168, 89, 0.55);
-  box-shadow: 0 0 0 3px rgba(201, 168, 89, 0.18);
+  border-color: #D7AC43;
+  box-shadow: 0 0 0 3px rgba(215, 172, 67, 0.2);
 }
 
 .search-overlay-submit {
@@ -341,7 +336,7 @@ onBeforeUnmount(() => {
   height: 34px;
   border: 0;
   background: transparent;
-  color: var(--app-text-muted);
+  color: #8B7355;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -357,7 +352,7 @@ onBeforeUnmount(() => {
   height: 34px;
   border: 0;
   background: transparent;
-  color: var(--app-text-muted);
+  color: #8B7355;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -367,14 +362,21 @@ onBeforeUnmount(() => {
 .search-overlay-close {
   width: 44px;
   height: 44px;
-  border-radius: 10px;
-  border: 1px solid var(--app-border-color);
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--app-text-secondary);
+  border-radius: 12px;
+  border: 2px solid #f5edd8;
+  background: #fff8e8;
+  color: #4A3728;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.2s;
+}
+
+.search-overlay-close:hover {
+  background: #4A3728;
+  color: #fff;
+  border-color: #4A3728;
 }
 
 .search-suggestions {
@@ -386,38 +388,49 @@ onBeforeUnmount(() => {
 }
 
 .search-suggestions-label {
-  font-size: 0.9rem;
-  color: var(--app-text-muted);
+  font-size: 0.85rem;
+  color: #8B7355;
+  font-family: 'Poppins', sans-serif;
 }
 
 .search-suggestion {
-  border: 0;
-  background: transparent;
+  border: 1px solid #f5edd8;
+  background: #fff8e8;
   cursor: pointer;
-  color: var(--app-text-secondary);
-  font-size: 0.9rem;
+  color: #4A3728;
+  font-size: 0.8rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  padding: 0.35rem 0.75rem;
+  border-radius: 50px;
+  transition: all 0.2s;
 }
 
 .search-suggestion:hover {
-  text-decoration: underline;
-  color: var(--app-text-primary);
+  background: #D7AC43;
+  color: #fff;
+  border-color: #D7AC43;
 }
 
 .search-results {
-  min-height: 120px;
+  min-height: 80px;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 .search-state {
   padding: 18px 4px;
-  color: var(--app-text-muted);
+  color: #8B7355;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
 }
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
   padding-top: 6px;
 }
 
@@ -427,26 +440,24 @@ onBeforeUnmount(() => {
 
 .result-card {
   border: 0;
-  background: transparent;
+  background: #fff8e8;
   cursor: pointer;
   text-align: left;
-  border-radius: var(--border-radius-md);
-  transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .result-card:hover {
-  transform: var(--card-hover-lift);
-  background: var(--app-hover-bg);
-  box-shadow: var(--shadow-light);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(74, 55, 40, 0.12);
 }
 
 .result-image {
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: var(--app-bg-secondary);
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--app-border-color);
+  background: #f5edd8;
 }
 
 .result-image img {
@@ -457,28 +468,34 @@ onBeforeUnmount(() => {
 }
 
 .result-info {
-  padding-top: 10px;
+  padding: 10px 12px 12px;
 }
 
 .result-name {
-  font-size: 0.95rem;
-  color: var(--app-text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4A3728;
+  font-family: 'Fredoka', sans-serif;
 }
 
 .result-category {
-  font-size: 0.78rem;
-  color: var(--app-text-muted);
+  font-size: 0.7rem;
+  color: #D7AC43;
   letter-spacing: 0.05em;
   margin-top: 2px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
 }
 
 .result-price {
-  font-size: 0.92rem;
-  color: var(--app-text-secondary);
-  margin-top: 6px;
+  font-size: 0.85rem;
+  color: #4A3728;
+  margin-top: 4px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 640px) {
   .results-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
