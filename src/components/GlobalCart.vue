@@ -13,12 +13,22 @@
             </svg>
             <h3>Mi Carrito</h3>
           </div>
-          <button type="button" @click="closeDrawer" class="drawer-close-btn" aria-label="Cerrar carrito">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="m18 6-12 12"/>
-              <path d="m6 6 12 12"/>
-            </svg>
-          </button>
+          <div class="drawer-header-actions">
+            <button v-if="quotationItems.length > 0" type="button" @click="clearQuotation" class="drawer-clear-btn" aria-label="Limpiar carrito">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18"/>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+              Limpiar
+            </button>
+            <button type="button" @click="closeDrawer" class="drawer-close-btn" aria-label="Cerrar carrito">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m18 6-12 12"/>
+                <path d="m6 6 12 12"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
         <!-- Content -->
@@ -123,7 +133,7 @@ import { useQuotation } from '@/composables/useQuotation'
 const route = useRoute()
 const router = useRouter()
 
-const { quotationItems, isDrawerOpen, totalItems, totalPrice, removeFromQuotation, updateQuantity, closeDrawer } = useQuotation()
+const { quotationItems, isDrawerOpen, totalItems, totalPrice, removeFromQuotation, updateQuantity, closeDrawer, clearQuotation } = useQuotation()
 
 const goToCheckout = () => {
   closeDrawer()
@@ -203,6 +213,34 @@ watch(
   display: flex;
   align-items: center;
   gap: 0.6rem;
+}
+
+.drawer-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.drawer-clear-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem;
+  cursor: pointer;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.drawer-clear-btn:hover {
+  background: rgba(229, 57, 53, 0.3);
+  color: #ffcdd2;
 }
 
 .drawer-header h3 {
@@ -542,6 +580,11 @@ watch(
 
   .drawer-header {
     padding: 1rem;
+  }
+
+  .drawer-clear-btn {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.7rem;
   }
 
   .drawer-header h3 {

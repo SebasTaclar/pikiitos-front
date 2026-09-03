@@ -72,46 +72,25 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 
 const testimonials = [
   {
-    name: 'María García',
-    role: 'Mamá de Sofía (3 años)',
-    text: 'La calidad de las prendas es increíble. Sofía no se quiere quitar el vestido de flores. ¡Es súper suave y los colores no se lavan!',
-    emoji: '👩‍👧',
+    name: 'Mamá PIKIITOS',
+    role: 'Mamá',
+    text: 'A mi hijo le encantó apenas lo vio. Lo más lindo fue que empezó a inventarse historias con el diseño y para él terminó siendo mucho más que un vestido de baño.',
+    emoji: '👩‍👦',
     avatarBg: 'bg-pikiitos-pink/15',
   },
   {
-    name: 'Laura Rodríguez',
-    role: 'Mamá de Mateo (5 años)',
-    text: 'Los diseños son únicos y súper tiernos. Mi hijo se siente el más guapo con sus camisetas. El envío fue rapidísimo.',
-    emoji: '👩‍👦',
+    name: 'Mamá PIKIITOS',
+    role: 'Mamá',
+    text: 'Me encantó encontrar un diseño infantil diferente. Tiene muchísimo color y personalidad, pero sin recurrir a los mismos personajes que uno encuentra en todas partes.',
+    emoji: '👩‍👧',
     avatarBg: 'bg-pikiitos-baby/15',
   },
   {
-    name: 'Ana Martínez',
-    role: 'Mamá de Valentina (1 año)',
-    text: 'Los bodies son de una calidad excepcional. Súper suaves para la piel de mi bebé. Ya hice 4 pedidos y seguiré comprando.',
+    name: 'Mamá PIKIITOS',
+    role: 'Mamá',
+    text: 'Se nota que cada detalle está pensado desde el mundo de los niños. A mi hija le encantaron los colores y el diseño, y a mí me gustó encontrar algo especial y con identidad propia.',
     emoji: '👩‍👶',
     avatarBg: 'bg-pikiitos-mint/15',
-  },
-  {
-    name: 'Carolina López',
-    role: 'Mamá de Lucas (4 años)',
-    text: 'Las prendas son hermosas y muy cómodas. Mi hijo juega todo el día y la ropa aguanta perfecto. 100% recomendado.',
-    emoji: '👩‍👦',
-    avatarBg: 'bg-pikiitos-yellow/15',
-  },
-  {
-    name: 'Isabella Torres',
-    role: 'Mamá de Emma (2 años)',
-    text: 'Me encanta que los diseños sean tan originales. Emma siempre recibe cumplidos. La tela es de primera calidad.',
-    emoji: '👩‍👧',
-    avatarBg: 'bg-pikiitos-lavender/15',
-  },
-  {
-    name: 'Daniela Ruiz',
-    role: 'Mamá de Santiago (6 años)',
-    text: 'Excelente relación calidad-precio. Los colores son preciosos y la ropa no pierde forma después de varios lavados.',
-    emoji: '👩‍👦',
-    avatarBg: 'bg-pikiitos-peach/15',
   },
 ]
 

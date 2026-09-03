@@ -89,13 +89,22 @@
               v-for="color in product.colors"
               :key="color"
               type="button"
-              @click="confirmAddToCart(color)"
-              class="px-4 py-2.5 rounded-xl border border-pikiitos-cream/60 bg-white text-pikiitos-brown font-poppins text-sm font-semibold hover:bg-pikiitos-brown hover:text-white hover:border-pikiitos-brown transition-all"
+              @click="toggleSize(color)"
+              :class="[
+                'px-4 py-2.5 rounded-xl border font-poppins text-sm font-semibold transition-all',
+                selectedSizes.includes(color)
+                  ? 'bg-pikiitos-brown text-white border-pikiitos-brown'
+                  : 'bg-white text-pikiitos-brown border-pikiitos-cream/60 hover:bg-pikiitos-brown hover:text-white hover:border-pikiitos-brown'
+              ]"
             >
               {{ color }}
             </button>
           </div>
-          <button @click="showSizeModal = false" class="w-full py-2.5 rounded-xl border border-pikiitos-cream/60 text-pikiitos-text-light font-poppins text-sm font-medium hover:bg-pikiitos-cream/30 transition-all">
+          <p v-if="selectedSizes.length > 0" class="font-poppins text-xs text-pikiitos-text-muted mb-3 text-center">{{ selectedSizes.length }} talla(s) seleccionada(s)</p>
+          <button @click="confirmAddToCart" :disabled="selectedSizes.length === 0" :class="['w-full py-2.5 rounded-xl font-poppins text-sm font-medium transition-all mb-2', selectedSizes.length > 0 ? 'bg-pikiitos-brown text-white hover:bg-pikiitos-yellow hover:text-pikiitos-brown' : 'bg-gray-200 text-gray-400 cursor-not-allowed']">
+            Agregar al carrito
+          </button>
+          <button @click="showSizeModal = false; selectedSizes = []" class="w-full py-2.5 rounded-xl border border-pikiitos-cream/60 text-pikiitos-text-light font-poppins text-sm font-medium hover:bg-pikiitos-cream/30 transition-all">
             Cancelar
           </button>
         </div>
@@ -150,9 +159,17 @@ defineEmits<{
 const { addToQuotation, openDrawer } = useQuotation()
 
 const showSizeModal = ref(false)
+const selectedSizes = ref<string[]>([])
+
+const toggleSize = (size: string) => {
+  const idx = selectedSizes.value.indexOf(size)
+  if (idx > -1) selectedSizes.value.splice(idx, 1)
+  else selectedSizes.value.push(size)
+}
 
 const handleAddToCart = () => {
   if (props.product.colors && props.product.colors.length > 0) {
+    selectedSizes.value = []
     showSizeModal.value = true
   } else {
     addToQuotation({
@@ -171,20 +188,23 @@ const handleAddToCart = () => {
   }
 }
 
-const confirmAddToCart = (size: string) => {
-  addToQuotation({
-    id: props.product.id,
-    name: props.product.name,
-    sku: props.product.id,
-    brand: 'Pikiitos',
-    price: props.product.price,
-    image: productImage.value,
-    category: props.product.category,
-    categoryName: categoryName.value,
-    description: props.product.description || '',
-    inStock: true
-  }, 1, size)
+const confirmAddToCart = () => {
+  for (const size of selectedSizes.value) {
+    addToQuotation({
+      id: props.product.id,
+      name: props.product.name,
+      sku: props.product.id,
+      brand: 'Pikiitos',
+      price: props.product.price,
+      image: productImage.value,
+      category: props.product.category,
+      categoryName: categoryName.value,
+      description: props.product.description || '',
+      inStock: true
+    }, 1, size)
+  }
   showSizeModal.value = false
+  selectedSizes.value = []
   openDrawer()
 }
 
@@ -201,5 +221,6 @@ defineOptions({ name: 'ProductCard' })
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  white-space: pre-line;
 }
 </style>
