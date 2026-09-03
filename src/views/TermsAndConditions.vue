@@ -16,6 +16,8 @@
       </header>
 
       <main class="terms-content">
+        <p class="paragraph intro">{{ t('termsPage.intro') }}</p>
+
         <section v-for="(section, idx) in sections" :key="idx" class="terms-section">
           <h2 class="section-title">{{ section.title }}</h2>
 
@@ -27,6 +29,8 @@
             <li v-for="(b, i) in section.bullets" :key="i">{{ b }}</li>
           </ul>
         </section>
+
+        <p class="paragraph outro">{{ t('termsPage.outro') }}</p>
 
         <section class="contact-section">
           <div class="contact-card">
@@ -204,6 +208,21 @@ const acceptAndGoBack = () => {
   margin: 0.7rem 0;
   color: rgba(246, 245, 241, 0.84);
   line-height: 1.75;
+}
+
+.paragraph.intro {
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: rgba(246, 245, 241, 0.92);
+}
+
+.paragraph.outro {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: rgb(201, 168, 89);
+  white-space: pre-line;
+  text-align: center;
 }
 
 .bullets {

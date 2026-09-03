@@ -168,7 +168,7 @@
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div v-if="showSizeModal" class="fixed inset-0 z-[2300] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4" @click.self="showSizeModal = false">
+      <div v-if="showSizeModal" class="fixed inset-0 z-[2300] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4" @click.self="showSizeModal = false; selectedSizes = []">
         <div class="bg-white rounded-2xl p-5 w-full max-w-xs shadow-xl" @click.stop>
           <h4 class="font-fredoka font-bold text-lg text-pikiitos-brown mb-1">Escoge tu talla</h4>
           <p class="font-poppins text-xs text-pikiitos-text-muted mb-4">{{ selectedProduct?.name }}</p>
@@ -177,13 +177,22 @@
               v-for="color in selectedProduct?.colors"
               :key="color"
               type="button"
-              @click="confirmAddToCart(color)"
-              class="px-4 py-2.5 rounded-xl border border-pikiitos-cream/60 bg-white text-pikiitos-brown font-poppins text-sm font-semibold hover:bg-pikiitos-brown hover:text-white hover:border-pikiitos-brown transition-all"
+              @click="toggleSize(color)"
+              :class="[
+                'px-4 py-2.5 rounded-xl border font-poppins text-sm font-semibold transition-all',
+                selectedSizes.includes(color)
+                  ? 'bg-pikiitos-brown text-white border-pikiitos-brown'
+                  : 'bg-white text-pikiitos-brown border-pikiitos-cream/60 hover:bg-pikiitos-brown hover:text-white hover:border-pikiitos-brown'
+              ]"
             >
               {{ color }}
             </button>
           </div>
-          <button @click="showSizeModal = false" class="w-full py-2.5 rounded-xl border border-pikiitos-cream/60 text-pikiitos-text-light font-poppins text-sm font-medium hover:bg-pikiitos-cream/30 transition-all">
+          <p v-if="selectedSizes.length > 0" class="font-poppins text-xs text-pikiitos-text-muted mb-3 text-center">{{ selectedSizes.length }} talla(s) seleccionada(s)</p>
+          <button @click="confirmAddToCart" :disabled="selectedSizes.length === 0" :class="['w-full py-2.5 rounded-xl font-poppins text-sm font-medium transition-all mb-2', selectedSizes.length > 0 ? 'bg-pikiitos-brown text-white hover:bg-pikiitos-yellow hover:text-pikiitos-brown' : 'bg-gray-200 text-gray-400 cursor-not-allowed']">
+            Agregar al carrito
+          </button>
+          <button @click="showSizeModal = false; selectedSizes = []" class="w-full py-2.5 rounded-xl border border-pikiitos-cream/60 text-pikiitos-text-light font-poppins text-sm font-medium hover:bg-pikiitos-cream/30 transition-all">
             Cancelar
           </button>
         </div>
@@ -217,6 +226,7 @@ const perPage = 12
 const favorites = ref<Set<string>>(new Set(JSON.parse(localStorage.getItem('pikiitos-favorites') || '[]')))
 const showSizeModal = ref(false)
 const selectedProduct = ref<Product | null>(null)
+const selectedSizes = ref<string[]>([])
 
 const placeholderImage = 'https://placehold.co/400x300/f5f0e8/8B7355?text=Pikiitos'
 
@@ -346,6 +356,7 @@ function categoryName(categoryId: string): string {
 function addProductToCart(p: Product) {
   if (p.colors && p.colors.length > 0) {
     selectedProduct.value = p
+    selectedSizes.value = []
     showSizeModal.value = true
   } else {
     addToQuotation({
@@ -358,17 +369,26 @@ function addProductToCart(p: Product) {
   }
 }
 
-function confirmAddToCart(size: string) {
+function toggleSize(size: string) {
+  const idx = selectedSizes.value.indexOf(size)
+  if (idx > -1) selectedSizes.value.splice(idx, 1)
+  else selectedSizes.value.push(size)
+}
+
+function confirmAddToCart() {
   if (!selectedProduct.value) return
   const p = selectedProduct.value
-  addToQuotation({
-    id: p.id, name: p.name, sku: p.sku || 'N/A', brand: p.brand || 'N/A',
-    price: p.price, image: p.images?.[0] || '', category: String(p.category || ''),
-    categoryName: categoryName(p.category),
-    description: p.description, inStock: p.status === 'available', originalPrice: p.originalPrice,
-  }, 1, size)
+  for (const size of selectedSizes.value) {
+    addToQuotation({
+      id: p.id, name: p.name, sku: p.sku || 'N/A', brand: p.brand || 'N/A',
+      price: p.price, image: p.images?.[0] || '', category: String(p.category || ''),
+      categoryName: categoryName(p.category),
+      description: p.description, inStock: p.status === 'available', originalPrice: p.originalPrice,
+    }, 1, size)
+  }
   showSizeModal.value = false
   selectedProduct.value = null
+  selectedSizes.value = []
   openDrawer()
 }
 

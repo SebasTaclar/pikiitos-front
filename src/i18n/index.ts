@@ -56,7 +56,7 @@ const messages = {
 		},
 		whatsapp: {
 			defaultMessage:
-				'🐥 ¡Hola! Soy Piki y te doy la bienvenida a Pikiitos. ¡Qué alegría tenerte aquí! ☀️\n\nEstamos felices de ayudarte a encontrar prendas diseñadas para acompañar los momentos más bonitos de la infancia.\n\nCuéntanos en qué podemos ayudarte y muy pronto responderemos tu mensaje.'
+				'🐥 ¡Hola, PIKIITOS! 💛 Creo que encontré la próxima aventura de mi peque 🌊☀️ ¿Me ayudan a elegir?\nNecesito asesoría 🐣💛'
 		},
 		store: {
 			pickup: {
@@ -93,102 +93,67 @@ const messages = {
 			updated: 'Última actualización',
 			accept: 'He leído y acepto'
 		},
-		termsPage: {
-			sections: [
-				{
-					title: '1. Información general',
-					paragraphs: [
-						'Estos Términos y Condiciones regulan el uso del sitio web de Pikiitos y la compra de productos ofrecidos a través de este.',
-						'Pikiitos es una marca de ropa infantil ubicada en Bogotá, Colombia. Al navegar, registrarte o realizar una compra en nuestro sitio, aceptas íntegramente estos términos.',
-						'Nos reservamos el derecho de actualizar estos términos cuando sea necesario. La versión vigente será la publicada en esta página.'
-					]
-				},
-				{
-					title: '2. Productos',
-					paragraphs: [
-						'Las prendas infantiles publicadas pueden variar ligeramente en color, tonalidad o textura debido a iluminación, pantallas o procesos artesanales de fabricación.',
-						'La disponibilidad de productos puede cambiar sin previo aviso. Si un producto no se encuentra disponible, te contactaremos para ofrecerte alternativas o gestionar la devolución del pago.'
-					],
-					bullets: [
-						'Las fotografías son de referencia y buscan representar el producto de la forma más fiel posible.',
-						'Las medidas, telas y descripciones pueden tener variaciones mínimas tolerables en prendas artesanales.'
-					]
-				},
-				{
-					title: '3. Precios y pagos',
-					paragraphs: [
-						'Los precios se muestran en pesos colombianos (COP) e incluyen los impuestos de ley cuando corresponda.',
-						'El pago se procesa a través de la pasarela de pago Wompi. La confirmación del pedido depende de la validación exitosa del pago.',
-						'El costo de envío se calcula según la ciudad de destino y se confirma antes de finalizar la compra.'
-					],
-					bullets: [
-						'Los pedidos confirmados respetan el precio mostrado al momento del pago.',
-						'Nos reservamos el derecho de rechazar o anular pedidos por sospecha de fraude, información inconsistente o errores en precios.'
-					]
-				},
-				{
-					title: '4. Envíos',
-					paragraphs: [
-						'Realizamos envíos a todo el territorio colombiano a través de transportadoras aliadas.',
-						'El tiempo de entrega es estimado y puede variar según ciudad, transportadora, condiciones climáticas o eventos de fuerza mayor.',
-						'Una vez despachado tu pedido, recibirás un número de guía para que puedas rastrear tu envío.'
-					],
-					bullets: [
-						'Revisa cuidadosamente tus datos de contacto y dirección al momento de la compra para evitar retrasos.',
-						'En caso de devolución por dirección incorrecta o ausencia en la entrega, los costos de reenvío correrán por cuenta del cliente.'
-					]
-				},
-				{
-					title: '5. Cambios y devoluciones',
-					paragraphs: [
-						'Si necesitas realizar un cambio o devolución, contáctanos a través de nuestros canales oficiales (Instagram o WhatsApp) indicando tu número de pedido.',
-						'Tienes hasta 5 días hábiles después de recibido el producto para solicitar un cambio o devolución.',
-						'Por razones de higiene, algunos productos como ropa interior o accesorios íntimos no aplican para cambio o devolución, salvo defecto de fabricación.',
-						'Los productos deben llegar en las mismas condiciones en que fueron entregados: sin uso, con etiquetas originales y en su empaque.'
-					],
-					bullets: [
-						'Los costos de envío para devoluciones corren por cuenta del cliente, salvo que el producto presente defecto de fabricación.',
-						'Solo se aceptan cambios por talla o defecto, no por cambio de opinión.'
-					]
-				},
-				{
-					title: '6. Garantía',
-					paragraphs: [
-						'Pikiitos ofrece garantía contra defectos de fabricación por un término de 30 días calendario a partir de la fecha de entrega.',
-						'La garantía no cubre daños derivados de mal uso, lavados inadecuados, golpes, caídas, contacto con químicos o desgaste normal del producto.'
-					],
-					bullets: [
-						'Para reclamar la garantía, envía una foto del defecto junto con tu número de pedido por nuestros canales oficiales.',
-						'Si el producto no está disponible para reemplazo, se emitirá un bono por el valor pagado.'
-					]
-				},
-				{
-					title: '7. Datos personales',
-					paragraphs: [
-						'En Pikiitos valoramos tu privacidad. Los datos personales que nos proporciones (nombre, correo, dirección y teléfono) serán utilizados únicamente para procesar tus pedidos, coordinar entregas y brindarte atención al cliente.',
-						'No compartimos información personal con terceros, salvo cuando sea estrictamente necesario para el procesamiento del pago (Wompi) o la entrega del pedido (transportadora).',
-						'Puedes solicitar la actualización o eliminación de tus datos en cualquier momento a través de nuestros canales oficiales.'
-					]
-				},
-				{
-					title: '8. Responsabilidad',
-					paragraphs: [
-						'Pikiitos no se hace responsable por demoras causadas por la transportadora, errores en la información proporcionada por el cliente o eventos fuera de nuestro control.',
-						'El valor máximo de responsabilidad por cualquier compra no excederá el monto efectivamente pagado por el producto.'
-					]
-				},
-				{
-					title: '9. Ley aplicable',
-					paragraphs: [
-						'Estos términos se rigen por las leyes de la República de Colombia.',
-						'Para cualquier controversia, las partes se someten a las autoridades judiciales de Bogotá, Colombia.'
-					]
-				}
-			],
-			contactTitle: '¿Tienes preguntas?',
-			contactSubtitle: 'Si tienes dudas sobre tu compra, cambios, garantía o cualquier otro tema, escríbenos por cualquiera de nuestros canales oficiales.',
-			pickupTitle: 'Recoger en tienda'
-		},
+	termsPage: {
+		intro: 'Queremos que tu experiencia con PIKIITOS sea fácil, clara y segura. Al realizar una compra en nuestra tienda aceptas las siguientes condiciones:',
+		sections: [
+			{
+				title: '1. Productos y tallas',
+				paragraphs: [
+					'Antes de comprar, revisa la descripción del producto y nuestra guía de tallas.',
+					'Los colores pueden presentar pequeñas variaciones según la pantalla o iluminación de las fotografías.'
+				]
+			},
+			{
+				title: '2. Pagos',
+				paragraphs: [
+					'Todos los precios están expresados en pesos colombianos (COP).',
+					'Tu pedido quedará confirmado una vez el pago sea aprobado por el medio de pago seleccionado.'
+				]
+			},
+			{
+				title: '3. Envíos',
+				paragraphs: [
+					'Realizamos envíos a los destinos habilitados en nuestra tienda.',
+					'El costo y tiempo estimado de entrega serán informados durante el proceso de compra.',
+					'Los tiempos pueden variar por novedades de la transportadora o situaciones externas.'
+				]
+			},
+			{
+				title: '4. Cambios',
+				paragraphs: [
+					'Puedes solicitar un cambio de talla o referencia dentro de los 15 días calendario siguientes a la entrega.',
+					'La prenda debe estar sin usar, sin lavar, con sus etiquetas originales y en perfecto estado.',
+					'Los cambios están sujetos a disponibilidad.',
+					'Si el cambio es por talla, color o referencia, el costo del transporte será asumido por el cliente.',
+					'Si PIKIITOS cometió un error en el pedido, nosotros asumiremos el costo correspondiente.'
+				]
+			},
+			{
+				title: '5. Derecho de retracto',
+				paragraphs: [
+					'En las compras realizadas por nuestra tienda virtual podrás ejercer el derecho de retracto dentro de los 5 días hábiles siguientes a la entrega, cuando legalmente corresponda y de acuerdo con las condiciones establecidas por la legislación colombiana.'
+				]
+			},
+			{
+				title: '6. Garantía',
+				paragraphs: [
+					'Si tu producto presenta un posible defecto de fabricación, confección o material, comunícate con nosotros con tu número de pedido, descripción de la novedad y fotografías.',
+					'Revisaremos el caso conforme a la garantía legal aplicable.'
+				]
+			},
+			{
+				title: '7. Cuidado de las prendas',
+				paragraphs: [
+					'Sigue siempre las instrucciones de lavado de la etiqueta.',
+					'Después de utilizar las prendas en playa o piscina, recomendamos retirar residuos de cloro, sal, arena y bloqueador para ayudar a conservarlas.'
+				]
+			}
+		],
+		outro: 'PIKIITOS 🐥\nPequeñas prendas para grandes aventuras.',
+		contactTitle: '¿Necesitas ayuda?',
+		contactSubtitle: 'Puedes comunicarte con PIKIITOS a través de nuestros canales oficiales. Estaremos felices de acompañarte antes, durante y después de tu compra.',
+		pickupTitle: 'Recoger en tienda'
+	},
 		checkout: {
 			back: 'Volver',
 			title: 'Checkout',
@@ -290,7 +255,7 @@ const messages = {
 			}
 		},
 		whatsapp: {
-			defaultMessage: '🐥 ¡Hola! Soy Piki y te doy la bienvenida a Pikiitos. ¡Qué alegría tenerte aquí! ☀️\n\nEstamos felices de ayudarte a encontrar prendas diseñadas para acompañar los momentos más bonitos de la infancia.\n\nCuéntanos en qué podemos ayudarte y muy pronto responderemos tu mensaje.'
+			defaultMessage: '🐥 ¡Hola, PIKIITOS! 💛 Creo que encontré la próxima aventura de mi peque 🌊☀️ ¿Me ayudan a elegir?\nNecesito asesoría 🐣💛'
 		},
 		store: {
 			pickup: {
@@ -327,102 +292,67 @@ const messages = {
 			updated: 'Last updated',
 			accept: 'I have read and accept'
 		},
-		termsPage: {
-			sections: [
-				{
-					title: '1. General information',
-					paragraphs: [
-						'These Terms & Conditions govern the use of the Pikiitos website and the purchase of products offered through it.',
-						'Pikiitos is a children\'s clothing brand based in Bogotá, Colombia. By browsing, signing up, or placing an order on our site, you fully accept these terms.',
-						'We reserve the right to update these terms when necessary. The current version will be the one published on this page.'
-					]
-				},
-				{
-					title: '2. Products',
-					paragraphs: [
-						'Children\'s garments may vary slightly in color, tone, or texture due to lighting, screen displays, or artisanal manufacturing processes.',
-						'Product availability may change without notice. If an item is out of stock, we will contact you to offer alternatives or process a refund.'
-					],
-					bullets: [
-						'Photographs are for reference and aim to represent the product as accurately as possible.',
-						'Measurements, fabrics, and descriptions may have minor tolerable variations in artisanal garments.'
-					]
-				},
-				{
-					title: '3. Pricing and payments',
-					paragraphs: [
-						'Prices are displayed in Colombian pesos (COP) and include applicable taxes when relevant.',
-						'Payment is processed through the Wompi payment gateway. Order confirmation depends on successful payment validation.',
-						'Shipping cost is calculated based on the destination city and is confirmed before completing your purchase.'
-					],
-					bullets: [
-						'Confirmed orders keep the price displayed at the time of payment.',
-						'We reserve the right to reject or cancel orders due to suspected fraud, inconsistent information, or pricing errors.'
-					]
-				},
-				{
-					title: '4. Shipping',
-					paragraphs: [
-						'We ship to all of Colombia through partner carriers.',
-						'Delivery times are estimates and may vary by city, carrier, weather conditions, or force majeure events.',
-						'Once your order is shipped, you will receive a tracking number to follow your delivery.'
-					],
-					bullets: [
-						'Please double-check your contact details and address when placing your order to avoid delays.',
-						'If a shipment is returned due to incorrect address or absence at delivery, redelivery costs will be covered by the customer.'
-					]
-				},
-				{
-					title: '5. Exchanges and returns',
-					paragraphs: [
-						'If you need to make an exchange or return, contact us through our official channels (Instagram or WhatsApp) with your order number.',
-						'You have up to 5 business days after receiving the product to request an exchange or return.',
-						'For hygiene reasons, some products such as underwear or intimate accessories are not eligible for exchange or return, except in case of manufacturing defects.',
-						'Products must arrive in the same condition as delivered: unused, with original tags and in their packaging.'
-					],
-					bullets: [
-						'Return shipping costs are covered by the customer, unless the product has a manufacturing defect.',
-						'Only exchanges by size or defects are accepted; changes of mind are not eligible.'
-					]
-				},
-				{
-					title: '6. Warranty',
-					paragraphs: [
-						'Pikiitos offers a 30-day calendar warranty against manufacturing defects from the date of delivery.',
-						'The warranty does not cover damage from misuse, improper washing, impacts, drops, chemical exposure, or normal wear and tear.'
-					],
-					bullets: [
-						'To claim the warranty, send a photo of the defect along with your order number through our official channels.',
-						'If the product is not available for replacement, a voucher for the paid amount will be issued.'
-					]
-				},
-				{
-					title: '7. Personal data',
-					paragraphs: [
-						'At Pikiitos we value your privacy. The personal data you provide (name, email, address, and phone) will only be used to process your orders, coordinate deliveries, and provide customer support.',
-						'We do not share personal information with third parties except when strictly necessary for payment processing (Wompi) or order delivery (carrier).',
-						'You may request the update or deletion of your data at any time through our official channels.'
-					]
-				},
-				{
-					title: '8. Liability',
-					paragraphs: [
-						'Pikiitos is not responsible for delays caused by the carrier, errors in information provided by the customer, or events beyond our control.',
-						'The maximum liability for any purchase will not exceed the amount actually paid for the product.'
-					]
-				},
-				{
-					title: '9. Applicable law',
-					paragraphs: [
-						'These terms are governed by the laws of the Republic of Colombia.',
-						'For any dispute, the parties submit to the judicial authorities of Bogotá, Colombia.'
-					]
-				}
-			],
-			contactTitle: 'Have questions?',
-			contactSubtitle: 'If you have any questions about your purchase, exchanges, warranty, or anything else, reach out through any of our official channels.',
-			pickupTitle: 'Store pickup'
-		},
+	termsPage: {
+		intro: 'We want your experience with PIKIITOS to be easy, clear, and secure. By making a purchase in our store, you accept the following conditions:',
+		sections: [
+			{
+				title: '1. Products and sizes',
+				paragraphs: [
+					'Before purchasing, check the product description and our size guide.',
+					'Colors may have slight variations depending on the screen or lighting in the photographs.'
+				]
+			},
+			{
+				title: '2. Payments',
+				paragraphs: [
+					'All prices are expressed in Colombian pesos (COP).',
+					'Your order will be confirmed once the payment is approved by the selected payment method.'
+				]
+			},
+			{
+				title: '3. Shipping',
+				paragraphs: [
+					'We ship to destinations enabled in our store.',
+					'The shipping cost and estimated delivery time will be provided during the checkout process.',
+					'Times may vary due to carrier updates or external circumstances.'
+				]
+			},
+			{
+				title: '4. Exchanges',
+				paragraphs: [
+					'You may request a size or reference exchange within 15 calendar days following delivery.',
+					'The garment must be unworn, unwashed, with its original tags and in perfect condition.',
+					'Exchanges are subject to availability.',
+					'If the exchange is for size, color, or reference, the shipping cost will be covered by the customer.',
+					'If PIKIITOS made an error in the order, we will cover the corresponding cost.'
+				]
+			},
+			{
+				title: '5. Right of withdrawal',
+				paragraphs: [
+					'For purchases made through our online store, you may exercise the right of withdrawal within 5 business days following delivery, when legally applicable and in accordance with the conditions established by Colombian legislation.'
+				]
+			},
+			{
+				title: '6. Warranty',
+				paragraphs: [
+					'If your product presents a possible manufacturing, assembly, or material defect, contact us with your order number, description of the issue, and photographs.',
+					'We will review the case in accordance with the applicable legal warranty.'
+				]
+			},
+			{
+				title: '7. Garment care',
+				paragraphs: [
+					'Always follow the washing instructions on the label.',
+					'After using garments at the beach or pool, we recommend removing chlorine, salt, sand, and sunscreen residues to help preserve them.'
+				]
+			}
+		],
+		outro: 'PIKIITOS 🐥\nSmall garments for big adventures.',
+		contactTitle: 'Need help?',
+		contactSubtitle: 'You can contact PIKIITOS through our official channels. We will be happy to assist you before, during, and after your purchase.',
+		pickupTitle: 'Store pickup'
+	},
 		checkout: {
 			back: 'Back',
 			title: 'Checkout',

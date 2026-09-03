@@ -1023,7 +1023,10 @@
               </div>
               <div v-if="productForm.colors.length > 0" class="selected-materials">
                 <span class="selected-label">Seleccionadas: </span>
-                <span class="selected-list">{{ productForm.colors.join(', ') }}</span>
+                <span v-for="(color, idx) in productForm.colors" :key="idx" class="selected-tag">
+                  {{ color }}
+                  <button type="button" class="selected-tag-remove" @click="productForm.colors.splice(idx, 1)">✕</button>
+                </span>
               </div>
             </div>
             <div class="form-group">
@@ -1032,7 +1035,7 @@
                 <div v-for="(img, idx) in productForm.images" :key="idx" class="image-url-row">
                   <input :value="img" @input="(e) => updateImageUrl(idx, (e.target as HTMLInputElement).value)" type="text" class="form-input" :placeholder="'URL imagen ' + (idx + 1)" />
                   <button v-if="productForm.images.length > 1" type="button" class="image-remove-btn" @click="removeImageUrl(idx)" title="Eliminar">✕</button>
-                  <button type="button" class="image-main-btn" :class="{ active: idx === mainImageIndex }" @click="mainImageIndex = idx" title="Marcar como principal">
+                  <button type="button" class="image-main-btn" :class="{ active: idx === mainImageIndex }" @click="setMainImage(idx)" title="Marcar como principal">
                     <svg width="14" height="14" viewBox="0 0 24 24" :fill="idx === mainImageIndex ? '#FFD84D' : 'none'" :stroke="idx === mainImageIndex ? '#FFD84D' : '#9CA3AF'" stroke-width="2">
                       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                       <circle cx="12" cy="10" r="3"/>
@@ -1440,7 +1443,7 @@ const productForm = ref({
 
 const getPreviewUrl = (url: string) => url || ''
 
-const materialOptions = ['Bebe', 'T2', 'T3', 'T4', 'T5-6', 'Otro']
+const materialOptions = ['Bebe', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'Otro']
 const categoryForm = ref<CreateCategoryRequest>({ name: '', description: '' })
 const categoryImageUrls = ref<string[]>([''])
 
@@ -1609,6 +1612,13 @@ const isFormValid = computed(() => {
 
 const updateImageUrl = (index: number, value: string) => { productForm.value.images[index] = value }
 const mainImageIndex = ref(0)
+const setMainImage = (idx: number) => {
+  if (idx === 0) return
+  const images = productForm.value.images
+  const selected = images.splice(idx, 1)[0]
+  images.unshift(selected)
+  mainImageIndex.value = 0
+}
 const addImageUrl = () => { productForm.value.images.push('') }
 const removeImageUrl = (index: number) => {
   productForm.value.images.splice(index, 1)
@@ -3536,9 +3546,36 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   padding: 8px 12px;
   background: var(--c-light);
   border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
 }
 .selected-label { font-weight: 600; color: var(--c-primary); font-size: 0.82rem; }
-.selected-list { font-size: 0.82rem; color: var(--c-black); }
+.selected-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: rgba(255,216,77,0.15);
+  border: 1px solid rgba(255,216,77,0.4);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: var(--c-primary);
+  font-weight: 500;
+}
+.selected-tag-remove {
+  background: none;
+  border: none;
+  color: var(--c-primary);
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 0 2px;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.selected-tag-remove:hover { opacity: 1; }
 
 .image-urls { display: flex; flex-direction: column; gap: 8px; }
 .image-url-row { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; align-items: center; }
@@ -3587,9 +3624,9 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 .image-remove-btn:hover { background: #fef2f2; border-color: #ef4444; }
 
 .image-main-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   border: 1px solid #e5e7eb;
   background: #fff;
   cursor: pointer;
@@ -3597,9 +3634,11 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
+.image-main-btn svg { pointer-events: none; width: 16px; height: 16px; }
 .image-main-btn:hover { border-color: #FFD84D; background: #fffbeb; }
-.image-main-btn.active { border-color: #FFD84D; background: #fffbeb; }
+.image-main-btn.active { border-color: #FFD84D; background: #FFD84D; }
 
 .image-add-btn {
   display: inline-flex;

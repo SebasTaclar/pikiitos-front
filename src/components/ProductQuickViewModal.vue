@@ -46,27 +46,28 @@
           <div v-if="product.description" class="qv-description">{{ product.description }}</div>
 
           <div v-if="product.colors?.length" class="qv-colors">
-            <div class="qv-colors-title">Talla</div>
+            <div class="qv-colors-title">Tallas</div>
             <div class="qv-colors-list">
               <button
                 v-for="c in product.colors"
                 :key="c"
                 type="button"
                 class="qv-color"
-                :class="{ active: selectedColor === c }"
-                @click="selectedColor = c"
+                :class="{ active: selectedColors.includes(c) }"
+                @click="toggleColor(c)"
               >
                 {{ c }}
               </button>
             </div>
+            <p v-if="selectedColors.length > 0" class="text-center text-xs text-pikiitos-text-muted mt-2 font-poppins">{{ selectedColors.length }} talla(s) seleccionada(s)</p>
           </div>
 
           <div class="qv-observations">
           </div>
 
           <div class="qv-actions">
-            <p v-if="showSizeWarning" class="text-center text-xs text-red-400 mb-2 font-poppins animate-pulse">Selecciona una talla antes de agregar</p>
-            <p v-else-if="product.status === 'available' && product.colors?.length && !selectedColor" class="text-center text-xs text-pikiitos-text-muted mb-2 font-poppins">Escoge tu talla</p>
+            <p v-if="showSizeWarning" class="text-center text-xs text-red-400 mb-2 font-poppins animate-pulse">Selecciona al menos una talla antes de agregar</p>
+            <p v-else-if="product.status === 'available' && product.colors?.length && selectedColors.length === 0" class="text-center text-xs text-pikiitos-text-muted mb-2 font-poppins">Escoge tu(s) talla(s)</p>
             <button
               type="button"
               class="qv-add"
@@ -103,9 +104,15 @@ const { addToQuotation, openDrawer } = useQuotation()
 const { categories, loadCategories, getCategoryById } = useProducts()
 
 const activeImageIndex = ref(0)
-const selectedColor = ref<string | null>(null)
+const selectedColors = ref<string[]>([])
 const observations = ref('')
 const showSizeWarning = ref(false)
+
+const toggleColor = (color: string) => {
+  const idx = selectedColors.value.indexOf(color)
+  if (idx > -1) selectedColors.value.splice(idx, 1)
+  else selectedColors.value.push(color)
+}
 
 const categoryLabel = computed(() => {
   if (!props.product) return ''
@@ -150,7 +157,7 @@ const addToQuotationFromModal = () => {
   if (!props.product) return
   if (props.product.status !== 'available') return
 
-  if (props.product.colors && props.product.colors.length > 0 && !selectedColor.value) {
+  if (props.product.colors && props.product.colors.length > 0 && selectedColors.value.length === 0) {
     showSizeWarning.value = true
     setTimeout(() => { showSizeWarning.value = false }, 2500)
     return
@@ -172,8 +179,11 @@ const addToQuotationFromModal = () => {
     originalPrice: props.product.originalPrice
   }
 
-  addToQuotation(mapped, 1, selectedColor.value || undefined)
-  selectedColor.value = null
+  const sizesToAdd = selectedColors.value.length > 0 ? selectedColors.value : [undefined]
+  for (const size of sizesToAdd) {
+    addToQuotation(mapped, 1, size)
+  }
+  selectedColors.value = []
   observations.value = ''
   emit('close')
   openDrawer()
@@ -204,7 +214,7 @@ watch(
   () => props.product?.id,
   () => {
     activeImageIndex.value = 0
-    selectedColor.value = null
+    selectedColors.value = []
     showSizeWarning.value = false
   },
   { immediate: true }
@@ -268,17 +278,21 @@ onBeforeUnmount(() => {
 .qv-body {
   padding: 24px;
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 0.7fr 0.8fr;
   gap: 24px;
 }
 
+.qv-media {
+  display: flex;
+  flex-direction: column;
+}
+
 .qv-hero {
-  width: 80%;
-  aspect-ratio: 1 / 1;
+  width: 100%;
+  aspect-ratio: 3 / 4;
   overflow: hidden;
   border-radius: 16px;
   background: #FFF8E8;
-  margin-left: 60px;
 }
 
 .qv-hero img {
@@ -380,6 +394,7 @@ onBeforeUnmount(() => {
   line-height: 1.6;
   font-size: 0.9rem;
   font-family: "Poppins", sans-serif;
+  white-space: pre-line;
 }
 
 .qv-colors {
