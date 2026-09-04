@@ -121,7 +121,7 @@ onMounted(async () => {
 onUnmounted(() => {})
 
 const featuredProducts = computed(() => {
-  return products.value.filter(p => p.isShowcase)
+  return products.value.filter(p => p.isShowcase && p.status !== 'out-of-stock')
 })
 
 defineOptions({ name: 'ProductsSection' })
