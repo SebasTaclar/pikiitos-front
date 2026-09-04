@@ -290,13 +290,14 @@ const pageDescription = computed(() => {
 })
 
 const allProductsForView = computed(() => {
+  let list = products.value.filter(p => p.status !== 'out-of-stock')
   if (isOfertas.value) {
-    return products.value.filter(p => p.originalPrice && p.originalPrice > p.price)
+    return list.filter(p => p.originalPrice && p.originalPrice > p.price)
   }
-  if (isShowAll.value) return products.value
+  if (isShowAll.value) return list
   const id = currentCategoryId.value
   if (!id) return []
-  return products.value.filter(p => String(p.category) === String(id))
+  return list.filter(p => String(p.category) === String(id))
 })
 
 const filteredProducts = computed(() => {
