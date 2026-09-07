@@ -16,7 +16,7 @@
       </header>
 
       <main class="terms-content">
-        <p class="paragraph intro">{{ t('termsPage.intro') }}</p>
+        <p class="paragraph intro">{{ termsData.intro }}</p>
 
         <section v-for="(section, idx) in sections" :key="idx" class="terms-section">
           <h2 class="section-title">{{ section.title }}</h2>
@@ -30,12 +30,12 @@
           </ul>
         </section>
 
-        <p class="paragraph outro">{{ t('termsPage.outro') }}</p>
+        <p class="paragraph outro">{{ termsData.outro }}</p>
 
         <section class="contact-section">
           <div class="contact-card">
-            <h2 class="section-title">{{ t('termsPage.contactTitle') }}</h2>
-            <p class="paragraph">{{ t('termsPage.contactSubtitle') }}</p>
+            <h2 class="section-title">{{ termsData.contactTitle }}</h2>
+            <p class="paragraph">{{ termsData.contactSubtitle }}</p>
 
             <div class="contact-actions">
               <a class="ig-link" :href="instagramUrl" target="_blank" rel="noopener noreferrer">
@@ -62,20 +62,20 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
 import { SOCIALS } from '@/config/brand'
-
-type TermsSection = {
-  title: string
-  paragraphs: string[]
-  bullets?: string[]
-}
+import { termsEs, termsEn } from '@/i18n/termsData'
+import type { TermsSection, TermsPageData } from '@/i18n/termsData'
 
 const router = useRouter()
-const { t, tm, locale } = useI18n()
+const { t, locale } = useI18n()
 
 const instagramUrl = SOCIALS.instagramUrl
 const instagramHandle = SOCIALS.instagramHandle
 
 const LAST_UPDATED_ISO = '2026-08-23'
+
+const termsData = computed<TermsPageData>(() => {
+  return locale.value === 'en' ? termsEn : termsEs
+})
 
 const formattedLastUpdated = computed(() => {
   const date = new Date(`${LAST_UPDATED_ISO}T00:00:00`)
@@ -83,10 +83,7 @@ const formattedLastUpdated = computed(() => {
   return new Intl.DateTimeFormat(localeTag, { year: 'numeric', month: 'long', day: 'numeric' }).format(date)
 })
 
-const sections = computed<TermsSection[]>(() => {
-  const raw = tm('termsPage.sections') as unknown
-  return Array.isArray(raw) ? (raw as TermsSection[]) : []
-})
+const sections = computed<TermsSection[]>(() => termsData.value.sections)
 
 const goBack = () => {
   if (window.history.length > 1) {
