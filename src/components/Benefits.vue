@@ -35,7 +35,7 @@ const benefits = [
   {
     emoji: '🚚',
     title: 'Envíos a todo Colombia',
-    description: 'Recibe tu pedido en la puerta de tu casa',
+    description: 'Recibe tu pedido en la puerta de tu casa.',
     bgClass: 'bg-pikiitos-cream/40 hover:bg-pikiitos-cream/70',
   },
   {
