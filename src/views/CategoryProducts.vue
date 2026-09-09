@@ -290,7 +290,7 @@ const pageDescription = computed(() => {
 })
 
 const allProductsForView = computed(() => {
-  let list = products.value.filter(p => p.status !== 'out-of-stock')
+  const list = products.value.filter(p => p.status !== 'out-of-stock')
   if (isOfertas.value) {
     return list.filter(p => p.originalPrice && p.originalPrice > p.price)
   }
