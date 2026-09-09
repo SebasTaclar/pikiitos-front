@@ -814,14 +814,14 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
-                <input type="search" v-model="searchSales" placeholder="Buscar por cliente, email o producto..." class="orders-search-input" />
+                <input type="search" v-model="searchSales" placeholder="Buscar por cliente, email, teléfono o cédula..." class="orders-search-input" />
                 <button v-if="searchSales" class="search-clear" @click="searchSales = ''">✕</button>
               </div>
               <select v-model="orderStatusFilter" class="orders-filter-select">
-                <option value="">Todos los estados</option>
-                <option value="completed">Completados</option>
-                <option value="pending">Pendientes</option>
-                <option value="cancelled">Cancelados</option>
+                <option value="">Estado de pago: Todos</option>
+                <option value="completed">Pagado</option>
+                <option value="pending">Pendiente pago</option>
+                <option value="cancelled">Cancelado</option>
               </select>
             </div>
 
@@ -832,10 +832,12 @@
                   <tr>
                     <th>Pedido</th>
                     <th>Cliente</th>
+                    <th>Contacto</th>
                     <th>Productos</th>
                     <th>Total</th>
-                    <th>Estado</th>
+                    <th>Pago</th>
                     <th>Fecha</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -847,6 +849,22 @@
                       <div class="cell-stack">
                         <span class="cell-primary">{{ order.customerName }}</span>
                         <span class="cell-secondary">{{ order.customerEmail }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="cell-stack">
+                        <span v-if="order.customerPhone" class="cell-primary">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px; margin-right: 4px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                          {{ order.customerPhone }}
+                        </span>
+                        <span v-if="order.customerIdNumber" class="cell-secondary">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px; margin-right: 4px;"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                          CC: {{ order.customerIdNumber }}
+                        </span>
+                        <span v-if="order.shippingAddress" class="cell-secondary">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px; margin-right: 4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                          {{ order.shippingAddress }}
+                        </span>
                       </div>
                     </td>
                     <td>
@@ -874,14 +892,18 @@
                       <span class="amount">${{ order.totalAmount.toLocaleString() }}</span>
                     </td>
                     <td>
-                      <select :value="order.status" @change="updateOrderStatus(order.id, ($event.target as HTMLSelectElement).value)" :class="['status-select', order.status]">
-                        <option value="pending">Pendiente</option>
-                        <option value="completed">Completado</option>
-                        <option value="cancelled">Cancelado</option>
-                      </select>
+                      <span :class="['status-pill', order.status]">{{ getPaymentStatusLabel(order.status) }}</span>
                     </td>
                     <td>
-                      <span class="cell-secondary">{{ formatDate(order.date) }}</span>
+                      <span class="cell-secondary">{{ formatDateTime(order.date) }}</span>
+                    </td>
+                    <td>
+                      <button class="cat-action-btn" @click="openOrderDetail(order)" title="Ver detalle">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                          <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -1195,6 +1217,102 @@
         </div>
       </div>
     </div>
+
+    <!-- Order Detail Modal -->
+    <div v-if="showOrderDetail && selectedOrderDetail" class="modal-overlay" @click="closeOrderDetail">
+      <div class="modal order-detail-modal" @click.stop>
+        <div class="modal-header">
+          <h3>Detalle del Pedido #{{ selectedOrderDetail.id }}</h3>
+          <button class="modal-close" @click="closeOrderDetail">✕</button>
+        </div>
+        <div class="modal-body">
+          <!-- Customer Info -->
+          <div class="order-detail-section">
+            <h4 class="order-detail-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Datos del Cliente
+            </h4>
+            <div class="order-detail-grid">
+              <div class="order-detail-field">
+                <span class="order-detail-label">Nombre</span>
+                <span class="order-detail-value">{{ selectedOrderDetail.customerName }}</span>
+              </div>
+              <div class="order-detail-field">
+                <span class="order-detail-label">Email</span>
+                <span class="order-detail-value">{{ selectedOrderDetail.customerEmail }}</span>
+              </div>
+              <div v-if="selectedOrderDetail.customerPhone" class="order-detail-field">
+                <span class="order-detail-label">Teléfono</span>
+                <span class="order-detail-value">{{ selectedOrderDetail.customerPhone }}</span>
+              </div>
+              <div v-if="selectedOrderDetail.customerIdNumber" class="order-detail-field">
+                <span class="order-detail-label">Cédula / ID</span>
+                <span class="order-detail-value">{{ selectedOrderDetail.customerIdNumber }}</span>
+              </div>
+              <div v-if="selectedOrderDetail.shippingAddress" class="order-detail-field order-detail-field-full">
+                <span class="order-detail-label">Dirección de envío</span>
+                <span class="order-detail-value">{{ selectedOrderDetail.shippingAddress }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products -->
+          <div class="order-detail-section">
+            <h4 class="order-detail-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              Productos
+            </h4>
+            <div class="order-detail-products">
+              <div v-for="(item, idx) in selectedOrderDetail.items" :key="idx" class="order-detail-product">
+                <div class="order-detail-product-info">
+                  <span class="order-detail-product-name">{{ item.productName }}</span>
+                  <span v-if="item.selectedColor" class="order-detail-product-color">
+                    <span class="color-dot" :style="{ backgroundColor: getColorHex(item.selectedColor) }"></span>
+                    {{ item.selectedColor }}
+                  </span>
+                </div>
+                <div class="order-detail-product-qty">
+                  x{{ item.quantity }}
+                </div>
+                <div class="order-detail-product-price">
+                  ${{ item.totalPrice.toLocaleString() }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status & Total -->
+          <div class="order-detail-section">
+            <h4 class="order-detail-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Resumen
+            </h4>
+            <div class="order-detail-grid">
+              <div class="order-detail-field">
+                <span class="order-detail-label">Estado de pago</span>
+                <span :class="['status-pill', selectedOrderDetail.status]">{{ getPaymentStatusLabel(selectedOrderDetail.status) }}</span>
+              </div>
+              <div class="order-detail-field">
+                <span class="order-detail-label">Fecha de compra</span>
+                <span class="order-detail-value">{{ selectedOrderDetail.createdAt ? formatDateTime(new Date(selectedOrderDetail.createdAt)) : formatDateTime(selectedOrderDetail.date) }}</span>
+              </div>
+              <div v-if="selectedOrderDetail.updatedAt" class="order-detail-field">
+                <span class="order-detail-label">Última actualización</span>
+                <span class="order-detail-value">{{ formatDateTime(new Date(selectedOrderDetail.updatedAt)) }}</span>
+              </div>
+              <div class="order-detail-field">
+                <span class="order-detail-label">Moneda</span>
+                <span class="order-detail-value">{{ selectedOrderDetail.currency || 'COP' }}</span>
+              </div>
+            </div>
+            <div class="order-detail-total">
+              <span class="order-detail-total-label">Total del pedido</span>
+              <span class="order-detail-total-value">${{ selectedOrderDetail.totalAmount.toLocaleString() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1216,13 +1334,20 @@ interface Sale {
   productName: string
   customerName: string
   customerEmail: string
+  customerPhone?: string
+  customerIdNumber?: string
+  shippingAddress?: string
   quantity: number
   unitPrice: number
   totalAmount: number
   status: 'completed' | 'pending' | 'cancelled'
+  orderStatus?: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED'
   date: Date
   selectedColor?: string
   items?: ProductPaymentItem[]
+  currency?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 const router = useRouter()
@@ -1237,6 +1362,9 @@ const searchCategories = ref('')
 const selectedCategoryFilter = ref('')
 const searchSales = ref('')
 const orderStatusFilter = ref('')
+const orderShippingFilter = ref('')
+const selectedOrderDetail = ref<Sale | null>(null)
+const showOrderDetail = ref(false)
 const productStatusFilter = ref('')
 const productFeaturedFilter = ref('')
 const productPriceFilter = ref('')
@@ -1395,20 +1523,28 @@ const transformPurchaseToSale = (purchase: Purchase): Sale => {
     productName,
     customerName: purchase.buyerName,
     customerEmail: purchase.buyerEmail,
+    customerPhone: purchase.buyerContactNumber,
+    customerIdNumber: purchase.buyerIdentificationNumber,
+    shippingAddress: purchase.shippingAddress,
     quantity: totalQuantity,
     unitPrice: firstItem?.unitPrice || 0,
     totalAmount: purchase.amount,
     status: mapPurchaseStatus(purchase.status),
+    orderStatus: purchase.orderStatus,
     date: new Date(purchase.createdAt),
     selectedColor: firstItem?.selectedColor,
-    items: purchase.items
+    items: purchase.items,
+    currency: purchase.currency,
+    createdAt: purchase.createdAt,
+    updatedAt: purchase.updatedAt
   }
 }
 
 const mapPurchaseStatus = (status: string): 'completed' | 'pending' | 'cancelled' => {
-  const upperStatus = status.toUpperCase()
-  if (upperStatus === 'COMPLETED' || upperStatus === 'APPROVED') return 'completed'
-  if (upperStatus === 'CANCELLED' || upperStatus === 'REJECTED') return 'cancelled'
+  if (!status) return 'pending'
+  const upperStatus = status.toUpperCase().trim()
+  if (upperStatus === 'COMPLETED' || upperStatus === 'APPROVED' || upperStatus === 'PAID' || upperStatus === 'SUCCESS' || upperStatus === 'APPROVED') return 'completed'
+  if (upperStatus === 'CANCELLED' || upperStatus === 'REJECTED' || upperStatus === 'DECLINED' || upperStatus === 'VOIDED' || upperStatus === 'FAILED' || upperStatus === 'ERROR') return 'cancelled'
   return 'pending'
 }
 
@@ -1467,9 +1603,12 @@ const filteredOrders = computed(() => {
   if (orderStatusFilter.value) {
     result = result.filter(s => s.status === orderStatusFilter.value)
   }
+  if (orderShippingFilter.value) {
+    result = result.filter(s => s.orderStatus === orderShippingFilter.value)
+  }
   if (searchSales.value.trim()) {
     const q = searchSales.value.toLowerCase().trim()
-    result = result.filter(s => s.customerName.toLowerCase().includes(q) || s.customerEmail.toLowerCase().includes(q) || s.productName.toLowerCase().includes(q) || (s.items && s.items.some(i => i.productName.toLowerCase().includes(q))))
+    result = result.filter(s => s.customerName.toLowerCase().includes(q) || s.customerEmail.toLowerCase().includes(q) || s.productName.toLowerCase().includes(q) || (s.items && s.items.some(i => i.productName.toLowerCase().includes(q))) || (s.customerPhone && s.customerPhone.includes(q)) || (s.customerIdNumber && s.customerIdNumber.includes(q)))
   }
   return result
 })
@@ -1482,6 +1621,57 @@ const updateOrderStatus = async (orderId: string, newStatus: string) => {
   } catch (e) {
     console.error('Error updating order status:', e)
   }
+}
+
+const updateOrderShippingStatus = async (orderId: string, newOrderStatus: string) => {
+  try {
+    const { apiClient } = await import('@/services/api')
+    await apiClient.put(`/purchases/${orderId}`, { orderStatus: newOrderStatus })
+    await loadPurchases()
+  } catch (e) {
+    console.error('Error updating order shipping status:', e)
+  }
+}
+
+const openOrderDetail = (order: Sale) => {
+  selectedOrderDetail.value = order
+  showOrderDetail.value = true
+}
+
+const closeOrderDetail = () => {
+  showOrderDetail.value = false
+  selectedOrderDetail.value = null
+}
+
+const getOrderStatusLabel = (status?: string): string => {
+  const labels: Record<string, string> = {
+    'PENDING': 'Pendiente',
+    'PROCESSING': 'Procesando',
+    'SHIPPED': 'Enviado',
+    'DELIVERED': 'Entregado',
+    'CANCELLED': 'Cancelado'
+  }
+  return labels[status || ''] || status || 'Sin estado'
+}
+
+const getOrderStatusClass = (status?: string): string => {
+  const classes: Record<string, string> = {
+    'PENDING': 'pending',
+    'PROCESSING': 'processing',
+    'SHIPPED': 'shipped',
+    'DELIVERED': 'delivered',
+    'CANCELLED': 'cancelled'
+  }
+  return classes[status || ''] || 'pending'
+}
+
+const getPaymentStatusLabel = (status: string): string => {
+  const labels: Record<string, string> = {
+    'completed': 'Pagado',
+    'pending': 'Pendiente pago',
+    'cancelled': 'Cancelado'
+  }
+  return labels[status] || status
 }
 
 const filteredProducts = computed(() => {
@@ -1579,6 +1769,7 @@ const handleLogout = async () => {
 const getStatusText = (status: string) => ({ 'available': 'Disponible', 'out-of-stock': 'Sin Stock', 'coming-soon': 'Próximamente' }[status] || status)
 const getSaleStatusText = (status: string) => ({ 'completed': 'Completada', 'pending': 'Pendiente', 'cancelled': 'Cancelada' }[status] || status)
 const formatDate = (date: Date) => date.toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' })
+const formatDateTime = (date: Date) => date.toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
 const getProductsInCategory = (categoryId: string) => products.value.filter(p => String(p.category) === String(categoryId)).length
 
 const editProduct = (product: Product) => {
@@ -3862,6 +4053,147 @@ const openWhatsApp = (quote: { phone: string; name: string }) => {
 .status-select.completed { border-color: #10b981; color: #10b981; }
 .status-select.pending { border-color: #f59e0b; color: #f59e0b; }
 .status-select.cancelled { border-color: #ef4444; color: #ef4444; }
+.status-select.processing { border-color: #3b82f6; color: #3b82f6; }
+.status-select.shipped { border-color: #8b5cf6; color: #8b5cf6; }
+.status-select.delivered { border-color: #10b981; color: #10b981; }
+
+/* ===== ORDER DETAIL MODAL ===== */
+.order-detail-modal {
+  max-width: 680px;
+}
+
+.order-detail-section {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.order-detail-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.order-detail-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--c-black);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.order-detail-section-title svg {
+  color: var(--c-primary);
+}
+
+.order-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.order-detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.order-detail-field-full {
+  grid-column: 1 / -1;
+}
+
+.order-detail-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.order-detail-value {
+  font-size: 0.88rem;
+  color: var(--c-black);
+  font-weight: 500;
+}
+
+.order-detail-products {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.order-detail-product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--c-light);
+  border-radius: 10px;
+}
+
+.order-detail-product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.order-detail-product-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c-black);
+}
+
+.order-detail-product-color {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--c-gray);
+}
+
+.order-detail-product-qty {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c-gray);
+  min-width: 32px;
+  text-align: center;
+}
+
+.order-detail-product-price {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--c-success);
+  min-width: 80px;
+  text-align: right;
+}
+
+.order-detail-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: rgba(255,216,77,0.08);
+  border: 1px solid rgba(255,216,77,0.2);
+  border-radius: 10px;
+}
+
+.order-detail-total-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--c-black);
+}
+
+.order-detail-total-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--c-success);
+}
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1200px) {
